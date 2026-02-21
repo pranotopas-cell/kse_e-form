@@ -96,4 +96,99 @@
     <div class="row mb-3" style="font-size: 12px;">
         <div class="col-7">
             Kepada yang kami hormati, <span class="en-text">To Honorable,</span>
-            <strong id="p_pt" style="font-
+            <strong id="p_pt" style="font-size: 14px;">PT. KARYA DUTA SEJAHTERA</strong><br>
+            LOKASI PENGIRIMAN: <span id="p_lokasi">Pangkalan Bun</span><br>
+            CONTACT PERSON: <span id="p_cp">0812-xxxx-xxxx</span>
+        </div>
+        <div class="col-5">
+            <table class="w-100">
+                <tr><td>TANGGAL <span class="en-text">Date</span></td><td>: <span id="p_tanggal">22 FEBRUARI 2026</span></td></tr>
+                <tr><td>NO. SURAT <span class="en-text">SJ Number</span></td><td>: <span id="p_nosj">001/KSE-SJ/II/2026</span></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <table class="table-desc">
+        <thead>
+            <tr>
+                <th colspan="4" class="bg-green-kse">DESCRIPTION OF GOODS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="25%">NOMOR POLISI<br><span class="en-text">Vehicle Number</span></td>
+                <td width="25%"><strong id="p_nopol">KH 6562 GC</strong></td>
+                <td width="25%">JENIS BBM<br><span class="en-text">Fuel Type</span></td>
+                <td width="25%">BBM SOLAR B40</td>
+            </tr>
+            <tr>
+                <td>NAMA SOPIR<br><span class="en-text">Driver Name</span></td>
+                <td id="p_sopir">WANRTO</td>
+                <td>NOMOR SEGEL<br><span class="en-text">Seal Number</span></td>
+                <td id="p_segel">A-88271</td>
+            </tr>
+            <tr>
+                <td>TRANSPORTIR<br><span class="en-text">Transporter</span></td>
+                <td>PT. DEWA KARYA</td>
+                <td>BERAT JENIS<br><span class="en-text">Density</span></td>
+                <td id="p_bj">0,825</td>
+            </tr>
+            <tr>
+                <td>SUPPLY POINT<br><span class="en-text">Supply Point</span></td>
+                <td>DEPO SADP BANJARMASIN</td>
+                <td>JUMLAH<br><span class="en-text">Quantity</span></td>
+                <td><strong id="p_liter">5.000 LITER</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p style="font-size: 10px; margin-top: 10px; font-style: italic;">
+        Barang diterima dalam keadaan baik dan cukup. Komplain tidak berlaku jika surat jalan sudah ditandatangani & stempel.
+    </p>
+
+    <table class="footer-table">
+        <tr>
+            <td>
+                <span class="footer-label">PENERIMA<br><span class="en-text">Received By</span></span>
+                <div class="name-bottom">Nama: ________________</div>
+            </td>
+            <td>
+                <span class="footer-label">SOPIR<br><span class="en-text">Driver</span></span>
+                <div class="name-bottom">Nama: <span id="f_sopir">WANRTO</span></div>
+            </td>
+            <td>
+                <span class="footer-label">HELPER<br><span class="en-text">Helper</span></span>
+                <div class="name-bottom">Nama: ________________</div>
+            </td>
+            <td>
+                <span class="footer-label">YANG MENYERAHKAN<br><span class="en-text">Dispatched By</span></span>
+                <div class="stempel-pos">STEMPEL KSE</div>
+                <div class="name-bottom">KSE (OFFICE)</div>
+            </td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 25px; font-size: 9px; text-align: right; color: #444; border-top: 1px solid #ccc; padding-top: 5px;">
+        Jl. H.M. Rafi'i rt.24 Pangkalan Bun | pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0
+    </div>
+</div>
+
+<script>
+    function updatePreview() {
+        document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
+        document.getElementById('p_lokasi').innerText = document.getElementById('in_lokasi').value;
+        document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
+        document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value;
+        document.getElementById('p_sopir').innerText = document.getElementById('in_sopir').value;
+        document.getElementById('f_sopir').innerText = document.getElementById('in_sopir').value;
+        document.getElementById('p_segel').innerText = document.getElementById('in_segel').value;
+        document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
+        document.getElementById('p_liter').innerText = document.getElementById('in_liter').value;
+        document.getElementById('p_tanggal').innerText = document.getElementById('in_tanggal').value;
+        document.getElementById('p_nosj').innerText = document.getElementById('in_nosj').value;
+    }
+</script>
+
+</body>
+</html>
+
