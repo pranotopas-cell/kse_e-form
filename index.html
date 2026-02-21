@@ -2,173 +2,178 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Jalan KSE - Full Image Header</title>
+    <title>Surat Jalan KSE Final - Sesuai Foto</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
+        body { background-color: #f4f7f6; font-family: Arial, sans-serif; }
         #surat-jalan-template {
-            width: 210mm; min-height: 297mm; padding: 10mm 15mm; margin: auto;
-            background: white; border: 1px solid #ddd; position: relative; color: #000;
+            width: 210mm; min-height: 297mm; padding: 10mm; margin: auto;
+            background: white; position: relative; color: #000; border: 1px solid #ccc;
         }
         
-        /* Header Gambar Sejajar */
-        .header-images { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .header-images img { height: 80px; width: auto; }
+        /* Header Section */
+        .header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .header-box img.side-img { height: 50px; width: auto; }
+        .header-box h2 { font-weight: 900; font-size: 24px; margin: 0; flex-grow: 1; text-align: center; }
 
-        /* Judul Tanpa Garis Bawah */
-        .title-sj { font-style: italic; font-weight: 900; font-size: 26px; display: inline-block; margin-bottom: 0; }
-        
-        .table-desc { width: 100%; border-collapse: collapse; margin: 15px 0; }
-        .table-desc th, .table-desc td { border: 1px solid #000; padding: 6px 10px; font-size: 12px; }
-        .bg-green-kse { background-color: #26461f !important; color: white !important; text-align: center; font-weight: bold; }
-        
-        .en-text { font-size: 9px; font-style: italic; color: #555; display: block; }
+        .line-bold { height: 4px; background: #1a3c15; margin: 10px 0; }
 
-        /* Footer Kotak */
-        .footer-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .footer-table td { 
-            border: 1px solid #000; width: 25%; height: 90px; 
-            vertical-align: top; padding: 5px; position: relative;
+        /* Info Atas */
+        .info-top { font-size: 11.5px; margin-bottom: 10px; }
+        .en-small { font-size: 9px; font-style: italic; color: #666; display: block; }
+
+        /* Main Table */
+        .table-main { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .table-main th { background-color: #1a3c15 !important; color: white !important; text-align: center; padding: 5px; font-size: 13px; border: 1px solid #000; }
+        .table-main td { border: 1px solid #000; padding: 5px 10px; font-size: 11px; vertical-align: top; }
+
+        /* Footer Tanda Tangan */
+        .footer-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .footer-table th { background-color: #1a3c15 !important; color: white !important; font-size: 11px; padding: 4px; border: 1px solid #000; text-align: center; }
+        .footer-table td { border: 1px solid #000; height: 80px; width: 25%; position: relative; vertical-align: bottom; padding: 5px; font-size: 10px; font-weight: bold; }
+
+        .stempel-kse { 
+            position: absolute; top: 5px; right: 10px; width: 65px; opacity: 0.6; 
         }
-        .footer-label { font-size: 10px; font-weight: bold; text-align: center; display: block; }
-        .name-bottom { position: absolute; bottom: 5px; left: 5px; font-size: 11px; font-weight: bold; }
 
-        /* Footer Image */
-        .footer-img-container { width: 100%; margin-top: 20px; text-align: center; }
-        .footer-img-container img { width: 100%; height: auto; }
-
-        .narasi { font-size: 13px; line-height: 1.4; margin: 10px 0; }
+        .contact-info { position: absolute; bottom: 10mm; right: 10mm; text-align: left; font-size: 9px; line-height: 1.2; }
+        .contact-info img { vertical-align: middle; width: 12px; margin-right: 5px; }
 
         @media print {
             .no-print { display: none; }
-            body { margin: 0; background: none; }
-            #surat-jalan-template { border: none; margin: 0; width: 100%; padding: 10mm; }
+            body { background: none; margin: 0; }
+            #surat-jalan-template { border: none; margin: 0; width: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="container my-5 no-print">
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white"><h5>Panel Input Surat Jalan</h5></div>
-        <div class="card-body">
-            <form id="sjForm">
-                <div class="row g-3">
-                    <div class="col-md-6"><label class="form-label">Nama PT Penerima</label><input type="text" class="form-control" id="in_pt" value="PT. KARYA DUTA SEJAHTERA"></div>
-                    <div class="col-md-3"><label class="form-label">Lokasi</label><input type="text" class="form-control" id="in_lokasi" value="Pangkalan Bun"></div>
-                    <div class="col-md-3"><label class="form-label">No. SJ</label><input type="text" class="form-control" id="in_nosj" value="001/KSE-SJ/II/2026"></div>
-                    <div class="col-md-3"><label class="form-label">No. Polisi</label><input type="text" class="form-control" id="in_nopol" value="KH 6562 GC"></div>
-                    <div class="col-md-3"><label class="form-label">Nama Sopir</label><input type="text" class="form-control" id="in_sopir" value="WANRTO"></div>
-                    <div class="col-md-3"><label class="form-label">No. Segel</label><input type="text" class="form-control" id="in_segel" value="A-88271"></div>
-                    <div class="col-md-3"><label class="form-label">Berat Jenis</label><input type="text" class="form-control" id="in_bj" value="0,825"></div>
-                    <div class="col-md-6"><label class="form-label">Jumlah Liter</label><input type="text" class="form-control" id="in_liter" value="5.000 LITER"></div>
-                    <div class="col-md-6"><label class="form-label">Tanggal</label><input type="date" class="form-control" id="in_tanggal" value="2026-02-22"></div>
-                </div>
-                <hr>
-                <div class="text-end">
-                    <button type="button" class="btn btn-primary" onclick="updatePreview()">Update Tampilan</button>
-                    <button type="button" class="btn btn-success" onclick="window.print()">Cetak Surat</button>
-                </div>
-            </form>
+<div class="container my-3 no-print">
+    <div class="card shadow-sm p-3">
+        <h6>Input Data Surat Jalan</h6>
+        <div class="row g-2">
+            <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_pt" placeholder="Nama PT Penerima"></div>
+            <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_nosj" placeholder="No. Surat Jalan"></div>
+            <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_nopol" placeholder="No. Polisi"></div>
+            <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_sopir" placeholder="Nama Sopir"></div>
+        </div>
+        <div class="mt-2">
+            <button class="btn btn-primary btn-sm" onclick="updatePreview()">Refresh Preview</button>
+            <button class="btn btn-success btn-sm" onclick="window.print()">Cetak (Print)</button>
         </div>
     </div>
 </div>
 
 <div id="surat-jalan-template">
-    <div class="header-images">
-        <img src="header1.png" alt="Header Left">
-        <img src="header2.png" alt="Header Right">
+    <div class="header-box">
+        <img src="header2.png" class="side-img" alt="Khatulistiwa">
+        <h2>SURAT JALAN</h2>
+        <img src="header1.png" class="side-img" alt="KSE">
     </div>
 
-    <div class="text-end mb-2">
-        <div class="title-sj">SURAT JALAN</div>
-        <div style="font-size: 11px; font-style: italic;">DELIVERY ORDER</div>
-    </div>
+    <div class="line-bold"></div>
 
-    <div class="row mb-2" style="font-size: 12px;">
-        <div class="col-7">
-            Kepada yang kami hormati, <br>
-            <strong id="p_pt" style="font-size: 14px;">PT. KARYA DUTA SEJAHTERA</strong><br>
-            LOKASI PENGIRIMAN: <span id="p_lokasi">Pangkalan Bun</span>
+    <div class="row info-top">
+        <div class="col-6">
+            Kepada yang kami hormati,<br>
+            <strong id="p_pt" style="font-size: 13px;">PT. KARYA DUTA SEJAHTERA</strong><br>
+            LOKASI PENGIRIMAN : Pangkalan Bun<br>
+            <span class="en-small">Delivery Location</span>
+            CONTACT PERSON : -
         </div>
-        <div class="col-5">
+        <div class="col-6">
             <table class="w-100">
-                <tr><td>TANGGAL</td><td>: <span id="p_tanggal">22 FEBRUARI 2026</span></td></tr>
-                <tr><td>NO. SURAT</td><td>: <span id="p_nosj">001/KSE-SJ/II/2026</span></td></tr>
+                <tr><td width="40%">TANGGAL <br><span class="en-small">Date</span></td><td>: 12 JANUARI 2026</td></tr>
+                <tr><td>NOMOR SURAT <br><span class="en-small">Travel Letter Number</span></td><td>: <span id="p_nosj">001/KSE-SJ/I/2026</span></td></tr>
+                <tr><td>NOMOR PO <br><span class="en-small">Purchase Order Number</span></td><td>: 009 / ---</td></tr>
             </table>
         </div>
     </div>
 
-    <div class="narasi">
-        Bersama ini kami kirimkan Bahan Bakar Minyak (BBM) Industri dengan rincian sebagai berikut:
-    </div>
+    <p style="font-size: 11px; font-style: italic; margin-bottom: 5px;">Telah kami kirimkan bbm industry b40 dengan rincian sebagai berikut :</p>
 
-    <table class="table-desc">
+    <table class="table-main">
         <thead>
-            <tr><th colspan="4" class="bg-green-kse">DESCRIPTION OF GOODS</th></tr>
+            <tr><th colspan="4">DESCRIPTION</th></tr>
         </thead>
         <tbody>
             <tr>
-                <td width="25%">NOMOR POLISI<br><span class="en-text">Vehicle Number</span></td>
-                <td width="25%"><strong id="p_nopol">KH 6562 GC</strong></td>
-                <td width="25%">JENIS BBM<br><span class="en-text">Fuel Type</span></td>
-                <td width="25%">BBM SOLAR B40</td>
+                <td width="20%">NOMOR POLISI<br><span class="en-small">Police Number</span></td>
+                <td width="30%"><strong id="p_nopol">KH 6562 GC</strong></td>
+                <td width="20%">JENIS BBM<br><span class="en-small">Product</span></td>
+                <td width="30%">: BBM SOLAR B40</td>
             </tr>
             <tr>
-                <td>NAMA SOPIR<br><span class="en-text">Driver Name</span></td>
+                <td>NAMA SOPIR<br><span class="en-small">Driver Name</span></td>
                 <td id="p_sopir">WANRTO</td>
-                <td>NOMOR SEGEL<br><span class="en-text">Seal Number</span></td>
-                <td id="p_segel">A-88271</td>
+                <td>NOMOR SO / DO<br><span class="en-small">SO / DO Number</span></td>
+                <td>SO : 5677798668554 <br> DO : 6582581281919</td>
             </tr>
             <tr>
-                <td>TRANSPORTIR<br><span class="en-text">Transporter</span></td>
+                <td>TRANSPORTIR<br><span class="en-small">Transporter</span></td>
                 <td>PT. DEWA KARYA</td>
-                <td>BERAT JENIS<br><span class="en-text">Density</span></td>
-                <td id="p_bj">0,825</td>
+                <td>JUMLAH<br><span class="en-small">Quantity</span></td>
+                <td>: 5.000 LITER</td>
             </tr>
             <tr>
-                <td>SUPPLY POINT<br><span class="en-text">Supply Point</span></td>
+                <td>SUPPLY POINT<br><span class="en-small">Supply Point</span></td>
                 <td>DEPO SADP BANJARMASIN</td>
-                <td>JUMLAH<br><span class="en-text">Quantity</span></td>
-                <td><strong id="p_liter">5.000 LITER</strong></td>
+                <td>NOMOR SEGEL<br><span class="en-small">Seal Number</span></td>
+                <td>: </td>
+            </tr>
+            <tr>
+                <td>KM AWAL<br><span class="en-small">Initial Kilometer</span></td>
+                <td>: </td>
+                <td>TINGGI CAIRAN<br><span class="en-small">Height Liquid</span></td>
+                <td>: 99,7 CM</td>
+            </tr>
+            <tr>
+                <td>KM AKHIR<br><span class="en-small">Final Kilometer</span></td>
+                <td>: </td>
+                <td>BERAT JENIS<br><span class="en-small">Density</span></td>
+                <td>: 0,825</td>
             </tr>
         </tbody>
     </table>
 
-    <div class="narasi">
-        Demikian surat jalan ini kami sampaikan, mohon agar dapat diterima dengan baik dan dilakukan pengecekan kembali sebelum ditandatangani.
-    </div>
+    <p style="font-size: 10px; font-style: italic;">Barang diterima dalam keadaan baik dan cukup, komplain tidak berlaku apabila surat jalan ini sudah ditandatangani dan di stempel perusahaan.</p>
 
     <table class="footer-table">
-        <tr style="text-align: center; font-size: 10px; font-weight: bold;">
-            <td>PENERIMA</td><td>SOPIR</td><td>HELPER</td><td>HORMAT KAMI</td>
-        </tr>
-        <tr>
-            <td><div class="name-bottom">Nama: ________________</div></td>
-            <td><div class="name-bottom">Nama: <span id="f_sopir">WANRTO</span></div></td>
-            <td><div class="name-bottom">Nama: ________________</div></td>
-            <td><div class="name-bottom">KSE (OFFICE)</div></td>
-        </tr>
+        <thead>
+            <tr>
+                <th>PENERIMA</th>
+                <th>DRIVER</th>
+                <th>HELPER</th>
+                <th>YANG MENYERAHKAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Nama :<br>Date :</td>
+                <td>Nama : <span id="f_sopir">WANRTO</span></td>
+                <td>Nama :</td>
+                <td>
+                    <div style="text-align: center; color: blue; border: 2px solid blue; border-radius: 50%; width: 60px; height: 60px; margin: auto; font-size: 9px; padding-top: 15px; transform: rotate(-15deg); font-weight: bold;">KSE<br>STEMPEL</div>
+                    Nama :<br>Jabatan :
+                </td>
+            </tr>
+        </tbody>
     </table>
 
-    <div class="footer-img-container">
-        <img src="footer.png" alt="Footer Info">
+    <div class="contact-info">
+        <div>📍 JL. H.M. Rafi'i rt.24 Pangkalan Bun</div>
+        <div>✉️ pt.khatulistiwa.sinar.energi@gmail.com</div>
+        <div>📞 0815-884-141-0</div>
     </div>
 </div>
 
 <script>
     function updatePreview() {
-        document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
-        document.getElementById('p_lokasi').innerText = document.getElementById('in_lokasi').value;
-        document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value;
-        document.getElementById('p_sopir').innerText = document.getElementById('in_sopir').value;
-        document.getElementById('f_sopir').innerText = document.getElementById('in_sopir').value;
-        document.getElementById('p_segel').innerText = document.getElementById('in_segel').value;
-        document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
-        document.getElementById('p_liter').innerText = document.getElementById('in_liter').value;
-        document.getElementById('p_tanggal').innerText = document.getElementById('in_tanggal').value;
-        document.getElementById('p_nosj').innerText = document.getElementById('in_nosj').value;
+        document.getElementById('p_pt').innerText = document.getElementById('in_pt').value || 'PT. KARYA DUTA SEJAHTERA';
+        document.getElementById('p_nosj').innerText = document.getElementById('in_nosj').value || '001/KSE-SJ/I/2026';
+        document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value || 'KH 6562 GC';
+        document.getElementById('p_sopir').innerText = document.getElementById('in_sopir').value || 'WANRTO';
+        document.getElementById('f_sopir').innerText = document.getElementById('in_sopir').value || 'WANRTO';
     }
 </script>
 
