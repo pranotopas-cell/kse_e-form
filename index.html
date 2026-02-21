@@ -2,207 +2,151 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input & Cetak Surat Jalan KSE</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <title>Surat Jalan - TD</title>
     <style>
-        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
+        body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
+        .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; }
+        .logo { width: 80px; height: 80px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 10px; }
+        .company-info { text-align: left; flex-grow: 1; margin-left: 20px; }
         
-        /* Gaya Tampilan Surat Jalan (Kertas A4) */
-        #surat-jalan-template {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 15mm;
-            margin: auto;
-            background: white;
-            border: 1px solid #ddd;
-            position: relative;
-            color: #000;
-        }
+        .title { text-align: center; margin-top: 10px; }
+        .title h2 { margin: 0; text-decoration: underline; }
+        
+        .info-table { width: 100%; margin-top: 15px; border-collapse: collapse; }
+        .info-table td { padding: 3px; vertical-align: top; }
+        .lang-en { font-style: italic; font-size: 10px; color: #555; display: block; }
 
-        .header-kse { border-bottom: 3px solid #3d6132; padding-bottom: 10px; margin-bottom: 20px; }
-        .logo-text { font-weight: bold; font-size: 22px; color: #1a3c15; }
-        .sub-logo { font-size: 12px; font-weight: bold; }
-        .title-sj { font-style: italic; font-weight: 900; font-size: 28px; border-bottom: 2px solid #000; display: inline-block; }
+        .main-table { width: 100%; margin-top: 15px; border-collapse: collapse; }
+        .main-table th, .main-table td { border: 1px solid black; padding: 8px; text-align: center; }
         
-        .table-desc { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .table-desc th, .table-desc td { 
-            border: 1px solid #000; 
-            padding: 8px; 
-            font-size: 13px; 
-            vertical-align: top;
-        }
-        .bg-green-kse { background-color: #26461f !important; color: white !important; text-align: center; font-weight: bold; }
+        .footer-container { width: 100%; margin-top: 20px; border: 1px solid black; }
+        .footer-table { width: 100%; border-collapse: collapse; }
+        .footer-table td { border: 1px solid black; width: 33.33%; height: 120px; vertical-align: top; padding: 10px; position: relative; }
         
-        .footer-sj { margin-top: 30px; text-align: center; }
-        .signature-box { border: 1px solid #000; height: 100px; margin-top: 5px; }
-
-        @media print {
-            .no-print { display: none; }
-            body { margin: 0; background: none; }
-            #surat-jalan-template { border: none; margin: 0; width: 100%; }
+        .stempel-box { 
+            position: absolute; 
+            bottom: 10px; 
+            right: 10px; 
+            width: 80px; 
+            height: 80px; 
+            border: 2px solid rgba(0, 0, 255, 0.3); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            color: rgba(0, 0, 255, 0.3);
+            transform: rotate(-15deg);
+            font-weight: bold;
+            font-size: 10px;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container my-5 no-print">
-    <div class="card shadow">
-        <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Input Data Surat Jalan</h5>
+    <div class="header">
+        <div class="logo">
+            LOGO COMPANY
         </div>
-        <div class="card-body">
-            <form id="sjForm">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Nama Perusahaan Penerima</label>
-                        <input type="text" class="form-control" id="in_perusahaan" value="PT. KARYA DUTA SEJAHTERA">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Tanggal</label>
-                        <input type="date" class="form-control" id="in_tanggal" value="2026-01-12">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Nomor PO</label>
-                        <input type="text" class="form-control" id="in_po" value="009 / ....">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Nomor Polisi</label>
-                        <input type="text" class="form-control" id="in_nopol" value="KH 6562 GC">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Nama Sopir</label>
-                        <input type="text" class="form-control" id="in_sopir" value="WANRTO">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Jumlah (Liter)</label>
-                        <input type="text" class="form-control" id="in_liter" value="5.000 LITER">
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Nomor SO / DO</label>
-                        <input type="text" class="form-control" id="in_sodo" value="SO : 5677798668554 / DO : 6582581281919">
-                    </div>
-                </div>
-                <hr>
-                <div class="text-end">
-                    <button type="button" class="btn btn-primary" onclick="updatePreview()">Update Preview</button>
-                    <button type="button" class="btn btn-secondary" onclick="window.print()">Cetak / Print</button>
-                    <button type="button" class="btn btn-danger" onclick="downloadPDF()">Download PDF</button>
-                </div>
-            </form>
+        <div class="company-info">
+            <h1 style="margin:0;">NAMA PERUSAHAAN ABANG</h1>
+            <p style="margin:2px;">Alamat Lengkap Perusahaan - No. Telp / Email</p>
         </div>
-    </div>
-</div>
-
-<div id="surat-jalan-template">
-    <div class="d-flex justify-content-between header-kse">
-        <div>
-            <div class="logo-text">KHATULISTIWA SINAR ENERGI</div>
-            <div class="sub-logo">Mitra Penyalur dan Transportir BBM Industri</div>
-        </div>
-        <div class="text-end">
-            <h1 style="font-weight: bold; color: #0c335e; margin: 0;">KSE</h1>
+        <div style="text-align: right;">
+            <strong>No. Surat Jalan: ___________</strong><br>
+            <span class="lang-en">Delivery Order No.</span>
         </div>
     </div>
 
-    <div class="text-end mb-4">
-        <div class="title-sj">SURAT JALAN</div>
+    <div class="title">
+        <h2>SURAT JALAN</h2>
+        <span class="lang-en">DELIVERY ORDER</span>
     </div>
 
-    <div class="row mb-3" style="font-size: 13px;">
-        <div class="col-6">
-            Kepada yang kami hormati,<br>
-            <strong id="p_perusahaan">PT. KARYA DUTA SEJAHTERA</strong><br><br>
-            LOKASI PENGIRIMAN : <br>
-            CONTAC PERSON :
-        </div>
-        <div class="col-6">
-            <table class="w-100">
-                <tr><td>TANGGAL</td><td>: <span id="p_tanggal">12 JANUARI 2026.</span></td></tr>
-                <tr><td>NOMOR SURAT</td><td>: 001 / KSE - SJ / I / 2026.</td></tr>
-                <tr><td>NOMOR PO</td><td>: <span id="p_po">009 / ....</span></td></tr>
-            </table>
-        </div>
-    </div>
+    <table class="info-table">
+        <tr>
+            <td width="15%">Tanggal <br><span class="lang-en">Date</span></td>
+            <td>: ________________</td>
+            <td width="15%">Kepada Yth. <br><span class="lang-en">To Attention</span></td>
+            <td>: ________________</td>
+        </tr>
+        <tr>
+            <td>No. Polisi <br><span class="lang-en">Vehicle No.</span></td>
+            <td>: ________________</td>
+            <td>Alamat <br><span class="lang-en">Address</span></td>
+            <td>: ________________</td>
+        </tr>
+        <tr>
+            <td>Nama Sopir <br><span class="lang-en">Driver Name</span></td>
+            <td>: ________________</td>
+            <td>No. Segel <br><span class="lang-en">Seal Number</span></td>
+            <td>: ________________</td>
+        </tr>
+        <tr>
+            <td>Berat Jenis <br><span class="lang-en">Density / Specific Gravity</span></td>
+            <td>: ________________</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
 
-    <p style="font-size: 13px; font-style: italic;">Telah kami kirimkan bbm industry b40 dengan rincian sebagai berikut :</p>
-
-    <table class="table-desc">
+    <table class="main-table">
         <thead>
             <tr>
-                <th colspan="4" class="bg-green-kse">DESCRIPTION</th>
+                <th>No</th>
+                <th>Nama Barang <br><span class="lang-en">Description of Goods</span></th>
+                <th>Jumlah <br><span class="lang-en">Quantity</span></th>
+                <th>Satuan <br><span class="lang-en">Unit</span></th>
+                <th>Keterangan <br><span class="lang-en">Remarks</span></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td width="20%">NOMOR POLISI</td><td width="30%"><strong id="p_nopol">KH 6562 GC</strong></td>
-                <td width="20%">JENIS BBM</td><td width="30%">BBM SOLAR B40</td>
+                <td height="30">1</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td>NAMA SOPIR</td><td id="p_sopir">WANRTO</td>
-                <td>NOMOR SO / DO</td><td style="font-size: 11px;" id="p_sodo">SO : 5677798668554<br>DO : 6582581281919</td>
-            </tr>
-            <tr>
-                <td>TRANSPORTIR</td><td>PT. DEWA KARYA</td>
-                <td>JUMLAH</td><td id="p_liter">5.000 LITER</td>
-            </tr>
-            <tr>
-                <td>SUPPLAY POINT</td><td>DEPO SADP BANJARMASIN</td>
-                <td>NOMOR SEGEL</td><td>:</td>
-            </tr>
-            <tr>
-                <td>KM AWAL</td><td>:</td>
-                <td>TINGGI CAIRAN</td><td>: 99,7 CM</td>
-            </tr>
-            <tr>
-                <td>KM AKHIR</td><td>:</td>
-                <td>BERAT JENIS</td><td>: 0,825</td>
+                <td height="30">2</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         </tbody>
     </table>
 
-    <p style="font-size: 11px; margin-top: 10px; font-style: italic;">
-        Barang diterima dalam keadaan baik dan cukup, komplain tidak berlaku apabila surat jalan ini sudah ditandatangani dan distempel perusahaan.
-    </p>
-
-    <div class="row footer-sj" style="font-size: 12px; font-weight: bold;">
-        <div class="col-3">PENERIMA<div class="signature-box"></div>Nama :<br>Date :</div>
-        <div class="col-3">DRIVER<div class="signature-box"></div>Nama :</div>
-        <div class="col-3">HELPER<div class="signature-box"></div>Nama :</div>
-        <div class="col-3 text-primary">YANG MENYERAHKAN<div class="signature-box" style="border-color: #0c335e;"></div><strong>KSE</strong></div>
+    <div class="footer-container">
+        <table class="footer-table">
+            <tr>
+                <td>
+                    <strong>Penerima,</strong><br>
+                    <span class="lang-en">Received by,</span>
+                    <br><br><br><br><br>
+                    ( ________________ )
+                </td>
+                <td>
+                    <strong>Sopir,</strong><br>
+                    <span class="lang-en">Driver,</span>
+                    <br><br><br><br><br>
+                    ( ________________ )
+                </td>
+                <td style="position: relative;">
+                    <strong>Hormat Kami,</strong><br>
+                    <span class="lang-en">Authorized Signature,</span>
+                    
+                    <div class="stempel-box">STEMPEL</div>
+                    
+                    <br><br><br><br><br>
+                    ( ________________ )
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <div style="margin-top: 40px; font-size: 10px; text-align: right; color: #555;">
-        Jl. H.M. Rafi'i rt.24 Pangkalan Bun<br>
-        pt.khatulistiwa.sinar.energi@gmail.com<br>
-        0815-884-141-0
-    </div>
-</div>
-
-<script>
-    function updatePreview() {
-        document.getElementById('p_perusahaan').innerText = document.getElementById('in_perusahaan').value;
-        document.getElementById('p_tanggal').innerText = document.getElementById('in_tanggal').value;
-        document.getElementById('p_po').innerText = document.getElementById('in_po').value;
-        document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value;
-        document.getElementById('p_sopir').innerText = document.getElementById('in_sopir').value;
-        document.getElementById('p_sodo').innerText = document.getElementById('in_sodo').value;
-        document.getElementById('p_liter').innerText = document.getElementById('in_liter').value;
-    }
-
-    function downloadPDF() {
-        const element = document.getElementById('surat-jalan-template');
-        const opt = {
-            margin:       0,
-            filename:     'Surat_Jalan_KSE.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    }
-</script>
+    <p style="font-size: 10px;">* Putih: Kantor | Merah: Pelanggan | Kuning: Arsip Sopir</p>
 
 </body>
 </html>
