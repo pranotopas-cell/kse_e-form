@@ -3,134 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard PT. KSE - BBM</title>
+    <title>Sistem PT. KSE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .bg-hijau-tua { background-color: #064e3b; } /* Emerald 900 */
-        .bg-tosca { background-color: #0d9488; }    /* Teal 600 */
-        .text-tosca { color: #0d9488; }
+        .bg-hijau-tua { background-color: #064e3b; }
+        .bg-tosca { background-color: #0d9488; }
+        @media print {
+            .no-print { display: none; }
+            .print-only { display: block !important; }
+            body { background: white; }
+            .print-card { shadow: none; border: 1px solid #ccc; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
 
-    <nav class="bg-hijau-tua text-white p-4 shadow-xl">
+    <nav class="bg-hijau-tua text-white p-4 shadow-xl no-print">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-4">
-                <img id="logo-pt" src="" alt="Logo" class="h-14 w-14 object-contain bg-white rounded-lg p-1 shadow-inner">
-                <div>
-                    <h1 id="nama-pt" class="text-lg md:text-xl font-bold tracking-widest uppercase">Memuat...</h1>
-                    <p class="text-xs text-teal-200 uppercase tracking-tighter">Sistem Informasi Pengiriman BBM</p>
-                </div>
+            <div class="flex items-center gap-4 text-left w-full md:w-auto">
+                <img id="logo-pt" src="" class="h-12 w-12 bg-white rounded p-1">
+                <h1 id="nama-pt" class="text-xl font-bold uppercase tracking-widest">PT. KSE</h1>
             </div>
-            <div class="flex bg-tosca rounded-full p-1 shadow-lg">
-                <button onclick="fetchData('penawaran_harga')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">Penawaran</button>
-                <button onclick="fetchData('purchase_order')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">PO</button>
-                <button onclick="fetchData('surat_jalan')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">Surat Jalan</button>
-                <button onclick="fetchData('invoice')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">Invoice</button>
+            <div class="flex bg-tosca rounded-full p-1 text-sm">
+                <button onclick="switchTab('list')" class="px-4 py-2 hover:bg-hijau-tua rounded-full">Lihat Data</button>
+                <button onclick="switchTab('input')" class="px-4 py-2 hover:bg-hijau-tua rounded-full">Input Baru</button>
             </div>
         </div>
     </nav>
 
     <main class="container mx-auto mt-8 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-teal-100">
-            <div class="bg-tosca p-4 flex justify-between items-center">
-                <h2 id="judul-tabel" class="text-white font-bold text-xl uppercase tracking-wider italic">Data Penawaran Harga</h2>
-                <span id="status-loading" class="text-xs bg-white text-teal-800 px-2 py-1 rounded-full animate-pulse">Sinkronisasi...</span>
+        
+        <section id="sec-input" class="hidden no-print max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl border-t-4 border-tosca">
+            <h2 class="text-2xl font-bold text-hijau-tua mb-6">Input Penawaran Baru</h2>
+            <div class="space-y-4">
+                <div><label class="block text-xs font-bold uppercase">Nama Customer</label>
+                <input id="in-customer" type="text" class="w-full p-2 border rounded border-teal-200"></div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold uppercase">Jenis BBM</label>
+                    <input id="in-bbm" type="text" placeholder="Bio Solar" class="w-full p-2 border rounded border-teal-200"></div>
+                    <div><label class="block text-xs font-bold uppercase">Volume (Liter)</label>
+                    <input id="in-vol" type="number" class="w-full p-2 border rounded border-teal-200"></div>
+                </div>
+                
+                <div><label class="block text-xs font-bold uppercase">Harga Per Liter</label>
+                <input id="in-harga" type="number" class="w-full p-2 border rounded border-teal-200"></div>
+                
+                <button onclick="simpanData()" id="btn-simpan" class="w-full bg-tosca text-white font-bold py-3 rounded-xl hover:bg-hijau-tua">SIMPAN DATA</button>
             </div>
-            
+        </section>
+
+        <section id="sec-list" class="no-print bg-white rounded-2xl shadow-2xl overflow-hidden border border-teal-100">
+            <div class="bg-tosca p-4 flex justify-between">
+                <h2 class="text-white font-bold uppercase italic">Data Penawaran</h2>
+                <span id="load-status" class="text-xs text-white animate-pulse">Memuat...</span>
+            </div>
             <div class="overflow-x-auto p-4">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-teal-50 text-hijau-tua border-b-2 border-tosca">
-                            <th class="p-4 uppercase text-xs font-bold">No. Dokumen</th>
-                            <th class="p-4 uppercase text-xs font-bold">Tanggal</th>
-                            <th class="p-4 uppercase text-xs font-bold">Kepada</th>
-                            <th class="p-4 uppercase text-xs font-bold">Keterangan</th>
-                            <th class="p-4 uppercase text-xs font-bold text-right">Nilai/Status</th>
+                <table class="w-full text-left">
+                    <thead class="bg-teal-50 text-hijau-tua">
+                        <tr>
+                            <th class="p-4 text-xs">No. Dokumen</th>
+                            <th class="p-4 text-xs">Customer</th>
+                            <th class="p-4 text-xs text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="main-table-body" class="text-gray-700">
-                        </tbody>
+                    <tbody id="table-body"></tbody>
                 </table>
             </div>
+        </section>
+
+        <div id="print-area" class="hidden print-only p-10 bg-white">
+            <div class="flex justify-between border-b-4 border-hijau-tua pb-4 mb-6">
+                <img id="print-logo" src="" class="h-20 w-20 object-contain">
+                <div class="text-right text-xs">
+                    <h1 id="print-nama-pt" class="text-xl font-bold"></h1>
+                    <p id="print-alamat"></p>
+                    <p id="print-kontak"></p>
+                </div>
+            </div>
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold underline uppercase">Penawaran Harga BBM</h2>
+                <p id="print-nomor" class="font-mono font-bold text-lg"></p>
+            </div>
+            <div class="mb-10">
+                <p>Kepada Yth,</p>
+                <p id="print-customer" class="font-bold text-lg uppercase"></p>
+                <p>Di Tempat</p>
+            </div>
+            <table class="w-full border-collapse border border-black mb-10">
+                <thead><tr class="bg-gray-100"><th class="border border-black p-2">Keterangan</th><th class="border border-black p-2">Volume</th><th class="border border-black p-2">Total</th></tr></thead>
+                <tbody><tr><td id="print-desc" class="border border-black p-4"></td><td id="print-vol" class="border border-black p-4 text-center"></td><td id="print-total" class="border border-black p-4 text-right font-bold"></td></tr></tbody>
+            </table>
+            <div class="flex justify-end"><div class="text-center w-64"><p id="print-tgl"></p><br><br><br><p class="font-bold underline">Management PT. KSE</p></div></div>
         </div>
+
     </main>
 
-    <footer class="text-center mt-10 text-gray-400 text-xs pb-10 italic">
-        &copy; 2026 PT. Khatulistiwa Sinar Energi. Managed via Vercel & Supabase.
-    </footer>
-
     <script>
-        // --- KONFIGURASI SUPABASE ---
         const SUPABASE_URL = 'https://jbsuwffcmoioslbeqytv.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic3V3ZmZjbW9pb3NsYmVxeXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MzM3MDMsImV4cCI6MjA4NzIwOTcwM30.C9SB9h-7vIM72yTW-4H50u-WcASheV0NGYOLZ1naAxc'; // GANTI INI YA BANG
-
-        // Inisialisasi Supabase Client
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic3V3ZmZjbW9pb3NsYmVxeXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MzM3MDMsImV4cCI6MjA4NzIwOTcwM30.C9SB9h-7vIM72yTW-4H50u-WcASheV0NGYOLZ1naAxc';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function initApp() {
-            try {
-                // Ambil Data Profil
-                let { data: profil } = await _supabase.from('profil_perusahaan').select('*').limit(1).single();
-                if (profil) {
-                    document.getElementById('nama-pt').innerText = profil.nama_perusahaan;
-                    document.getElementById('logo-pt').src = profil.logo_url;
-                }
-                // Ambil Data Penawaran sebagai default
-                fetchData('penawaran_harga');
-            } catch (e) {
-                console.error("Error saat inisialisasi:", e);
-            }
+        let profilData = {};
+
+        async function init() {
+            let { data } = await _supabase.from('profil_perusahaan').select('*').single();
+            profilData = data;
+            document.getElementById('nama-pt').innerText = data.nama_perusahaan;
+            document.getElementById('logo-pt').src = data.logo_url;
+            loadTable();
         }
 
-        async function fetchData(tableName) {
-            const tableBody = document.getElementById('main-table-body');
-            const judulTabel = document.getElementById('judul-tabel');
-            const loader = document.getElementById('status-loading');
-            
-            loader.style.display = 'inline';
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center p-10 text-gray-400 font-italic">Sedang mengambil data dari database...</td></tr>';
-            
-            let labelJudul = tableName.replace('_', ' ').toUpperCase();
-            judulTabel.innerText = `DATA ${labelJudul}`;
-
-            try {
-                let { data, error } = await _supabase.from(tableName).select('*').order('created_at', { ascending: false });
-                
-                if (error) throw error;
-
-                tableBody.innerHTML = ''; // Kosongkan tabel
-                
-                if (data.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center p-10 text-gray-500 italic">Belum ada data di tabel ini, Bang.</td></tr>';
-                } else {
-                    data.forEach(item => {
-                        // Menyesuaikan kolom berdasarkan tabel yang dipilih
-                        let noDok = item.no_quotation || item.no_po || item.no_surat_jalan || item.no_invoice || '-';
-                        let ket = item.jenis_bbm ? `${item.jenis_bbm} (${item.volume_liter}L)` : (item.plat_nomor ? `Driver: ${item.nama_driver}` : '-');
-                        let nilai = item.total_harga ? `Rp ${Number(item.total_harga).toLocaleString()}` : (item.status_pembayaran || '-');
-
-                        tableBody.innerHTML += `
-                            <tr class="border-b hover:bg-teal-50 transition-colors">
-                                <td class="p-4 font-mono font-bold text-tosca">${noDok}</td>
-                                <td class="p-4 text-sm">${item.tanggal_dokumen || '-'}</td>
-                                <td class="p-4 font-semibold uppercase text-xs">${item.customer_name || 'UMUM'}</td>
-                                <td class="p-4 text-xs italic">${ket}</td>
-                                <td class="p-4 text-right font-bold text-hijau-tua">${nilai}</td>
-                            </tr>
-                        `;
-                    });
-                }
-            } catch (err) {
-                tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-red-500">Error: ${err.message}. Pastikan Anon Key benar, Bang!</td></tr>`;
-            } finally {
-                loader.style.display = 'none';
-            }
+        function switchTab(tab) {
+            document.getElementById('sec-input').classList.toggle('hidden', tab !== 'input');
+            document.getElementById('sec-list').classList.toggle('hidden', tab !== 'list');
         }
 
-        // Jalankan saat halaman dibuka
-        window.onload = initApp;
+        async function loadTable() {
+            let { data } = await _supabase.from('penawaran_harga').select('*').order('created_at', {ascending:false});
+            const body = document.getElementById('table-body');
+            body.innerHTML = '';
+            data.forEach(item => {
+                body.innerHTML += `<tr class="border-b">
+                    <td class="p-4 font-bold text-tosca">${item.no_quotation}</td>
+                    <td class="p-4 font-semibold uppercase">${item.customer_name}</td>
+                    <td class="p-4 text-right"><button onclick="cetakPDF('${item.id}')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs">CETAK</button></td>
+                </tr>`;
+            });
+            document.getElementById('load-status').style.display = 'none';
+        }
+
+        async function simpanData() {
+            const btn = document.getElementById('btn-simpan');
+            btn.innerText = 'MENYIMPAN...';
+            const payload = {
+                customer_name: document.getElementById('in-customer').value,
+                jenis_bbm: document.getElementById('in-bbm').value,
+                volume_liter: document.getElementById('in-vol').value,
+                harga_per_liter: document.getElementById('in-harga').value
+            };
+            await _supabase.from('penawaran_harga').insert([payload]);
+            alert('Data Berhasil Disimpan!');
+            location.reload();
+        }
+
+        async function cetakPDF(id) {
+            let { data } = await _supabase.from('penawaran_harga').select('*').eq('id', id).single();
+            document.getElementById('print-logo').src = profilData.logo_url;
+            document.getElementById('print-nama-pt').innerText = profilData.nama_perusahaan;
+            document.getElementById('print-alamat').innerText = profilData.alamat;
+            document.getElementById('print-nomor').innerText = "No: " + data.no_quotation;
+            document.getElementById('print-customer').innerText = data.customer_name;
+            document.getElementById('print-desc').innerText = "Pengadaan BBM Jenis " + data.jenis_bbm;
+            document.getElementById('print-vol').innerText = data.volume_liter + " Ltr";
+            document.getElementById('print-total').innerText = "Rp " + Number(data.total_harga).toLocaleString();
+            document.getElementById('print-tgl').innerText = "Kalimantan Tengah, " + data.tanggal_dokumen;
+            
+            window.print();
+        }
+
+        init();
     </script>
 </body>
 </html>
