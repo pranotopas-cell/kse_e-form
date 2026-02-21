@@ -101,69 +101,131 @@
     </main>
 
     <script>
-        const SUPABASE_URL = 'https:/peumfitbkcaluhkvqjgl/.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldW1maXRia2NhbHVoa3ZxamdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2OTkyMDYsImV4cCI6MjA4NzI3NTIwNn0.5wGsdYOyiuiu01tas7g5vH5NOghF0-nF6bBJmQsFyO4';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+// -- KONFIGURASI --
+const SUPABASE_URL = 'https://peumfitbkcaluhkvqjgl.supabase.co'; 
+ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldW1maXRia2NhbHVoa3ZxamdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2OTkyMDYsImV4cCI6MjA4NzI3NTIwNn0.5wGsdYOyiuiu01tas7g5vH5NOghF0-nF6bBJmQsFyO4';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let profilData = {};
+let currentDoc = 'penawaran_harga';
+let profilData = {};
 
-        async function init() {
-            let { data } = await _supabase.from('profil_perusahaan').select('*').single();
+// 1. Fungsi Start Awal
+async function init() {
+    try {
+        let { data } = await _supabase.from('perusahaan').select('*').limit(1).single();
+        if(data) {
             profilData = data;
-            document.getElementById('nama-pt').innerText = data.nama_perusahaan;
-            document.getElementById('logo-pt').src = data.logo_url;
-            loadTable();
+            document.getElementById('nama-pt').innerText = data.nama_bisnis;
+            document.getElementById('logo-pt').src = data.logo_utama_url || 'https://via.placeholder.com/50';
         }
+        switchDoc('penawaran_harga'); // Default buka penawaran
+    } catch (e) { console.error("Gagal koneksi:", e); }
+}
 
-        function switchTab(tab) {
-            document.getElementById('sec-input').classList.toggle('hidden', tab !== 'input');
-            document.getElementById('sec-list').classList.toggle('hidden', tab !== 'list');
-        }
+// 2. Ganti Menu Dokumen
+function switchDoc(doc) {
+    currentDoc = doc;
+    // Ubah warna tombol menu
+    document.querySelectorAll('.menu-btn').forEach(b => {
+        b.classList.remove('bg-tosca', 'shadow-lg');
+        if(b.id === 'btn-' + doc) b.classList.add('bg-tosca', 'shadow-lg');
+    });
+    
+    document.getElementById('title-list').innerText = "DATA " + doc.toUpperCase();
+    switchView('list');
+    loadTable();
+}
 
-        async function loadTable() {
-            let { data } = await _supabase.from('penawaran_harga').select('*').order('created_at', {ascending:false});
-            const body = document.getElementById('table-body');
-            body.innerHTML = '';
-            data.forEach(item => {
-                body.innerHTML += `<tr class="border-b">
-                    <td class="p-4 font-bold text-tosca">${item.no_quotation}</td>
-                    <td class="p-4 font-semibold uppercase">${item.customer_name}</td>
-                    <td class="p-4 text-right"><button onclick="cetakPDF('${item.id}')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs">CETAK</button></td>
-                </tr>`;
-            });
-            document.getElementById('load-status').style.display = 'none';
-        }
+// 3. Ganti Tampilan (Lihat / Baru)
+function switchView(view) {
+    document.getElementById('sec-list').classList.toggle('hidden', view !== 'list');
+    document.getElementById('sec-input').classList.toggle('hidden', view !== 'input');
+    
+    document.getElementById('view-list').classList.toggle('bg-hijau-tua', view === 'list');
+    document.getElementById('view-input').classList.toggle('bg-hijau-tua', view === 'input');
+    
+    if(view === 'input') renderForm();
+}
 
-        async function simpanData() {
-            const btn = document.getElementById('btn-simpan');
-            btn.innerText = 'MENYIMPAN...';
-            const payload = {
-                customer_name: document.getElementById('in-customer').value,
-                jenis_bbm: document.getElementById('in-bbm').value,
-                volume_liter: document.getElementById('in-vol').value,
-                harga_per_liter: document.getElementById('in-harga').value
-            };
-            await _supabase.from('penawaran_harga').insert([payload]);
-            alert('Data Berhasil Disimpan!');
-            location.reload();
-        }
+// 4. Render Form sesuai tabel
+function renderForm() {
+    const container = document.getElementById('form-fields');
+    // Default form yang paling sering dipake
+    container.innerHTML = `
+        <div>
+            <label class="block text-[10px] font-black uppercase">Nama Pelanggan / Supplier</label>
+            <input id="f_nama" type="text" class="w-full p-3 border-2 rounded-xl border-teal-50 outline-none focus:border-tosca">
+        </div>
+        <div>
+            <label class="block text-[10px] font-black uppercase">Keterangan / Deskripsi</label>
+            <textarea id="f_catatan" class="w-full p-3 border-2 rounded-xl border-teal-50 outline-none focus:border-tosca"></textarea>
+        </div>
+    `;
+}
 
-        async function cetakPDF(id) {
-            let { data } = await _supabase.from('penawaran_harga').select('*').eq('id', id).single();
-            document.getElementById('print-logo').src = profilData.logo_url;
-            document.getElementById('print-nama-pt').innerText = profilData.nama_perusahaan;
-            document.getElementById('print-alamat').innerText = profilData.alamat;
-            document.getElementById('print-nomor').innerText = "No: " + data.no_quotation;
-            document.getElementById('print-customer').innerText = data.customer_name;
-            document.getElementById('print-desc').innerText = "Pengadaan BBM Jenis " + data.jenis_bbm;
-            document.getElementById('print-vol').innerText = data.volume_liter + " Ltr";
-            document.getElementById('print-total').innerText = "Rp " + Number(data.total_harga).toLocaleString();
-            document.getElementById('print-tgl').innerText = "Kalimantan Tengah, " + data.tanggal_dokumen;
+// 5. Ambil Data dari Supabase (ANTI LEMOT)
+async function loadTable() {
+    document.getElementById('load-status').style.display = 'block';
+    
+    // Tarik data tipis-tipis aja biar cepet
+    let { data, error } = await _supabase.from(currentDoc).select('*').order('created_at', {ascending:false}).limit(20);
+    
+    const body = document.getElementById('table-body');
+    body.innerHTML = '';
+    
+    if (data) {
+        data.forEach(item => {
+            // Ambil nomor dokumen secara pintar
+            const no = item.nomor_penawaran || item.nomor_po || item.nomor_sj || item.nomor_invoice || 'NO-NUMBER';
+            const nama = item.pelanggan_nama || item.supplier_nama || item.penerima_nama || 'Umum';
             
-            window.print();
-        }
+            body.innerHTML += `
+                <tr class="border-b border-teal-50 hover:bg-gray-50">
+                    <td class="p-4 font-bold text-tosca">${no}</td>
+                    <td class="p-4 uppercase text-gray-700 font-semibold">${nama}</td>
+                    <td class="p-4 text-gray-400 text-xs">${new Date(item.created_at).toLocaleDateString()}</td>
+                    <td class="p-4 text-right">
+                        <button onclick="cetak('${item.id}')" class="bg-hijau-tua text-white px-3 py-1 rounded text-[10px]">CETAK</button>
+                    </td>
+                </tr>`;
+        });
+    }
+    document.getElementById('load-status').style.display = 'none';
+}
 
-        init();
+// 6. Simpan Data (Penting: Nama kolom harus pas sama SQL!)
+async function simpanData() {
+    const btn = document.getElementById('btn-simpan');
+    btn.disabled = true;
+    btn.innerText = "MENYIMPAN...";
+
+    const namaValue = document.getElementById('f_nama').value;
+    const catatanValue = document.getElementById('f_catatan').value;
+
+    // Mapping kolom SQL
+    let payload = {};
+    if(currentDoc === 'penawaran_harga') payload = { pelanggan_nama: namaValue, catatan: catatanValue };
+    else if(currentDoc === 'purchase_order') payload = { supplier_nama: namaValue };
+    else if(currentDoc === 'surat_jalan') payload = { penerima_nama: namaValue };
+    else if(currentDoc === 'invoice') payload = { metode_pembayaran: catatanValue };
+
+    const { error } = await _supabase.from(currentDoc).insert([payload]);
+
+    if(error) {
+        alert("Error: " + error.message);
+    } else {
+        alert("Berhasil!");
+        switchView('list');
+        loadTable();
+    }
+    btn.disabled = false;
+    btn.innerText = "SIMPAN DATA";
+}
+
+init();
+       
     </script>
 </body>
 </html>
+
