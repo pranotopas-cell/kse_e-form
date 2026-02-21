@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard PT. KSE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <nav class="bg-blue-900 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img id="logo-pt" src="" alt="Logo" class="h-12 w-12 object-contain bg-white rounded">
+                <h1 id="nama-pt" class="text-xl font-bold uppercase tracking-wider"></h1>
+            </div>
+            <div class="space-x-4">
+                <button onclick="showSection('penawaran')" class="hover:underline">Penawaran</button>
+                <button onclick="showSection('sj')" class="hover:underline">Surat Jalan</button>
+                <button onclick="showSection('invoice')" class="hover:underline">Invoice</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+        <section id="sec-penawaran">
+            <div class="flex justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Data Penawaran Harga (SPH)</h2>
+                <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Buat Penawaran</button>
+            </div>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-3 border">No. Dokumen</th>
+                        <th class="p-3 border">Tanggal</th>
+                        <th class="p-3 border">Kepada</th>
+                        <th class="p-3 border">BBM</th>
+                        <th class="p-3 border">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="table-penawaran">
+                    </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        // 1. KONFIGURASI SUPABASE (Ganti dengan Key Abang)
+        const SUPABASE_URL = 'https://jbsuwffcmoioslbeqytv.supabase.co';
+        const SUPABASE_KEY = 'MASUKKAN_ANON_KEY_ABANG_DI_SINI';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadData() {
+            // Ambil Profil PT
+            let { data: profil } = await supabase.from('profil_perusahaan').select('*').single();
+            if(profil) {
+                document.getElementById('nama-pt').innerText = profil.nama_perusahaan;
+                document.getElementById('logo-pt').src = profil.logo_url;
+            }
+
+            // Ambil Data Penawaran
+            let { data: penawaran } = await supabase.from('penawaran_harga').select('*').order('created_at', {ascending: false});
+            const tableBody = document.getElementById('table-penawaran');
+            
+            penawaran.forEach(item => {
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-gray-50 text-sm">
+                        <td class="p-3 border font-mono font-bold text-blue-700">${item.no_quotation}</td>
+                        <td class="p-3 border">${item.tanggal_dokumen}</td>
+                        <td class="p-3 border font-semibold">${item.customer_name}</td>
+                        <td class="p-3 border">${item.jenis_bbm} (${item.volume_liter}L)</td>
+                        <td class="p-3 border text-right font-bold text-green-700 text-lg">Rp ${Number(item.total_harga).toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
