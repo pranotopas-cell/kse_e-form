@@ -3,80 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard PT. KSE</title>
+    <title>Dashboard PT. KSE - BBM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .bg-hijau-tua { background-color: #064e3b; } /* Emerald 900 */
+        .bg-tosca { background-color: #0d9488; }    /* Teal 600 */
+        .text-tosca { color: #0d9488; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50 font-sans">
 
-    <nav class="bg-blue-900 text-white p-4 shadow-lg">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img id="logo-pt" src="" alt="Logo" class="h-12 w-12 object-contain bg-white rounded">
-                <h1 id="nama-pt" class="text-xl font-bold uppercase tracking-wider"></h1>
+    <nav class="bg-hijau-tua text-white p-4 shadow-xl">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <img id="logo-pt" src="" alt="Logo" class="h-14 w-14 object-contain bg-white rounded-lg p-1 shadow-inner">
+                <div>
+                    <h1 id="nama-pt" class="text-lg md:text-xl font-bold tracking-widest uppercase">Memuat...</h1>
+                    <p class="text-xs text-teal-200 uppercase tracking-tighter">Sistem Informasi Pengiriman BBM</p>
+                </div>
             </div>
-            <div class="space-x-4">
-                <button onclick="showSection('penawaran')" class="hover:underline">Penawaran</button>
-                <button onclick="showSection('sj')" class="hover:underline">Surat Jalan</button>
-                <button onclick="showSection('invoice')" class="hover:underline">Invoice</button>
+            <div class="flex bg-tosca rounded-full p-1 shadow-lg">
+                <button onclick="fetchData('penawaran_harga')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">Penawaran</button>
+                <button onclick="fetchData('purchase_order')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">PO</button>
+                <button onclick="fetchData('surat_jalan')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">Surat Jalan</button>
+                <button onclick="fetchData('invoice')" class="px-4 py-2 hover:bg-hijau-tua rounded-full transition-all">Invoice</button>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-        <section id="sec-penawaran">
-            <div class="flex justify-between mb-6">
-                <h2 class="text-2xl font-bold text-gray-800">Data Penawaran Harga (SPH)</h2>
-                <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Buat Penawaran</button>
+    <main class="container mx-auto mt-8 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-teal-100">
+            <div class="bg-tosca p-4 flex justify-between items-center">
+                <h2 id="judul-tabel" class="text-white font-bold text-xl uppercase tracking-wider italic">Data Penawaran Harga</h2>
+                <span id="status-loading" class="text-xs bg-white text-teal-800 px-2 py-1 rounded-full animate-pulse">Sinkronisasi...</span>
             </div>
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="p-3 border">No. Dokumen</th>
-                        <th class="p-3 border">Tanggal</th>
-                        <th class="p-3 border">Kepada</th>
-                        <th class="p-3 border">BBM</th>
-                        <th class="p-3 border">Total</th>
-                    </tr>
-                </thead>
-                <tbody id="table-penawaran">
-                    </tbody>
-            </table>
-        </section>
+            
+            <div class="overflow-x-auto p-4">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-teal-50 text-hijau-tua border-b-2 border-tosca">
+                            <th class="p-4 uppercase text-xs font-bold">No. Dokumen</th>
+                            <th class="p-4 uppercase text-xs font-bold">Tanggal</th>
+                            <th class="p-4 uppercase text-xs font-bold">Kepada</th>
+                            <th class="p-4 uppercase text-xs font-bold">Keterangan</th>
+                            <th class="p-4 uppercase text-xs font-bold text-right">Nilai/Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="main-table-body" class="text-gray-700">
+                        </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
+    <footer class="text-center mt-10 text-gray-400 text-xs pb-10 italic">
+        &copy; 2026 PT. Khatulistiwa Sinar Energi. Managed via Vercel & Supabase.
+    </footer>
+
     <script>
-        // 1. KONFIGURASI SUPABASE (Ganti dengan Key Abang)
-        const SUPABASE_URL = 'https://jbsuwffcmoioslbeqytv.supabase.co';
-        const SUPABASE_KEY = 'MASUKKAN_ANON_KEY_ABANG_DI_SINI';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // --- KONFIGURASI SUPABASE ---
+        const SUPABASE_URL = 'https://jbsuwffcmoioslbeqytv.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic3V3ZmZjbW9pb3NsYmVxeXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MzM3MDMsImV4cCI6MjA4NzIwOTcwM30.C9SB9h-7vIM72yTW-4H50u-WcASheV0NGYOLZ1naAxc'; // GANTI INI YA BANG
 
-        async function loadData() {
-            // Ambil Profil PT
-            let { data: profil } = await supabase.from('profil_perusahaan').select('*').single();
-            if(profil) {
-                document.getElementById('nama-pt').innerText = profil.nama_perusahaan;
-                document.getElementById('logo-pt').src = profil.logo_url;
+        // Inisialisasi Supabase Client
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function initApp() {
+            try {
+                // Ambil Data Profil
+                let { data: profil } = await _supabase.from('profil_perusahaan').select('*').limit(1).single();
+                if (profil) {
+                    document.getElementById('nama-pt').innerText = profil.nama_perusahaan;
+                    document.getElementById('logo-pt').src = profil.logo_url;
+                }
+                // Ambil Data Penawaran sebagai default
+                fetchData('penawaran_harga');
+            } catch (e) {
+                console.error("Error saat inisialisasi:", e);
             }
-
-            // Ambil Data Penawaran
-            let { data: penawaran } = await supabase.from('penawaran_harga').select('*').order('created_at', {ascending: false});
-            const tableBody = document.getElementById('table-penawaran');
-            
-            penawaran.forEach(item => {
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-gray-50 text-sm">
-                        <td class="p-3 border font-mono font-bold text-blue-700">${item.no_quotation}</td>
-                        <td class="p-3 border">${item.tanggal_dokumen}</td>
-                        <td class="p-3 border font-semibold">${item.customer_name}</td>
-                        <td class="p-3 border">${item.jenis_bbm} (${item.volume_liter}L)</td>
-                        <td class="p-3 border text-right font-bold text-green-700 text-lg">Rp ${Number(item.total_harga).toLocaleString()}</td>
-                    </tr>
-                `;
-            });
         }
 
-        loadData();
+        async function fetchData(tableName) {
+            const tableBody = document.getElementById('main-table-body');
+            const judulTabel = document.getElementById('judul-tabel');
+            const loader = document.getElementById('status-loading');
+            
+            loader.style.display = 'inline';
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center p-10 text-gray-400 font-italic">Sedang mengambil data dari database...</td></tr>';
+            
+            let labelJudul = tableName.replace('_', ' ').toUpperCase();
+            judulTabel.innerText = `DATA ${labelJudul}`;
+
+            try {
+                let { data, error } = await _supabase.from(tableName).select('*').order('created_at', { ascending: false });
+                
+                if (error) throw error;
+
+                tableBody.innerHTML = ''; // Kosongkan tabel
+                
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center p-10 text-gray-500 italic">Belum ada data di tabel ini, Bang.</td></tr>';
+                } else {
+                    data.forEach(item => {
+                        // Menyesuaikan kolom berdasarkan tabel yang dipilih
+                        let noDok = item.no_quotation || item.no_po || item.no_surat_jalan || item.no_invoice || '-';
+                        let ket = item.jenis_bbm ? `${item.jenis_bbm} (${item.volume_liter}L)` : (item.plat_nomor ? `Driver: ${item.nama_driver}` : '-');
+                        let nilai = item.total_harga ? `Rp ${Number(item.total_harga).toLocaleString()}` : (item.status_pembayaran || '-');
+
+                        tableBody.innerHTML += `
+                            <tr class="border-b hover:bg-teal-50 transition-colors">
+                                <td class="p-4 font-mono font-bold text-tosca">${noDok}</td>
+                                <td class="p-4 text-sm">${item.tanggal_dokumen || '-'}</td>
+                                <td class="p-4 font-semibold uppercase text-xs">${item.customer_name || 'UMUM'}</td>
+                                <td class="p-4 text-xs italic">${ket}</td>
+                                <td class="p-4 text-right font-bold text-hijau-tua">${nilai}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (err) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-red-500">Error: ${err.message}. Pastikan Anon Key benar, Bang!</td></tr>`;
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        // Jalankan saat halaman dibuka
+        window.onload = initApp;
     </script>
 </body>
 </html>
