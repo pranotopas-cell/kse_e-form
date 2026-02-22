@@ -13,23 +13,18 @@
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
-        /* Canvas untuk tampilan layar */
+        /* Canvas */
         .document-canvas { 
-            background: white; 
-            width: 210mm; 
-            min-height: 297mm; 
-            margin: 20px auto; 
-            padding: 15mm; /* Padding dalam konten */
-            position: relative;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1); 
-            box-sizing: border-box;
+            background: white; width: 210mm; min-height: 297mm; 
+            margin: 20px auto; padding: 15mm; position: relative;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
         }
 
-        /* Header */
-        .header-section { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 35px; }
-        .logo-img { height: 75px; object-fit: contain; }
-        .doc-identity { text-align: right; }
-        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 24px; color: #000; letter-spacing: 1px; }
+        /* Header - Logo disesuaikan tingginya dengan teks PO */
+        .header-section { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 35px; }
+        .logo-img { height: 45px; width: auto; object-fit: contain; } /* Ukuran diperkecil agar proporsional */
+        .doc-identity { text-align: right; line-height: 1; }
+        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: #000; letter-spacing: 1px; }
 
         /* Table Structure */
         .table-po { width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #000; }
@@ -45,42 +40,30 @@
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-tagline { font-size: 10px; color: #444; display: block; letter-spacing: 0.5px; margin-top: 2px; }
 
-        /* PERBAIKAN PRINT MARGIN */
         @media print {
-            @page {
-                size: A4;
-                margin: 0; /* Kita atur margin lewat padding body agar lebih presisi */
-            }
+            @page { size: A4; margin: 0; }
             body { background: white; margin: 0; padding: 0; }
             .control-nav, .input-sidebar { display: none !important; }
-            
             .col-lg-9 { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            
             .document-canvas { 
-                margin: 0 !important; 
-                box-shadow: none !important; 
-                width: 210mm !important; 
-                height: 297mm !important;
-                padding: 15mm 15mm 15mm 15mm !important; /* Jarak Aman Kertas (Atas Kanan Bawah Kiri) */
-                box-sizing: border-box !important;
+                margin: 0 !important; box-shadow: none !important; 
+                width: 210mm !important; height: 297mm !important;
+                padding: 15mm !important; box-sizing: border-box !important;
                 position: relative !important;
             }
-            
-            .footer-kse {
-                width: calc(210mm - 30mm) !important; /* Menyesuaikan lebar canvas minus padding kiri-kanan */
-                bottom: 15mm !important;
-            }
+            .footer-kse { width: calc(210mm - 30mm) !important; bottom: 15mm !important; }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
         <a href="index.html" class="btn btn-outline-secondary btn-sm">BACK DASHBOARD</a>
-        <button class="btn btn-dark btn-sm" onclick="window.print()">PREVIEW / PRINT</button>
+        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PREVIEW / PRINT</button>
     </div>
-    <button class="btn btn-primary btn-sm fw-bold px-4" onclick="window.print()">DOWNLOAD (A4)</button>
+    <button class="btn btn-primary btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-download"></i> DOWNLOAD (A4)</button>
 </div>
 
 <div class="container-fluid">
@@ -132,10 +115,10 @@
             </div>
         </div>
 
-        <div class="col-lg-9 p-0">
+        <div class="col-lg-9 p-0" id="pdf-area">
             <div class="document-canvas">
                 <div class="header-section">
-                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x80?text=KSE+LOGO'">
+                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/150x45?text=KSE+LOGO'">
                     <div class="doc-identity">
                         <h2>PURCHASE ORDER</h2>
                         <span class="lang-en text-uppercase">Electronic Purchase Order System</span>
@@ -239,6 +222,20 @@
 </div>
 
 <script>
+    // Fungsi untuk Download PDF
+    function downloadPDF() {
+        const element = document.getElementById('pdf-area');
+        const noPo = document.getElementById('in_no').value || 'PO';
+        const opt = {
+            margin:       0,
+            filename:     `KSE_PO_${noPo}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
     function calculate() {
         const qty = parseFloat(document.getElementById('in_qty').value) || 0;
         const hargaDasar = parseFloat(document.getElementById('in_harga').value) || 0;
@@ -284,7 +281,6 @@
         const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
         document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options).toUpperCase();
         
-        // Init default values
         document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
         document.getElementById('in_addr').value = "JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL";
         document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI (B35)";
