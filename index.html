@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Surat Jalan KSE Final - Sesuai Foto</title>
+    <title>Surat Jalan KSE - Revised</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f4f7f6; font-family: Arial, sans-serif; }
@@ -11,86 +11,94 @@
             background: white; position: relative; color: #000; border: 1px solid #ccc;
         }
         
-        /* Header Section */
-        .header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .header-box img.side-img { height: 50px; width: auto; }
-        .header-box h2 { font-weight: 900; font-size: 24px; margin: 0; flex-grow: 1; text-align: center; }
+        /* Header Baru */
+        .header-container { display: flex; align-items: center; justify-content: center; margin-bottom: 5px; position: relative; }
+        .logo-left { position: absolute; left: 0; height: 70px; }
+        .header-text { text-align: center; }
+        .header-text h1 { font-size: 22px; font-weight: bold; margin: 0; letter-spacing: 1px; }
+        .header-text p { font-size: 12px; margin: 0; font-weight: bold; color: #1a3c15; }
 
         .line-bold { height: 4px; background: #1a3c15; margin: 10px 0; }
 
-        /* Info Atas */
-        .info-top { font-size: 11.5px; margin-bottom: 10px; }
-        .en-small { font-size: 9px; font-style: italic; color: #666; display: block; }
+        .title-section { text-align: center; margin: 15px 0; }
+        .title-section h2 { font-weight: 900; font-style: italic; font-size: 26px; margin: 0; text-decoration: underline; }
+        .title-section p { font-size: 11px; font-style: italic; margin: 0; }
+
+        /* Info Section */
+        .info-top { font-size: 12px; margin-bottom: 10px; }
+        .en-small { font-size: 9px; font-style: italic; color: #666; display: block; margin-top: -2px; }
 
         /* Main Table */
         .table-main { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        .table-main th { background-color: #1a3c15 !important; color: white !important; text-align: center; padding: 5px; font-size: 13px; border: 1px solid #000; }
-        .table-main td { border: 1px solid #000; padding: 5px 10px; font-size: 11px; vertical-align: top; }
+        .table-main th { background-color: #1a3c15 !important; color: white !important; text-align: center; padding: 6px; font-size: 13px; border: 1px solid #000; }
+        .table-main td { border: 1px solid #000; padding: 6px 10px; font-size: 11px; vertical-align: middle; }
 
         /* Footer Tanda Tangan */
-        .footer-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .footer-table th { background-color: #1a3c15 !important; color: white !important; font-size: 11px; padding: 4px; border: 1px solid #000; text-align: center; }
-        .footer-table td { border: 1px solid #000; height: 80px; width: 25%; position: relative; vertical-align: bottom; padding: 5px; font-size: 10px; font-weight: bold; }
+        .footer-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .footer-table th { background-color: #1a3c15 !important; color: white !important; font-size: 11px; padding: 5px; border: 1px solid #000; text-align: center; }
+        .footer-table td { border: 1px solid #000; height: 90px; width: 25%; position: relative; vertical-align: bottom; padding: 5px; font-size: 10px; }
 
-        .stempel-kse { 
-            position: absolute; top: 5px; right: 10px; width: 65px; opacity: 0.6; 
-        }
-
-        .contact-info { position: absolute; bottom: 10mm; right: 10mm; text-align: left; font-size: 9px; line-height: 1.2; }
-        .contact-info img { vertical-align: middle; width: 12px; margin-right: 5px; }
+        /* Footer Info di Kanan Bawah */
+        .contact-info { margin-top: 15px; float: right; text-align: left; font-size: 11px; line-height: 1.4; color: #000; font-weight: bold; }
 
         @media print {
             .no-print { display: none; }
             body { background: none; margin: 0; }
             #surat-jalan-template { border: none; margin: 0; width: 100%; }
         }
+        .clearfix::after { content: ""; clear: both; display: table; }
     </style>
 </head>
 <body>
 
 <div class="container my-3 no-print">
     <div class="card shadow-sm p-3">
-        <h6>Input Data Surat Jalan</h6>
         <div class="row g-2">
             <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_pt" placeholder="Nama PT Penerima"></div>
             <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_nosj" placeholder="No. Surat Jalan"></div>
             <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_nopol" placeholder="No. Polisi"></div>
             <div class="col-md-3"><input type="text" class="form-control form-control-sm" id="in_sopir" placeholder="Nama Sopir"></div>
         </div>
-        <div class="mt-2">
-            <button class="btn btn-primary btn-sm" onclick="updatePreview()">Refresh Preview</button>
-            <button class="btn btn-success btn-sm" onclick="window.print()">Cetak (Print)</button>
+        <div class="mt-2 text-end">
+            <button class="btn btn-primary btn-sm" onclick="updatePreview()">Update Preview</button>
+            <button class="btn btn-success btn-sm" onclick="window.print()">Cetak</button>
         </div>
     </div>
 </div>
 
 <div id="surat-jalan-template">
-    <div class="header-box">
-        <img src="header2.png" class="side-img" alt="Khatulistiwa">
-        <h2>SURAT JALAN</h2>
-        <img src="header1.png" class="side-img" alt="KSE">
+    <div class="header-container">
+        <img src="header1.png" class="logo-left" alt="Logo">
+        <div class="header-text">
+            <h1>PT. KHATULISTIWA SINAR ENERGI</h1>
+            <p>Mitra Penyalur dan Transportir BBM Industri</p>
+        </div>
     </div>
 
     <div class="line-bold"></div>
+
+    <div class="title-section">
+        <h2>SURAT JALAN</h2>
+        <p>DELIVERY ORDER</p>
+    </div>
 
     <div class="row info-top">
         <div class="col-6">
             Kepada yang kami hormati,<br>
             <strong id="p_pt" style="font-size: 13px;">PT. KARYA DUTA SEJAHTERA</strong><br>
             LOKASI PENGIRIMAN : Pangkalan Bun<br>
-            <span class="en-small">Delivery Location</span>
             CONTACT PERSON : -
         </div>
-        <div class="col-6">
-            <table class="w-100">
-                <tr><td width="40%">TANGGAL <br><span class="en-small">Date</span></td><td>: 12 JANUARI 2026</td></tr>
-                <tr><td>NOMOR SURAT <br><span class="en-small">Travel Letter Number</span></td><td>: <span id="p_nosj">001/KSE-SJ/I/2026</span></td></tr>
-                <tr><td>NOMOR PO <br><span class="en-small">Purchase Order Number</span></td><td>: 009 / ---</td></tr>
+        <div class="col-6 text-end">
+            <table style="margin-left: auto; text-align: left;">
+                <tr><td>TANGGAL <span class="en-small">Date</span></td><td>: 22 FEBRUARI 2026</td></tr>
+                <tr><td>NOMOR SURAT <span class="en-small">Travel Letter Number</span></td><td>: <span id="p_nosj">001/KSE-SJ/II/2026</span></td></tr>
+                <tr><td>NOMOR PO <span class="en-small">Purchase Order Number</span></td><td>: 009 / ---</td></tr>
             </table>
         </div>
     </div>
 
-    <p style="font-size: 11px; font-style: italic; margin-bottom: 5px;">Telah kami kirimkan bbm industry b40 dengan rincian sebagai berikut :</p>
+    <p style="font-size: 11px; font-style: italic;">Telah kami kirimkan bbm industry b40 dengan rincian sebagai berikut :</p>
 
     <table class="table-main">
         <thead>
@@ -153,24 +161,26 @@
                 <td>Nama : <span id="f_sopir">WANRTO</span></td>
                 <td>Nama :</td>
                 <td>
-                    <div style="text-align: center; color: blue; border: 2px solid blue; border-radius: 50%; width: 60px; height: 60px; margin: auto; font-size: 9px; padding-top: 15px; transform: rotate(-15deg); font-weight: bold;">KSE<br>STEMPEL</div>
+                    <div style="text-align: center; color: blue; border: 2px solid blue; border-radius: 50%; width: 55px; height: 55px; margin: 0 auto 5px auto; font-size: 8px; padding-top: 15px; transform: rotate(-15deg); font-weight: bold;">KSE<br>STEMPEL</div>
                     Nama :<br>Jabatan :
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <div class="contact-info">
-        <div>📍 JL. H.M. Rafi'i rt.24 Pangkalan Bun</div>
-        <div>✉️ pt.khatulistiwa.sinar.energi@gmail.com</div>
-        <div>📞 0815-884-141-0</div>
+    <div class="clearfix">
+        <div class="contact-info">
+            📍 JL. H.M. Rafi'i rt.24 Pangkalan Bun<br>
+            ✉️ pt.khatulistiwa.sinar.energi@gmail.com<br>
+            📞 0815-884-141-0
+        </div>
     </div>
 </div>
 
 <script>
     function updatePreview() {
         document.getElementById('p_pt').innerText = document.getElementById('in_pt').value || 'PT. KARYA DUTA SEJAHTERA';
-        document.getElementById('p_nosj').innerText = document.getElementById('in_nosj').value || '001/KSE-SJ/I/2026';
+        document.getElementById('p_nosj').innerText = document.getElementById('in_nosj').value || '001/KSE-SJ/II/2026';
         document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value || 'KH 6562 GC';
         document.getElementById('p_sopir').innerText = document.getElementById('in_sopir').value || 'WANRTO';
         document.getElementById('f_sopir').innerText = document.getElementById('in_sopir').value || 'WANRTO';
@@ -179,3 +189,4 @@
 
 </body>
 </html>
+
