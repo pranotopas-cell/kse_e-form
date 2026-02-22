@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Surat Jalan KSE - Clean Sign Edition</title>
+    <title>Surat Jalan KSE - Professional Notes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -18,16 +18,29 @@
         .title-block { text-align: right; }
         .title-block h2 { font-weight: 900; font-size: 24px; margin: 0; color: var(--kse-green-dark); }
         .en-label { font-size: 9px; font-style: italic; color: #666; display: block; }
+        
         .table-custom { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 6px; font-size: 12px; border: 1px solid #000; }
         .table-custom td { border: 1px solid #000; padding: 5px 10px; font-size: 11px; vertical-align: top; }
-        .statement-text { font-size: 10px; font-style: italic; margin-top: 15px; margin-bottom: 8px; line-height: 1.3; text-align: center; color: #333; }
+        
+        .statement-text { font-size: 10px; font-style: italic; margin-top: 12px; margin-bottom: 8px; line-height: 1.3; text-align: center; color: #333; }
+        
         .footer-sign { width: 100%; border-collapse: collapse; }
         .footer-sign th { background-color: var(--kse-green-dark) !important; color: white !important; font-size: 11px; padding: 5px; border: 1px solid #000; text-align: center; }
-        .footer-sign td { border: 1px solid #000; height: 100px; width: 25%; vertical-align: bottom; padding: 10px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
-        .img-stempel { position: absolute; width: 95px; bottom: 30px; left: 50%; transform: translateX(-50%); opacity: 0.85; pointer-events: none; z-index: 10; }
-        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 15px; padding: 8px 12px; font-size: 11px; min-height: 55px; }
-        .copy-notes { font-size: 9px; margin-top: 5px; font-weight: bold; color: #555; }
+        .footer-sign td { border: 1px solid #000; height: 90px; width: 25%; vertical-align: bottom; padding: 10px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
+        .img-stempel { position: absolute; width: 95px; bottom: 25px; left: 50%; transform: translateX(-50%); opacity: 0.85; pointer-events: none; z-index: 10; }
+        
+        /* KOTAK CATATAN DIPERPANJANG */
+        .other-note-box { 
+            width: 100%; 
+            border: 1px solid #000; 
+            margin-top: 12px; 
+            padding: 10px 12px; 
+            font-size: 11px; 
+            min-height: 100px; /* Tinggi ditambah ke bawah */
+        }
+        
+        .copy-notes { font-size: 9px; margin-top: 8px; font-weight: bold; color: #555; }
         .fixed-footer { position: absolute; bottom: 15mm; left: 15mm; right: 15mm; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
         .e-form-cap { font-size: 9px; color: #bbb; font-style: italic; text-align: left; border-left: 2px solid #eee; padding-left: 8px; line-height: 1.2; }
@@ -44,25 +57,26 @@
         <div class="card-header bg-success text-white font-weight-bold">Panel Input Surat Jalan</div>
         <div class="card-body">
             <div class="row g-2">
-                <div class="col-md-4"><label class="small">Nama PT Penerima</label><input type="text" class="form-control form-control-sm" id="in_pt" value="PT. KARYA DUTA SEJAHTERA"></div>
-                <div class="col-md-4"><label class="small">Contact Person</label><input type="text" class="form-control form-control-sm" id="in_cp" value="0812-xxxx-xxxx"></div>
-                <div class="col-md-4"><label class="small">Lokasi Pengiriman</label><input type="text" class="form-control form-control-sm" id="in_lokasi" value="Pangkalan Bun"></div>
+                <div class="col-md-4"><label class="small text-muted">Data Customer</label><input type="text" class="form-control form-control-sm" id="in_pt" value="PT. KARYA DUTA SEJAHTERA" placeholder="Nama PT"></div>
+                <div class="col-md-4"><label class="small text-muted">&nbsp;</label><input type="text" class="form-control form-control-sm" id="in_cp" value="0812-xxxx-xxxx" placeholder="Contact Person"></div>
+                <div class="col-md-4"><label class="small text-muted">&nbsp;</label><input type="text" class="form-control form-control-sm" id="in_lokasi" value="Pangkalan Bun" placeholder="Lokasi"></div>
                 
-                <div class="col-md-3"><label class="small">No. Urut SJ</label><input type="number" class="form-control form-control-sm" id="in_no_urut"></div>
-                <div class="col-md-3"><label class="small">Nomor PO Customer</label><input type="text" class="form-control form-control-sm" id="in_po" value="-"></div>
-                <div class="col-md-3"><label class="small">Tanggal</label><input type="text" class="form-control form-control-sm" id="in_tgl"></div>
-                <div class="col-md-3"><label class="small">No. Polisi</label><input type="text" class="form-control form-control-sm" id="in_nopol" value="KH 6562 GC"></div>
+                <div class="col-md-3"><label class="small text-muted">No. Urut SJ</label><input type="number" class="form-control form-control-sm" id="in_no_urut"></div>
+                <div class="col-md-3"><label class="small text-muted">PO Customer</label><input type="text" class="form-control form-control-sm" id="in_po" value="-"></div>
+                <div class="col-md-3"><label class="small text-muted">Tanggal</label><input type="text" class="form-control form-control-sm" id="in_tgl"></div>
+                <div class="col-md-3"><label class="small text-muted">No. Polisi</label><input type="text" class="form-control form-control-sm" id="in_nopol" value="KH 6562 GC"></div>
 
-                <div class="col-md-3"><label class="small">Nomor Segel</label><input type="text" class="form-control form-control-sm" id="in_segel" value="A-88271"></div>
-                <div class="col-md-3"><label class="small">Supply Point</label><input type="text" class="form-control form-control-sm" id="in_supply" value="DEPO SADP"></div>
-                <div class="col-md-3"><label class="small">Berat Jenis</label><input type="text" class="form-control form-control-sm" id="in_bj" value="0,825"></div>
-                <div class="col-md-3"><label class="small">Tinggi Cairan</label><input type="text" class="form-control form-control-sm" id="in_tinggi" value="-"></div>
+                <div class="col-md-3"><label class="small text-muted">Nomor Segel</label><input type="text" class="form-control form-control-sm" id="in_segel" value="A-88271"></div>
+                <div class="col-md-3"><label class="small text-muted">Supply Point</label><input type="text" class="form-control form-control-sm" id="in_supply" value="DEPO SADP"></div>
+                <div class="col-md-2"><label class="small text-muted">Berat Jenis</label><input type="text" class="form-control form-control-sm" id="in_bj" value="0,825"></div>
+                <div class="col-md-2"><label class="small text-muted">Tinggi Cairan</label><input type="text" class="form-control form-control-sm" id="in_tinggi" value="-"></div>
+                <div class="col-md-2"><label class="small text-muted">Other Notes</label><input type="text" class="form-control form-control-sm" id="in_note" value="-"></div>
 
-                <div class="col-12 mt-2"><h6 class="border-bottom pb-1" style="color: #1a3c15;">Personil (Tanpa Kurung)</h6></div>
-                <div class="col-md-3"><label class="small text-primary font-weight-bold">Nama Penerima</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_penerima" value=""></div>
-                <div class="col-md-3"><label class="small text-primary font-weight-bold">Nama Sopir</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_sopir" value="WANRTO"></div>
-                <div class="col-md-3"><label class="small text-primary font-weight-bold">Nama Helper</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_helper" value="-"></div>
-                <div class="col-md-3"><label class="small text-primary font-weight-bold">Menyerahkan (Admin)</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_admin" value="Dept. Operasional"></div>
+                <div class="col-12 mt-2"><h6 class="border-bottom pb-1" style="color: #1a3c15;">Personil Tanda Tangan</h6></div>
+                <div class="col-md-3"><label class="small text-primary font-weight-bold">Penerima</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_penerima"></div>
+                <div class="col-md-3"><label class="small text-primary font-weight-bold">Sopir</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_sopir" value="WANRTO"></div>
+                <div class="col-md-3"><label class="small text-primary font-weight-bold">Helper</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_helper" value="-"></div>
+                <div class="col-md-3"><label class="small text-primary font-weight-bold">Menyerahkan</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_admin" value="Dept. Operasional"></div>
             </div>
             <div class="mt-3 text-end">
                 <button class="btn btn-secondary btn-sm" onclick="updateData()">Preview</button>
@@ -175,6 +189,11 @@
         </tbody>
     </table>
 
+    <div class="other-note-box">
+        <strong>Other Notes:</strong><br>
+        <span id="p_note">-</span>
+    </div>
+
     <div class="copy-notes">
         Note: Lembar 1 - Supplier, Lembar 2 - Transportir, Lembar 3 - Customer
     </div>
@@ -221,6 +240,7 @@
         document.getElementById('p_supply').innerText = document.getElementById('in_supply').value;
         document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
         document.getElementById('p_tinggi').innerText = document.getElementById('in_tinggi').value;
+        document.getElementById('p_note').innerText = document.getElementById('in_note').value;
 
         document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_nama_sopir').value;
 
@@ -249,4 +269,3 @@
 </script>
 </body>
 </html>
-
