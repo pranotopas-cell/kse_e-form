@@ -8,15 +8,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root { --kse-dark: #0f2d0b; --kse-primary: #1a3c15; --kse-accent: #2ecc71; }
-        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; }
+        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; margin: 0; padding: 0; }
         
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
+        /* Canvas untuk tampilan layar */
         .document-canvas { 
-            background: white; width: 210mm; min-height: 297mm; 
-            margin: 20px auto; padding: 3mm; position: relative;
+            background: white; 
+            width: 210mm; 
+            min-height: 297mm; 
+            margin: 20px auto; 
+            padding: 15mm; /* Padding dalam konten */
+            position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); 
+            box-sizing: border-box;
         }
 
         /* Header */
@@ -31,19 +37,39 @@
         .table-po td { border: 1px solid #000; padding: 10px 8px; vertical-align: middle; font-size: 11px; }
 
         /* Spacing & Typography */
-        .info-spacing { margin-bottom: 45px; } /* Jarak diperlebar agar proporsional */
+        .info-spacing { margin-bottom: 45px; } 
         .lang-en { font-style: italic; font-size: 9px; color: #666; display: block; margin-top: -2px; }
 
         /* Footer */
-        .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 40mm); border-top: 1px solid #ccc; padding-top: 10px; }
+        .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-tagline { font-size: 10px; color: #444; display: block; letter-spacing: 0.5px; margin-top: 2px; }
 
+        /* PERBAIKAN PRINT MARGIN */
         @media print {
+            @page {
+                size: A4;
+                margin: 0; /* Kita atur margin lewat padding body agar lebih presisi */
+            }
+            body { background: white; margin: 0; padding: 0; }
             .control-nav, .input-sidebar { display: none !important; }
-            .document-canvas { margin: 0; box-shadow: none; width: 100%; border: none; padding: 15mm; }
-            .col-lg-9 { width: 100% !important; }
-            body { background: white; }
+            
+            .col-lg-9 { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            
+            .document-canvas { 
+                margin: 0 !important; 
+                box-shadow: none !important; 
+                width: 210mm !important; 
+                height: 297mm !important;
+                padding: 15mm 15mm 15mm 15mm !important; /* Jarak Aman Kertas (Atas Kanan Bawah Kiri) */
+                box-sizing: border-box !important;
+                position: relative !important;
+            }
+            
+            .footer-kse {
+                width: calc(210mm - 30mm) !important; /* Menyesuaikan lebar canvas minus padding kiri-kanan */
+                bottom: 15mm !important;
+            }
         }
     </style>
 </head>
@@ -52,7 +78,7 @@
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
         <a href="index.html" class="btn btn-outline-secondary btn-sm">BACK DASHBOARD</a>
-        <button class="btn btn-dark btn-sm" onclick="window.print()">PREVIEW</button>
+        <button class="btn btn-dark btn-sm" onclick="window.print()">PREVIEW / PRINT</button>
     </div>
     <button class="btn btn-primary btn-sm fw-bold px-4" onclick="window.print()">DOWNLOAD (A4)</button>
 </div>
@@ -61,7 +87,6 @@
     <div class="row">
         <div class="col-lg-3 input-sidebar shadow-sm">
             <h6 class="fw-bold mb-3 text-success"><i class="bi bi-pencil-square"></i> FORM INPUT PO</h6>
-            
             <div class="row g-2">
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Nomor PO</label>
@@ -73,16 +98,16 @@
                 </div>
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Customer</label>
-                    <input type="text" id="in_cust" class="form-control form-control-sm" value="PT. KARYA MANDIRI UTAMA" oninput="updateView()">
+                    <input type="text" id="in_cust" class="form-control form-control-sm" oninput="updateView()">
                 </div>
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Alamat</label>
-                    <textarea id="in_addr" class="form-control form-control-sm" rows="2" oninput="updateView()">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</textarea>
+                    <textarea id="in_addr" class="form-control form-control-sm" rows="2" oninput="updateView()"></textarea>
                 </div>
                 <hr>
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Nama Barang</label>
-                    <input type="text" id="in_barang" class="form-control form-control-sm" value="BBM SOLAR INDUSTRI (B35)" oninput="updateView()">
+                    <input type="text" id="in_barang" class="form-control form-control-sm" oninput="updateView()">
                 </div>
                 <div class="col-6 mb-2">
                     <label class="fw-bold">Quantity (Ltr)</label>
@@ -107,7 +132,7 @@
             </div>
         </div>
 
-        <div class="col-lg-9">
+        <div class="col-lg-9 p-0">
             <div class="document-canvas">
                 <div class="header-section">
                     <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x80?text=KSE+LOGO'">
@@ -127,11 +152,11 @@
                         <table class="table table-bordered border-dark table-sm mb-0">
                             <tr>
                                 <td class="bg-light fw-bold" width="45%">TANGGAL <br><span class="lang-en">Date</span></td>
-                                <td id="out_tgl" class="align-middle">22 FEBRUARI 2026</td>
+                                <td id="out_tgl" class="align-middle text-center">22 FEBRUARI 2026</td>
                             </tr>
                             <tr>
                                 <td class="bg-light fw-bold">NOMOR PO <br><span class="lang-en">PO Number</span></td>
-                                <td id="out_no" class="fw-bold align-middle">001/KSE-PO/II/2026</td>
+                                <td id="out_no" class="fw-bold align-middle text-center">001/KSE-PO/II/2026</td>
                             </tr>
                         </table>
                     </div>
@@ -184,7 +209,7 @@
                         <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data=VERIFIED_KSE_PO" class="my-3 shadow-sm">
                         <p class="fw-bold text-decoration-underline mb-0" style="font-size: 13px;">SUPRANOTO</p>
-                        <p class="small">Direktur Operasional</span></p>
+                        <p class="small">Direktur Operasional</p>
                     </div>
                 </div>
 
@@ -226,7 +251,6 @@
         const perLtr = hargaDasar + ppn + pbbkb + pph;
         const total = qty * perLtr;
 
-        // Update Header Tabel dengan Label English
         document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Fuel Tax</span>`;
         document.getElementById('th_pph_label').innerHTML = `PPH ${pphPct}% <br><span class="lang-en">Income Tax</span>`;
 
@@ -256,11 +280,14 @@
         const year = now.getFullYear();
         const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
         
-        const autoNo = `001/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
-        document.getElementById('in_no').value = autoNo;
-        
+        document.getElementById('in_no').value = `001/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
         const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
         document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options).toUpperCase();
+        
+        // Init default values
+        document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
+        document.getElementById('in_addr').value = "JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL";
+        document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI (B35)";
         
         calculate();
     }
@@ -270,5 +297,3 @@
 
 </body>
 </html>
-
-
