@@ -2,287 +2,340 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>KSE - Surat Jalan</title>
+    <title>KSE-Surat Jalan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --kse-green: #1a3c15; }
-        body { background-color: #f0f2f5; font-family: 'Arial', sans-serif; }
+        :root { --kse-green-dark: #1a3c15; } 
+        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
         
-        /* KONTENER UTAMA PDF */
         #surat-jalan-render {
             width: 210mm;
             height: 297mm;
-            padding: 12mm 15mm;
-            margin: 20px auto;
+            padding: 10mm 15mm;
+            margin: auto;
             background: white;
-            color: #000;
-            box-sizing: border-box;
             position: relative;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        /* HEADER REVISED: Logo & Title alignment */
+        .header-clean {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Membuat teks dan logo rata tengah secara vertikal */
+            border-bottom: 2px solid var(--kse-green-dark);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        /* HEADER: Menggunakan Tabel agar pasti sejajar sempurna */
-        .header-table {
-            width: 100%;
-            border-bottom: 3px solid var(--kse-green);
-            margin-bottom: 20px;
-            border-collapse: collapse;
-        }
-        .header-table td { vertical-align: middle; padding-bottom: 10px; border: none; }
-        
-        .logo-img { height: 85px; width: auto; display: block; }
-        
-        .title-text { 
-            text-align: right; 
-            font-size: 38px; /* Diperbesar signifikan */
+        .logo-main { height: 75px; width: auto; object-fit: contain; }
+
+        .title-block { text-align: right; }
+        .title-block h2 { 
             font-weight: 900; 
-            color: var(--kse-green);
+            font-size: 32px; /* Diperbesar */
+            margin: 0; 
+            color: var(--kse-green-dark);
             line-height: 1;
-            margin: 0;
         }
-        .subtitle-text {
-            text-align: right;
-            font-size: 11px;
-            font-style: italic;
-            color: #555;
-            display: block;
-        }
-
-        /* INFO SECTION */
-        .info-grid { width: 100%; margin-bottom: 20px; font-size: 13px; }
-        .info-grid td { vertical-align: top; border: none; padding: 2px; }
-
-        /* TABEL BARANG */
-        .table-main { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .table-main th { 
-            background-color: var(--kse-green) !important; 
-            color: white !important; 
-            border: 1px solid #000; 
-            padding: 8px; 
-            font-size: 13px;
-        }
-        .table-main td { border: 1px solid #000; padding: 8px 12px; font-size: 12px; }
-
-        .note-box { border: 1px solid #000; padding: 10px; min-height: 80px; font-size: 12px; margin-top: 15px; }
-        .footer-sig { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .footer-sig th { background: var(--kse-green) !important; color: white; border: 1px solid #000; padding: 5px; font-size: 12px; }
-        .footer-sig td { border: 1px solid #000; height: 90px; vertical-align: bottom; text-align: center; padding: 10px; font-weight: bold; font-size: 11px; position: relative; }
+        .en-label { font-size: 10px; font-style: italic; color: #666; display: block; line-height: 1.2; }
         
-        .stempel { position: absolute; width: 90px; bottom: 25px; left: 50%; transform: translateX(-50%); opacity: 0.7; pointer-events: none; }
+        .info-section { margin-top: 15px; margin-bottom: 25px; } 
+        
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 8px; font-size: 12px; border: 1px solid #000; }
+        .table-custom td { border: 1px solid #000; padding: 8px 10px; font-size: 11px; vertical-align: top; }
+        
+        .statement-text { font-size: 10px; font-style: italic; margin-top: 20px; margin-bottom: 15px; line-height: 1.3; text-align: center; color: #333; }
+        
+        .footer-sign { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .footer-sign th { background-color: var(--kse-green-dark) !important; color: white !important; font-size: 11px; padding: 5px; border: 1px solid #000; text-align: center; }
+        .footer-sign td { border: 1px solid #000; height: 90px; width: 25%; vertical-align: bottom; padding: 10px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
+        .img-stempel { position: absolute; width: 95px; bottom: 30px; left: 50%; transform: translateX(-50%); opacity: 0.85; pointer-events: none; z-index: 10; }
+        
+        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 20px; padding: 10px 12px; font-size: 11px; min-height: 80px; }
+        .copy-notes { font-size: 9px; margin-top: 10px; font-weight: bold; color: #555; }
+        
+        .fixed-footer { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px;}
+        .qr-section { display: flex; align-items: center; gap: 10px; }
+        #qrcode { width: 55px; height: 55px; }
+        .e-form-cap { font-size: 9px; color: #888; line-height: 1.2; }
+        
+        .company-info-footer { text-align: right; }
+        .footer-name { font-weight: bold; font-size: 14px; color: var(--kse-green-dark); margin: 0; }
+        .footer-tagline { font-size: 9.5px; font-weight: 600; color: #444; margin: 0; font-style: italic; }
+        .contact-item { font-size: 9px; margin: 0; }
 
-        /* FOOTER TETAP */
-        .page-footer { position: absolute; bottom: 12mm; left: 15mm; right: 15mm; border-top: 1px solid #ccc; padding-top: 10px; }
-
-        @media print { .no-print { display: none; } #surat-jalan-render { margin: 0; } }
+        @media print { .no-print { display: none; } #surat-jalan-render { margin: 0; border: none; } }
     </style>
 </head>
-<body>
+<body onload="initApp()">
 
 <div class="container my-4 no-print">
-    <div class="card border-success shadow">
-        <div class="card-header bg-success text-white"><b>DATA ENTRY - SURAT JALAN KSE</b></div>
+    <div class="card shadow-sm mb-4 border-success">
+        <div class="card-header bg-success text-white fw-bold">INPUT DATA SURAT JALAN</div>
         <div class="card-body">
-            <div class="row g-2" id="mainForm">
-                <div class="col-md-4"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm kse-input" id="in_pt" value="PT. KARYA DUTA SEJAHTERA"></div>
-                <div class="col-md-4"><label class="small fw-bold">Lokasi</label><input type="text" class="form-control form-control-sm kse-input" id="in_lokasi" value="Pangkalan Bun"></div>
-                <div class="col-md-4"><label class="small fw-bold">Phone</label><input type="text" class="form-control form-control-sm kse-input" id="in_cp" value="0812-xxxx-xxxx"></div>
-                <div class="col-md-2"><label class="small fw-bold">No Urut</label><input type="number" class="form-control form-control-sm kse-input" id="in_no_urut"></div>
-                <div class="col-md-4"><label class="small fw-bold">Nomor PO</label><input type="text" class="form-control form-control-sm kse-input" id="in_po" value="-"></div>
-                <div class="col-md-3"><label class="small fw-bold">Nomor SO/DO</label><input type="text" class="form-control form-control-sm kse-input" id="in_sodo" value="-"></div>
-                <div class="col-md-3"><label class="small fw-bold">Tanggal</label><input type="text" class="form-control form-control-sm kse-input" id="in_tgl"></div>
-                <div class="col-md-3"><label class="small fw-bold">Nopol</label><input type="text" class="form-control form-control-sm kse-input" id="in_nopol" value="KH 6562 GC"></div>
-                <div class="col-md-3"><label class="small fw-bold">Sopir</label><input type="text" class="form-control form-control-sm kse-input" id="in_nama_sopir" value="WANTO"></div>
-                <div class="col-md-3"><label class="small fw-bold">Segel</label><input type="text" class="form-control form-control-sm kse-input" id="in_segel" value="A-88271"></div>
-                <div class="col-md-3"><label class="small fw-bold">Supply Point</label><input type="text" class="form-control form-control-sm kse-input" id="in_supply" value="DEPO SADP"></div>
-                <div class="col-md-3"><label class="small fw-bold">Jenis BBM</label><input type="text" class="form-control form-control-sm kse-input" id="in_jns_bbm" value="BBM SOLAR B40"></div>
-                <div class="col-md-3"><label class="small fw-bold">Penerima (Ttd)</label><input type="text" class="form-control form-control-sm kse-input" id="in_nama_penerima"></div>
-                <div class="col-md-6"><label class="small fw-bold">Notes</label><input type="text" class="form-control form-control-sm kse-input" id="in_note" value="-"></div>
+            <div class="row g-2">
+                <div class="col-md-4"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm" id="in_pt" value="PT. KARYA DUTA SEJAHTERA" oninput="updateData()"></div>
+                <div class="col-md-4"><label class="small fw-bold">CP / Phone</label><input type="text" class="form-control form-control-sm" id="in_cp" value="0812-xxxx-xxxx" oninput="updateData()"></div>
+                <div class="col-md-4"><label class="small fw-bold">Lokasi Kirim</label><input type="text" class="form-control form-control-sm" id="in_lokasi" value="Pangkalan Bun" oninput="updateData()"></div>
+                
+                <div class="col-md-2"><label class="small fw-bold">No. Urut SJ</label><input type="number" class="form-control form-control-sm" id="in_no_urut" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small fw-bold">Nomor PO</label><input type="text" class="form-control form-control-sm" id="in_po" value="-" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small fw-bold">Nomor SO / DO</label><input type="text" class="form-control form-control-sm" id="in_sodo" value="-" oninput="updateData()"></div>
+                <div class="col-md-4"><label class="small fw-bold">Tanggal</label><input type="text" class="form-control form-control-sm" id="in_tgl" oninput="updateData()"></div>
+
+                <div class="col-md-3"><label class="small fw-bold">Jenis BBM</label><input type="text" class="form-control form-control-sm" id="in_jns_bbm" value="BBM SOLAR B40" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small fw-bold">No. Polisi</label><input type="text" class="form-control form-control-sm" id="in_nopol" value="KH 6562 GC" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small fw-bold">Nomor Segel</label><input type="text" class="form-control form-control-sm" id="in_segel" value="A-88271" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small fw-bold">Supply Point</label><input type="text" class="form-control form-control-sm" id="in_supply" value="DEPO SADP" oninput="updateData()"></div>
+                
+                <div class="col-md-2"><label class="small fw-bold">Berat Jenis</label><input type="text" class="form-control form-control-sm" id="in_bj" value="0,825" oninput="updateData()"></div>
+                <div class="col-md-2"><label class="small fw-bold">Tinggi Cairan</label><input type="text" class="form-control form-control-sm" id="in_tinggi" value="-" oninput="updateData()"></div>
+                <div class="col-md-2"><label class="small fw-bold">KM Awal</label><input type="text" class="form-control form-control-sm" id="in_km_awal" value="-" oninput="updateData()"></div>
+                <div class="col-md-2"><label class="small fw-bold">KM Akhir</label><input type="text" class="form-control form-control-sm" id="in_km_akhir" value="-" oninput="updateData()"></div>
+                <div class="col-md-4"><label class="small fw-bold">Note Box</label><input type="text" class="form-control form-control-sm" id="in_note" value="-" oninput="updateData()"></div>
+
+                <div class="col-md-3"><label class="small text-success fw-bold">Penerima</label><input type="text" class="form-control form-control-sm border-success" id="in_nama_penerima" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small text-success fw-bold">Sopir</label><input type="text" class="form-control form-control-sm border-success" id="in_nama_sopir" value="WANTO" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small text-success fw-bold">Helper</label><input type="text" class="form-control form-control-sm border-success" id="in_nama_helper" value="-" oninput="updateData()"></div>
+                <div class="col-md-3"><label class="small text-success fw-bold">Menyerahkan</label><input type="text" class="form-control form-control-sm border-success" id="in_nama_admin" value="Dept. Operasional" oninput="updateData()"></div>
             </div>
-            <div class="mt-4 text-center">
-                <button class="btn btn-dark px-4" onclick="resetForm()">RESET FORM</button>
-                <button class="btn btn-primary px-5 fw-bold" onclick="downloadPDF()">DOWNLOAD PDF (A4)</button>
+            <div class="mt-3 text-center">
+                <button class="btn btn-outline-dark px-4 fw-bold me-2" onclick="location.href='index.html'">BACK DASHBOARD</button>
+                <button class="btn btn-secondary px-4 fw-bold me-2" onclick="updateData()">PREVIEW</button>
+                <button class="btn btn-primary px-4 fw-bold" onclick="saveAndDownload()">DOWNLOAD (A4)</button>
             </div>
         </div>
     </div>
 </div>
 
 <div id="surat-jalan-render">
-    <table class="header-table">
-        <tr>
-            <td>
-                <img src="header1.png" class="logo-img" onerror="this.src='https://via.placeholder.com/200x80?text=LOGO+KSE'">
-            </td>
-            <td>
-                <div class="title-text">SURAT JALAN</div>
-                <div class="subtitle-text">DELIVERY ORDER</div>
-            </td>
-        </tr>
-    </table>
+    <div class="header-clean">
+        <img src="header1.png" class="logo-main" onerror="this.src='https://via.placeholder.com/150x75?text=LOGO+KSE'">
+        <div class="title-block">
+            <h2>SURAT JALAN</h2>
+            <span class="en-label">DELIVERY ORDER</span>
+        </div>
+    </div>
 
-    <table class="info-grid">
-        <tr>
-            <td width="60%">
-                TUJUAN PENGIRIMAN:<br>
-                <strong id="p_pt" style="font-size: 20px; color: var(--kse-green);">PT. KARYA DUTA SEJAHTERA</strong><br>
-                LOKASI: <span id="p_lokasi" class="fw-bold">-</span><br>
-                CONTACT: <span id="p_cp" class="fw-bold">-</span>
-            </td>
-            <td width="40%">
-                <table style="width: 100%;">
-                    <tr><td>TANGGAL</td><td>: <span id="p_tgl" class="fw-bold"></span></td></tr>
-                    <tr><td>NO. SURAT</td><td>: <span id="p_nosj" class="fw-bold"></span></td></tr>
-                    <tr><td>NO. PO</td><td>: <span id="p_po" class="fw-bold"></span></td></tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+    <div class="row info-section" style="font-size: 12px;">
+        <div class="col-7">
+            <div style="margin-bottom: 8px;">TUJUAN PENGIRIMAN :</div>
+            <strong id="p_pt" style="font-size: 17px; display: block; color: var(--kse-green-dark); margin-bottom: 10px;">-</strong>
+            <div style="line-height: 1.8;">
+                LOKASI: <span id="p_lokasi" style="font-weight: bold;">-</span><br>
+                CONTACT: <span id="p_cp" style="font-weight: bold;">-</span>
+            </div>
+        </div>
+        <div class="col-5">
+            <table class="w-100" style="line-height: 1.6;">
+                <tr><td width="45%">TANGGAL<br><span class="en-label">Date</span></td><td>: <span id="p_tgl" class="fw-bold"></span></td></tr>
+                <tr><td>NO. SURAT<br><span class="en-label">SJ Number</span></td><td>: <span id="p_nosj" class="fw-bold"></span></td></tr>
+                <tr><td>NOMOR PO<br><span class="en-label">PO Number</span></td><td>: <span id="p_po" class="fw-bold"></span></td></tr>
+            </table>
+        </div>
+    </div>
 
-    <div style="font-size: 12px; margin-bottom: 5px;">Dengan hormat, Kami kirimkan barang dengan rincian berikut:</div>
+    <div style="font-size: 11px; margin-bottom: 10px;">
+        Dengan hormat, Bersama ini kami kirimkan BBM Industri, dengan rincian sebagai berikut:
+    </div>
 
-    <table class="table-main">
-        <thead><tr><th colspan="4">DESCRIPTION</th></tr></thead>
+    <table class="table-custom">
+        <thead>
+            <tr><th colspan="4">DESCRIPTION</th></tr>
+        </thead>
         <tbody>
             <tr>
-                <td width="25%">NOMOR POLISI</td><td width="25%">: <b id="p_nopol">-</b></td>
-                <td width="25%">JENIS BBM</td><td width="25%">: <span id="p_jns_bbm">-</span></td>
+                <td width="25%">NOMOR POLISI<br><span class="en-label">Vehicle Number</span></td>
+                <td>: <strong id="p_nopol">-</strong></td>
+                <td width="25%">JENIS BBM<br><span class="en-label">Product Type</span></td>
+                <td>: <span id="p_jns_bbm">-</span></td>
             </tr>
             <tr>
-                <td>NAMA SOPIR</td><td>: <span id="p_sopir_tabel">-</span></td>
-                <td>NOMOR SO/DO</td><td>: <span id="p_sodo">-</span></td>
+                <td>NAMA SOPIR<br><span class="en-label">Driver Name</span></td>
+                <td>: <span id="p_sopir_tabel">-</span></td>
+                <td>NOMOR SO / DO<br><span class="en-label">Order Number</span></td>
+                <td>: <span id="p_sodo">-</span></td>
             </tr>
             <tr>
-                <td>TRANSPORTIR</td><td>: PT. KHATULISTIWA SINAR ENERGI</td>
-                <td>JUMLAH</td><td>: <b>5.000 liter</b></td>
+                <td>TRANSPORTIR<br><span class="en-label">Transporter</span></td>
+                <td>: PT. KHATULISTIWA SINAR ENERGI</td>
+                <td>JUMLAH<br><span class="en-label">Quantity</span></td>
+                <td>: <strong style="font-size: 13px;">5.000 liter</strong></td>
             </tr>
             <tr>
-                <td>NOMOR SEGEL</td><td>: <span id="p_segel">-</span></td>
-                <td>SUPPLY POINT</td><td>: <span id="p_supply">-</span></td>
+                <td>NOMOR SEGEL<br><span class="en-label">Seal Number</span></td>
+                <td>: <span id="p_segel">-</span></td>
+                <td>SUPPLY POINT<br><span class="en-label">Supply Point</span></td>
+                <td>: <span id="p_supply">-</span></td>
+            </tr>
+            <tr>
+                <td>KM AWAL / AKHIR<br><span class="en-label">Initial/Final KM</span></td>
+                <td>: <span id="p_km_awal">-</span> / <span id="p_km_akhir">-</span></td>
+                <td>BERAT JENIS (BJ)<br><span class="en-label">Density</span></td>
+                <td>: <span id="p_bj">-</span></td>
+            </tr>
+            <tr>
+                <td>TINGGI CAIRAN<br><span class="en-label">Liquid Height</span></td>
+                <td>: <span id="p_tinggi">-</span></td>
+                <td>STATUS</td>
+                <td>: SEALED / GOOD CONDITION</td>
             </tr>
         </tbody>
     </table>
 
-    <p style="font-size: 10.5px; text-align: center; font-style: italic; margin: 20px 0;">
+    <div class="statement-text">
         " Barang diterima dalam keadaan bersegel, baik dan cukup ukuran, komplain tidak berlaku apabila surat jalan ini sudah ditandatangani dan berstempel perusahaan "
-    </p>
+    </div>
 
-    <table class="footer-sig">
-        <thead><tr><th>RECIPIENT</th><th>DRIVER</th><th>HELPER</th><th>DELIVER</th></tr></thead>
+    <table class="footer-sign">
+        <thead>
+            <tr>
+                <th>RECIPIENT</th>
+                <th>DRIVER</th>
+                <th>HELPER</th>
+                <th>DELIVER</th>
+            </tr>
+        </thead>
         <tbody>
             <tr>
-                <td><span id="f_penerima">.</span></td>
-                <td><span id="f_sopir">.</span></td>
-                <td>.</td>
+                <td><span id="f_penerima">....................</span></td>
+                <td><span id="f_sopir">....................</span></td>
+                <td><span id="f_helper">....................</span></td>
                 <td>
-                    <img src="stempel.png" class="stempel" onerror="this.style.display='none'">
-                    <span>Dept. Operasional</span>
+                    <img src="stempel.png" class="img-stempel" onerror="this.style.display='none'">
+                    <span id="f_admin">....................</span>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <div class="note-box">
-        <strong>Notes:</strong><br><span id="p_note">-</span>
+    <div class="other-note-box">
+        <strong>Other Notes:</strong><br>
+        <span id="p_note">-</span>
     </div>
 
-    <div class="page-footer">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; gap: 10px; align-items: center;">
+    <div class="copy-notes">
+        Note: Lembar 1 - Supplier, Lembar 2 - Transportir, Lembar 3 - Customer
+    </div>
+
+    <div class="fixed-footer">
+        <div class="footer-content">
+            <div class="qr-section">
                 <div id="qrcode"></div>
-                <div style="font-size: 9px; color: #666;">Digital Validated Document<br>PT. Khatulistiwa Sinar Energi</div>
+                <div class="e-form-cap">
+                    <strong>Digital E-Form KSE System</strong><br>
+                    Dokumen ini sah & divalidasi sistem.<br>
+                    Scan QR untuk verifikasi nomor surat.
+                </div>
             </div>
-            <div style="text-align: right; font-size: 10px;">
-                <strong>PT. KHATULISTIWA SINAR ENERGI</strong><br>
-                pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0
+            <div class="company-info-footer">
+                <div class="footer-name">PT. KHATULISTIWA SINAR ENERGI</div>
+                <div class="footer-tagline">Mitra Penyalur dan Transportir BBM Industri</div>
+                <div class="contact-item">Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah</div>
+                <div class="contact-item">pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0</div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let qr;
-    const inputs = document.querySelectorAll('.kse-input');
+    let qrcode;
+    const inputIds = [
+        'in_pt', 'in_cp', 'in_lokasi', 'in_no_urut', 'in_po', 'in_sodo', 
+        'in_tgl', 'in_jns_bbm', 'in_nopol', 'in_segel', 'in_supply', 
+        'in_bj', 'in_tinggi', 'in_km_awal', 'in_km_akhir', 'in_note', 
+        'in_nama_penerima', 'in_nama_sopir', 'in_nama_helper', 'in_nama_admin'
+    ];
 
-    window.onload = function() {
-        qr = new QRCode(document.getElementById("qrcode"), { width: 50, height: 50 });
-        loadSavedData();
-        updateDisplay();
-        
-        // Auto save on every keystroke
-        inputs.forEach(input => {
-            input.addEventListener('input', () => {
-                updateDisplay();
-                saveCurrentData();
-            });
+    function initApp() {
+        // Load data dari LocalStorage jika ada
+        inputIds.forEach(id => {
+            const savedValue = localStorage.getItem('kse_form_' + id);
+            if (savedValue !== null) {
+                document.getElementById(id).value = savedValue;
+            }
         });
-    };
 
-    function updateDisplay() {
+        // Set default nomor urut jika baru
+        if (!localStorage.getItem('kse_form_in_no_urut')) {
+            document.getElementById('in_no_urut').value = localStorage.getItem('kse_last_num') || 1;
+        }
+        
+        // Set default tanggal jika kosong
+        if (!document.getElementById('in_tgl').value) {
+            const now = new Date();
+            const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+            document.getElementById('in_tgl').value = `${now.getDate().toString().padStart(2,'0')} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+        }
+        
+        qrcode = new QRCode(document.getElementById("qrcode"), { width: 55, height: 55 });
+        updateData();
+    }
+
+    function updateData() {
         const now = new Date();
         const romawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
-        const urut = (document.getElementById('in_no_urut').value || "0").toString().padStart(3, '0');
+        const urut = document.getElementById('in_no_urut').value.toString().padStart(3, '0');
         const nosj = `${urut}/KSE-SJ/${romawi[now.getMonth()]}/${now.getFullYear()}`;
+        
+        // Simpan setiap input ke LocalStorage saat diketik
+        inputIds.forEach(id => {
+            localStorage.setItem('kse_form_' + id, document.getElementById(id).value);
+        });
 
         document.getElementById('p_nosj').innerText = nosj;
         document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
-        document.getElementById('p_lokasi').innerText = document.getElementById('in_lokasi').value;
         document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
+        document.getElementById('p_lokasi').innerText = document.getElementById('in_lokasi').value;
         document.getElementById('p_po').innerText = document.getElementById('in_po').value;
         document.getElementById('p_sodo').innerText = document.getElementById('in_sodo').value;
         document.getElementById('p_tgl').innerText = document.getElementById('in_tgl').value;
-        document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value;
         document.getElementById('p_jns_bbm').innerText = document.getElementById('in_jns_bbm').value;
-        document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_nama_sopir').value;
+        document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value;
         document.getElementById('p_segel').innerText = document.getElementById('in_segel').value;
         document.getElementById('p_supply').innerText = document.getElementById('in_supply').value;
+        document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
+        document.getElementById('p_tinggi').innerText = document.getElementById('in_tinggi').value;
+        document.getElementById('p_km_awal').innerText = document.getElementById('in_km_awal').value;
+        document.getElementById('p_km_akhir').innerText = document.getElementById('in_km_akhir').value;
         document.getElementById('p_note').innerText = document.getElementById('in_note').value;
+        document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_nama_sopir').value;
+
+        document.getElementById('f_penerima').innerText = document.getElementById('in_nama_penerima').value || "....................";
+        document.getElementById('f_sopir').innerText = document.getElementById('in_nama_sopir').value || "....................";
+        document.getElementById('f_helper').innerText = document.getElementById('in_nama_helper').value || "....................";
+        document.getElementById('f_admin').innerText = document.getElementById('in_nama_admin').value || "....................";
         
-        document.getElementById('f_penerima').innerText = document.getElementById('in_nama_penerima').value || "................";
-        document.getElementById('f_sopir').innerText = document.getElementById('in_nama_sopir').value;
-
-        qr.makeCode("KSE-VERIFY-" + nosj);
+        qrcode.makeCode("KSE-VALID-" + nosj);
     }
 
-    function saveCurrentData() {
-        const data = {};
-        inputs.forEach(el => data[el.id] = el.value);
-        localStorage.setItem('kse_last_session', JSON.stringify(data));
-    }
-
-    function loadSavedData() {
-        const saved = localStorage.getItem('kse_last_session');
-        if (saved) {
-            const data = JSON.parse(saved);
-            Object.keys(data).forEach(key => {
-                if(document.getElementById(key)) document.getElementById(key).value = data[key];
-            });
-        } else {
-            // Default Date
-            const d = new Date();
-            const m = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
-            document.getElementById('in_tgl').value = `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;
-            document.getElementById('in_no_urut').value = 1;
-        }
-    }
-
-    function resetForm() {
-        if(confirm("Hapus semua data yang sedang diedit?")) {
-            localStorage.removeItem('kse_last_session');
-            location.reload();
-        }
-    }
-
-    function downloadPDF() {
+    function saveAndDownload() {
+        updateData();
         const element = document.getElementById('surat-jalan-render');
-        const nosj = document.getElementById('p_nosj').innerText.replace(/\//g, '-');
-        
-        html2pdf().set({
+        const opt = {
             margin: 0,
-            filename: `Surat_Jalan_KSE_${nosj}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
+            filename: `SJ_KSE_${document.getElementById('p_nosj').innerText}.pdf`,
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 3, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save();
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            let nextNum = parseInt(document.getElementById('in_no_urut').value) + 1;
+            localStorage.setItem('kse_last_num', nextNum);
+            document.getElementById('in_no_urut').value = nextNum;
+            updateData();
+            alert("Download Berhasil! Nomor Urut telah diperbarui.");
+        });
     }
 </script>
 </body>
