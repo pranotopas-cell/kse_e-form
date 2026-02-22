@@ -2,93 +2,86 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Surat Jalan KSE - Anti-Potong Edition</title>
+    <title>Surat Jalan KSE - One Page Fit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
     <style>
         :root { --kse-green-dark: #1a3c15; } 
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
         
-        /* PENGATURAN KERTAS AGAR TIDAK KEPOTONG */
         #surat-jalan-render {
             width: 210mm;
-            min-height: 296mm; /* Sedikit kurang dari 297mm biar aman */
-            padding: 12mm;
+            height: 296mm; 
+            padding: 8mm 10mm; /* Padding dipersempit biar teks naik */
             margin: 0 auto;
             background: white;
             position: relative;
             color: #000;
             display: flex;
             flex-direction: column;
-            box-sizing: border-box; /* Penting agar padding tidak nambah lebar kertas */
+            box-sizing: border-box;
         }
 
-        .header-clean { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .logo-main { height: 60px; width: auto; }
+        .header-clean { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .logo-main { height: 55px; width: auto; }
         .title-block { text-align: right; }
-        .title-block h2 { font-weight: 900; font-size: 24px; margin: 0; color: var(--kse-green-dark); }
-        .en-label { font-size: 9px; font-style: italic; color: #666; display: block; }
+        .title-block h2 { font-weight: 900; font-size: 22px; margin: 0; color: var(--kse-green-dark); }
+        .en-label { font-size: 8px; font-style: italic; color: #666; display: block; }
         
         .table-custom { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 6px; font-size: 12px; border: 1px solid #000; }
-        .table-custom td { border: 1px solid #000; padding: 5px 10px; font-size: 11px; vertical-align: top; }
+        .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 4px; font-size: 11px; border: 1px solid #000; }
+        .table-custom td { border: 1px solid #000; padding: 3px 10px; font-size: 10.5px; vertical-align: top; line-height: 1.2; }
         
-        .statement-text { font-size: 10px; font-style: italic; margin-top: 12px; margin-bottom: 8px; line-height: 1.3; text-align: center; color: #333; }
+        .statement-text { font-size: 9.5px; font-style: italic; margin-top: 8px; margin-bottom: 5px; line-height: 1.2; text-align: center; color: #333; }
         
         .footer-sign { width: 100%; border-collapse: collapse; }
-        .footer-sign th { background-color: var(--kse-green-dark) !important; color: white !important; font-size: 11px; padding: 5px; border: 1px solid #000; text-align: center; }
-        .footer-sign td { border: 1px solid #000; height: 85px; width: 25%; vertical-align: bottom; padding: 8px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
-        .img-stempel { position: absolute; width: 90px; bottom: 20px; left: 50%; transform: translateX(-50%); opacity: 0.85; pointer-events: none; z-index: 10; }
+        .footer-sign th { background-color: var(--kse-green-dark) !important; color: white !important; font-size: 10px; padding: 4px; border: 1px solid #000; text-align: center; }
+        .footer-sign td { border: 1px solid #000; height: 75px; width: 25%; vertical-align: bottom; padding: 5px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
+        .img-stempel { position: absolute; width: 85px; bottom: 15px; left: 50%; transform: translateX(-50%); opacity: 0.85; pointer-events: none; z-index: 10; }
         
-        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 10px; padding: 8px 12px; font-size: 11px; min-height: 80px; }
-        .copy-notes { font-size: 9px; margin-top: 8px; font-weight: bold; color: #555; }
+        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 8px; padding: 5px 10px; font-size: 10px; min-height: 60px; }
+        .copy-notes { font-size: 8px; margin-top: 5px; font-weight: bold; color: #555; }
         
-        .fixed-footer { position: absolute; bottom: 12mm; left: 12mm; right: 12mm; }
+        .fixed-footer { position: absolute; bottom: 8mm; left: 10mm; right: 10mm; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
-        .e-form-cap { font-size: 9px; color: #bbb; font-style: italic; text-align: left; border-left: 2px solid #eee; padding-left: 8px; line-height: 1.2; }
+        .e-form-cap { font-size: 8px; color: #bbb; font-style: italic; text-align: left; border-left: 2px solid #eee; padding-left: 6px; line-height: 1.1; }
         
         .company-info-footer { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
-        .footer-name { font-weight: bold; font-size: 15px; color: var(--kse-green-dark); margin-bottom: 0; }
-        .footer-sub { font-size: 9.5px; font-weight: bold; margin-bottom: 4px; letter-spacing: 0.1px; }
-        .contact-item { font-size: 9px; margin-bottom: 1px; }
+        .footer-name { font-weight: bold; font-size: 14px; color: var(--kse-green-dark); margin-bottom: 0; }
+        .footer-sub { font-size: 9px; font-weight: bold; margin-bottom: 2px; }
+        .contact-item { font-size: 8.5px; margin-bottom: 0px; }
 
         @media print { .no-print { display: none; } }
     </style>
 </head>
 <body onload="initApp()">
 
-<div class="container my-4 no-print">
-    <div class="card shadow-sm mb-4 border-success">
-        <div class="card-header bg-success text-white font-weight-bold">Panel Input Surat Jalan</div>
-        <div class="card-body">
+<div class="container my-3 no-print">
+    <div class="card shadow-sm border-success">
+        <div class="card-header bg-success text-white py-1"><strong>Panel Input Surat Jalan</strong></div>
+        <div class="card-body py-2">
             <div class="row g-2">
                 <div class="col-md-4"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm" id="in_pt" value="PT. KARYA DUTA SEJAHTERA"></div>
                 <div class="col-md-4"><label class="small fw-bold">CP / Phone</label><input type="text" class="form-control form-control-sm" id="in_cp" value="0812-xxxx-xxxx"></div>
                 <div class="col-md-4"><label class="small fw-bold">Lokasi Kirim</label><input type="text" class="form-control form-control-sm" id="in_lokasi" value="Pangkalan Bun"></div>
-                
                 <div class="col-md-2"><label class="small fw-bold">No. Urut SJ</label><input type="number" class="form-control form-control-sm" id="in_no_urut"></div>
                 <div class="col-md-3"><label class="small fw-bold">Nomor PO</label><input type="text" class="form-control form-control-sm" id="in_po" value="-"></div>
                 <div class="col-md-3"><label class="small fw-bold">Nomor SO / DO</label><input type="text" class="form-control form-control-sm" id="in_sodo" value="-"></div>
                 <div class="col-md-4"><label class="small fw-bold">Tanggal</label><input type="text" class="form-control form-control-sm" id="in_tgl"></div>
-
                 <div class="col-md-3"><label class="small fw-bold">Jenis BBM</label><input type="text" class="form-control form-control-sm" id="in_jns_bbm" value="BBM SOLAR B40"></div>
                 <div class="col-md-3"><label class="small fw-bold">No. Polisi</label><input type="text" class="form-control form-control-sm" id="in_nopol" value="KH 6562 GC"></div>
                 <div class="col-md-3"><label class="small fw-bold">Nomor Segel</label><input type="text" class="form-control form-control-sm" id="in_segel" value="A-88271"></div>
                 <div class="col-md-3"><label class="small fw-bold">Supply Point</label><input type="text" class="form-control form-control-sm" id="in_supply" value="DEPO SADP"></div>
-                
-                <div class="col-md-3"><label class="small fw-bold">Berat Jenis (BJ)</label><input type="text" class="form-control form-control-sm" id="in_bj" value="0,825"></div>
+                <div class="col-md-3"><label class="small fw-bold">Berat Jenis</label><input type="text" class="form-control form-control-sm" id="in_bj" value="0,825"></div>
                 <div class="col-md-3"><label class="small fw-bold">Tinggi Cairan</label><input type="text" class="form-control form-control-sm" id="in_tinggi" value="-"></div>
                 <div class="col-md-6"><label class="small fw-bold">Other Notes</label><input type="text" class="form-control form-control-sm" id="in_note" value="-"></div>
-
-                <div class="col-12 mt-2"><h6 class="border-bottom pb-1" style="color: #1a3c15;">Personil Tanda Tangan</h6></div>
                 <div class="col-md-3"><label class="small text-primary fw-bold">Penerima</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_penerima"></div>
                 <div class="col-md-3"><label class="small text-primary fw-bold">Sopir</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_sopir" value="WANRTO"></div>
                 <div class="col-md-3"><label class="small text-primary fw-bold">Helper</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_helper" value="-"></div>
                 <div class="col-md-3"><label class="small text-primary fw-bold">Menyerahkan</label><input type="text" class="form-control form-control-sm border-primary" id="in_nama_admin" value="Dept. Operasional"></div>
             </div>
-            <div class="mt-3 text-end">
-                <button class="btn btn-secondary btn-sm" onclick="updateData()">Preview</button>
-                <button class="btn btn-primary btn-sm" onclick="saveAndDownload()">Download PDF</button>
+            <div class="mt-2 text-end">
+                <button class="btn btn-primary btn-sm px-4" onclick="saveAndDownload()">Download PDF</button>
             </div>
         </div>
     </div>
@@ -103,19 +96,19 @@
         </div>
     </div>
 
-    <div class="row" style="font-size: 12px;">
+    <div class="row" style="font-size: 11px;">
         <div class="col-7">
-            <div style="margin-bottom: 5px;">Kepada yang kami hormati,</div>
-            <div style="margin-bottom: 10px;">
-                <strong id="p_pt" style="font-size: 16px; display: block; color: var(--kse-green-dark);">PT. KARYA DUTA SEJAHTERA</strong>
+            <div style="margin-bottom: 3px;">Kepada yang kami hormati,</div>
+            <div style="margin-bottom: 5px;">
+                <strong id="p_pt" style="font-size: 15px; display: block; color: var(--kse-green-dark);">PT. KARYA DUTA SEJAHTERA</strong>
             </div>
-            <div style="line-height: 1.6;">
+            <div style="line-height: 1.4;">
                 LOKASI PENGIRIMAN: <span id="p_lokasi" style="font-weight: bold;">-</span><br>
                 CONTACT PERSON: <span id="p_cp" style="font-weight: bold;">-</span>
             </div>
         </div>
         <div class="col-5">
-            <table class="w-100" style="font-size: 11px;">
+            <table class="w-100" style="font-size: 10.5px;">
                 <tr><td>TANGGAL</td><td>: <span id="p_tgl"></span></td></tr>
                 <tr><td>NOMOR SURAT</td><td>: <span id="p_nosj"></span></td></tr>
                 <tr><td>NOMOR PO</td><td>: <span id="p_po"></span></td></tr>
@@ -123,8 +116,8 @@
         </div>
     </div>
 
-    <div style="font-size: 11px; margin-top: 15px; margin-bottom: 5px;">
-        Dengan hormat, Bersama ini kami kirimkan BBM Industri, dengan rincian sebagai berikut:
+    <div style="font-size: 10.5px; margin-top: 10px; margin-bottom: 5px;">
+        Dengan hormat, Bersama ini kami kirimkan BBM Industri, sebagai berikut:
     </div>
 
     <table class="table-custom">
@@ -147,12 +140,11 @@
                 <td>SUPPLY POINT</td><td>: <span id="p_supply">-</span></td>
             </tr>
             <tr>
-                <td>KM AWAL</td><td>: -</td>
+                <td>KM AWAL / AKHIR</td><td>: - / -</td>
                 <td>BERAT JENIS</td><td>: <span id="p_bj">-</span></td>
             </tr>
             <tr>
-                <td>KM AKHIR</td><td>: -</td>
-                <td>TINGGI CAIRAN</td><td>: <span id="p_tinggi">-</span></td>
+                <td>TINGGI CAIRAN</td><td colspan="3">: <span id="p_tinggi">-</span></td>
             </tr>
         </tbody>
     </table>
@@ -190,8 +182,7 @@
     <div class="fixed-footer">
         <div class="footer-content">
             <div class="e-form-cap">
-                Surat jalan ini dibuat secara otomatis melalui<br>
-                <strong>Digital E-Form KSE System</strong>
+                Surat jalan ini dibuat secara otomatis melalui <strong>Digital E-Form KSE System</strong>
             </div>
             <div class="company-info-footer">
                 <div class="footer-name">PT. KHATULISTIWA SINAR ENERGI</div>
@@ -242,22 +233,12 @@
     function saveAndDownload() {
         updateData();
         const element = document.getElementById('surat-jalan-render');
-        
-        // SETTINGAN KHUSUS BIAR PAS A4 & TIDAK POTONG
         const opt = {
-            margin: [5, 5, 5, 5], // Margin 5mm di setiap sisi
+            margin: 0,
             filename: `SJ_KSE_${document.getElementById('p_nosj').innerText}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2, 
-                letterRendering: true,
-                useCORS: true 
-            },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
-                orientation: 'portrait' 
-            }
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
@@ -270,3 +251,4 @@
 </script>
 </body>
 </html>
+
