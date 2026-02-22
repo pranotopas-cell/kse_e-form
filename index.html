@@ -12,26 +12,49 @@
             background: white; position: relative; color: #000;
             display: flex; flex-direction: column;
         }
-        .header-clean { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .logo-main { height: 85px; width: auto; }
+        /* Header Sejajar */
+        .header-clean { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; /* Membuat logo dan teks sejajar tengah */
+            margin-bottom: 20px; 
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .logo-main { height: 60px; width: auto; } /* Ukuran logo disesuaikan */
         
         .title-block { text-align: right; }
-        .title-block h2 { font-weight: 900; font-size: 26px; margin: 0; }
+        .title-block h2 { font-weight: 900; font-size: 24px; margin: 0; color: #1a3c15; }
         .en-label { font-size: 9px; font-style: italic; color: #666; display: block; }
 
-        .table-custom { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .table-custom th { background-color: #1a3c15 !important; color: white !important; text-align: center; padding: 6px; font-size: 12px; border: 1px solid #000; }
         .table-custom td { border: 1px solid #000; padding: 5px 10px; font-size: 11px; vertical-align: top; }
 
-        .footer-sign { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .footer-sign { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .footer-sign th { background-color: #1a3c15 !important; color: white !important; font-size: 11px; padding: 5px; border: 1px solid #000; text-align: center; }
-        .footer-sign td { border: 1px solid #000; height: 85px; width: 25%; position: relative; vertical-align: bottom; padding: 5px; font-size: 10px; font-weight: bold; }
+        .footer-sign td { border: 1px solid #000; height: 70px; width: 25%; position: relative; vertical-align: bottom; padding: 5px; font-size: 10px; font-weight: bold; text-align: center; }
 
-        /* Footer Kanan Bawah */
+        /* Kotak Other Note */
+        .other-note-box {
+            width: 100%;
+            border: 1px solid #000;
+            border-top: none; /* Menyatu dengan kotak tanda tangan di atasnya */
+            padding: 5px 10px;
+            font-size: 11px;
+            min-height: 40px;
+        }
+
+        /* Garis sebelum footer */
+        .footer-separator {
+            margin-top: 20px;
+            border-bottom: 2px solid #1a3c15;
+            width: 100%;
+        }
+
         .company-info-footer { 
-            margin-top: auto; 
+            margin-top: 10px; 
             text-align: right; 
-            padding-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
@@ -57,7 +80,7 @@
                 <div class="col-md-3"><label class="small">No. Urut SJ</label><input type="number" class="form-control form-control-sm" id="in_no_urut"></div>
                 <div class="col-md-3"><label class="small">Nomor PO Customer</label><input type="text" class="form-control form-control-sm" id="in_po" value="-"></div>
                 <div class="col-md-3"><label class="small">Tanggal</label><input type="text" class="form-control form-control-sm" id="in_tgl"></div>
-                <div class="col-md-3"><label class="small">Nomor SO / DO</label><input type="text" class="form-control form-control-sm" id="in_sodo" value="-"></div>
+                <div class="col-md-3"><label class="small">Other Notes</label><input type="text" class="form-control form-control-sm" id="in_note" value="-"></div>
 
                 <div class="col-md-2"><label class="small">No. Polisi</label><input type="text" class="form-control form-control-sm" id="in_nopol" value="KH 6562 GC"></div>
                 <div class="col-md-2"><label class="small">Nama Sopir</label><input type="text" class="form-control form-control-sm" id="in_sopir" value="WANRTO"></div>
@@ -76,14 +99,14 @@
 
 <div id="surat-jalan-render">
     <div class="header-clean">
-        <img src="header1.png" class="headeri.png" alt="Logo KSE">
+        <img src="header1.png" class="logo-main" alt="Logo KSE">
         <div class="title-block">
             <h2>SURAT JALAN</h2>
-            <span class="en-label" style="font-size: 11px;">DELIVERY ORDER</span>
+            <span class="en-label">DELIVERY ORDER</span>
         </div>
     </div>
 
-    <div class="row" style="font-size: 12px; margin-top: 10px;">
+    <div class="row" style="font-size: 12px; margin-top: 5px;">
         <div class="col-7">
             Kepada yang kami hormati,<br>
             <strong id="p_pt" style="font-size: 14px;">PT. KARYA DUTA SEJAHTERA</strong><br>
@@ -99,12 +122,13 @@
         </div>
     </div>
 
+    <div style="font-size: 11px; margin-top: 15px; margin-bottom: 5px;">
+        Dengan hormat,<br>
+        Bersama ini kami kirimkan BBM Industri, dengan rincian sebagai berikut:
+    </div>
+
     <table class="table-custom">
         <thead>
-            <tr>
-            <td colspan="4" style="padding:10px; text-align:left;">
-            Dengan hormat,<br><br>
-            Bersaama ini saya kirimkan bbm industri ,dengan rician sebagai berikut :>
             <tr><th colspan="4">DESCRIPTION OF GOODS</th></tr>
         </thead>
         <tbody>
@@ -158,13 +182,20 @@
         </thead>
         <tbody>
             <tr>
-                <td>Nama:</td>
-                <td>Nama: <span id="f_sopir">-</span></td>
-                <td>Nama:</td>
+                <td>( ............................ )</td>
+                <td><span id="f_sopir">-</span></td>
+                <td>( ............................ )</td>
                 <td><strong>KSE OFFICE</strong></td>
             </tr>
         </tbody>
     </table>
+
+    <div class="other-note-box">
+        <strong>Other Notes:</strong><br>
+        <span id="p_note">-</span>
+    </div>
+
+    <div class="footer-separator"></div>
 
     <div class="company-info-footer">
         <div class="footer-name">PT. KHATULISTIWA SINAR ENERGI</div>
@@ -197,7 +228,6 @@
         document.getElementById('p_lokasi').innerText = document.getElementById('in_lokasi').value;
         document.getElementById('p_po').innerText = document.getElementById('in_po').value;
         document.getElementById('p_tgl').innerText = document.getElementById('in_tgl').value;
-        document.getElementById('p_sodo').innerText = document.getElementById('in_sodo').value;
         document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value;
         document.getElementById('p_sopir').innerText = document.getElementById('in_sopir').value;
         document.getElementById('f_sopir').innerText = document.getElementById('in_sopir').value;
@@ -205,6 +235,7 @@
         document.getElementById('p_supply').innerText = document.getElementById('in_supply').value;
         document.getElementById('p_kmaw').innerText = document.getElementById('in_kmaw').value;
         document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
+        document.getElementById('p_note').innerText = document.getElementById('in_note').value;
     }
 
     function saveAndDownload() {
@@ -227,6 +258,3 @@
 </script>
 </body>
 </html>
-
-
-
