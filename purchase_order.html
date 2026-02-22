@@ -10,35 +10,38 @@
         :root { --kse-dark: #0f2d0b; --kse-primary: #1a3c15; --kse-accent: #2ecc71; }
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; }
         
-        /* UI Layout */
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
-        /* Document Design */
         .document-canvas { 
             background: white; width: 210mm; min-height: 297mm; 
-            margin: 20px auto; padding: 15mm; position: relative;
+            margin: 20px auto; padding: 20mm; position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); 
         }
 
-        /* Header Match */
-        .header-section { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 20px; }
-        .logo-img { height: 60px; object-fit: contain; }
+        /* Header */
+        .header-section { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 35px; }
+        .logo-img { height: 75px; object-fit: contain; }
         .doc-identity { text-align: right; }
-        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: #000; }
+        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 24px; color: #000; letter-spacing: 1px; }
 
         /* Table Structure */
-        .table-po { width: 100%; border-collapse: collapse; margin: 15px 0; border: 1px solid #000; }
-        .table-po th { background-color: var(--kse-primary) !important; color: white !important; padding: 8px; border: 1px solid #000; text-align: center; font-size: 10px; }
-        .table-po td { border: 1px solid #000; padding: 8px; vertical-align: middle; font-size: 11px; }
+        .table-po { width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #000; }
+        .table-po th { background-color: var(--kse-primary) !important; color: white !important; padding: 10px 5px; border: 1px solid #000; text-align: center; font-size: 10px; }
+        .table-po td { border: 1px solid #000; padding: 10px 8px; vertical-align: middle; font-size: 11px; }
 
-        /* Footer Match */
-        .footer-kse { position: absolute; bottom: 10mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
+        /* Spacing & Typography */
+        .info-spacing { margin-bottom: 45px; } /* Jarak diperlebar agar proporsional */
+        .lang-en { font-style: italic; font-size: 9px; color: #666; display: block; margin-top: -2px; }
+
+        /* Footer */
+        .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 40mm); border-top: 1px solid #ccc; padding-top: 10px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
+        .footer-tagline { font-size: 10px; color: #444; display: block; letter-spacing: 0.5px; margin-top: 2px; }
 
         @media print {
             .control-nav, .input-sidebar { display: none !important; }
-            .document-canvas { margin: 0; box-shadow: none; width: 100%; border: none; }
+            .document-canvas { margin: 0; box-shadow: none; width: 100%; border: none; padding: 15mm; }
             .col-lg-9 { width: 100% !important; }
             body { background: white; }
         }
@@ -105,42 +108,49 @@
         </div>
 
         <div class="col-lg-9">
-            <div class="document-canvas" id="po-document">
+            <div class="document-canvas">
                 <div class="header-section">
-                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x60?text=KSE+LOGO'">
+                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x80?text=KSE+LOGO'">
                     <div class="doc-identity">
                         <h2>PURCHASE ORDER</h2>
-                        <p class="mb-0 small">ELECTRONIC DOCUMENT SYSTEM</p>
+                        <span class="lang-en text-uppercase">Purchase Requisition System</span>
                     </div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row info-spacing">
                     <div class="col-7">
-                        <p class="mb-1">Kepada yang kami hormati,</p>
-                        <h6 class="fw-bold mb-0 text-uppercase" id="out_cust">PT. KARYA MANDIRI UTAMA</h6>
-                        <p id="out_addr" class="mb-0">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
+                        <p class="mb-1">Kepada yang kami hormati, <br><span class="lang-en">To our Honorable Customer,</span></p>
+                        <h6 class="fw-bold mb-0 text-uppercase" id="out_cust" style="font-size: 14px; margin-top: 5px;">PT. KARYA MANDIRI UTAMA</h6>
+                        <p id="out_addr" class="mb-0 mt-1">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
                     </div>
                     <div class="col-5">
                         <table class="table table-bordered border-dark table-sm mb-0">
-                            <tr><td class="bg-light fw-bold" width="40%">TANGGAL</td><td id="out_tgl">22 FEBRUARI 2026</td></tr>
-                            <tr><td class="bg-light fw-bold">NOMOR PO</td><td id="out_no" class="fw-bold">001/KSE-PO/II/2026</td></tr>
+                            <tr>
+                                <td class="bg-light fw-bold" width="45%">TANGGAL <br><span class="lang-en">Date</span></td>
+                                <td id="out_tgl" class="align-middle">22 FEBRUARI 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light fw-bold">NOMOR PO <br><span class="lang-en">PO Number</span></td>
+                                <td id="out_no" class="fw-bold align-middle">001/KSE-PO/II/2026</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
 
-                <p>Dengan hormat, Bersama ini kami kirimkan purchase order dengan rincian sebagai berikut :</p>
+                <p class="mb-3">Dengan hormat, Bersama ini kami kirimkan purchase order dengan rincian sebagai berikut :<br>
+                <span class="lang-en">Sincerely, herewith we send the purchase order with the following details:</span></p>
 
                 <table class="table-po">
                     <thead>
                         <tr>
-                            <th width="30%">NAMA BARANG</th>
-                            <th>QUANTITY (Ltr)</th>
-                            <th>HARGA DASAR</th>
-                            <th>PPN 11%</th>
-                            <th id="th_pbbkb">PBBKB 7.5%</th>
-                            <th id="th_pph">PPH 0.3%</th>
-                            <th>PER LTR</th>
-                            <th width="20%">JUMLAH</th>
+                            <th width="30%">NAMA BARANG <br><span class="lang-en">Description of Goods</span></th>
+                            <th>QUANTITY (Ltr) <br><span class="lang-en">Volume</span></th>
+                            <th>HARGA DASAR <br><span class="lang-en">Basic Price</span></th>
+                            <th>PPN 11% <br><span class="lang-en">VAT</span></th>
+                            <th id="th_pbbkb_label">PBBKB 7.5% <br><span class="lang-en">Fuel Tax</span></th>
+                            <th id="th_pph_label">PPH 0.3% <br><span class="lang-en">Income Tax</span></th>
+                            <th>PER LTR <br><span class="lang-en">Unit Price</span></th>
+                            <th width="18%">JUMLAH <br><span class="lang-en">Amount (IDR)</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -155,24 +165,26 @@
                             <td class="text-end fw-bold">Rp <span id="out_total">2.327.835.000</span></td>
                         </tr>
                         <tr class="bg-light fw-bold">
-                            <td colspan="7" class="text-center">JUMLAH TOTAL</td>
+                            <td colspan="7" class="text-center">JUMLAH TOTAL / <span class="lang-en d-inline">GRAND TOTAL</span></td>
                             <td class="text-end">Rp <span id="out_grandtotal">2.327.835.000</span></td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div class="mt-2">
-                    <p class="mb-1">Sistem pembayaran : <b id="out_pay">Cash / CBD</b></p>
-                    <p>Mohon di bantu untuk prosesnya, demikian terima kasih.</p>
+                <div class="mt-4">
+                    <p class="mb-1">Sistem pembayaran : <b id="out_pay">Cash / CBD</b><br>
+                    <span class="lang-en">Payment terms</span></p>
+                    <p class="mt-2">Mohon di bantu untuk prosesnya, demikian terima kasih.<br>
+                    <span class="lang-en">Please kindly process this order, thank you.</span></p>
                 </div>
 
-                <div class="row mt-4">
+                <div class="row mt-5">
                     <div class="col-6">
-                        <p class="mb-0 italic">regard.</p>
-                        <p class="fw-bold mb-4">PT. Khatulistiwa Sinar Energi</p>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=VERIFIED_KSE_PO" class="my-2">
-                        <p class="fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
-                        <p class="small">Direktur Operasional</p>
+                        <p class="mb-0 italic">regard,</p>
+                        <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data=VERIFIED_KSE_PO" class="my-3 shadow-sm">
+                        <p class="fw-bold text-decoration-underline mb-0" style="font-size: 13px;">SUPRANOTO</p>
+                        <p class="small">Direktur Operasional / <span class="lang-en d-inline">Operational Director</span></p>
                     </div>
                 </div>
 
@@ -183,13 +195,16 @@
                             <div style="font-size: 9px; color: #666;">
                                 <b>Digital E-Form KSE System</b><br>
                                 Dokumen ini sah & divalidasi sistem.<br>
-                                Scan QR untuk verifikasi nomor PO.
+                                Scan QR untuk verifikasi data PO.
                             </div>
                         </div>
-                        <div class="text-end" style="font-size: 10px;">
-                            <b style="font-size: 12px;">PT. KHATULISTIWA SINAR ENERGI</b><br>
-                            Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah<br>
-                            pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0
+                        <div class="text-end">
+                            <b style="font-size: 13px; color: var(--kse-dark);">PT. KHATULISTIWA SINAR ENERGI</b>
+                            <span class="footer-tagline">Mitra Penyalur dan Transportir BBM Industri</span>
+                            <div style="font-size: 9px; color: #555; margin-top: 5px;">
+                                Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah<br>
+                                pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -205,18 +220,16 @@
         const pbbkbPct = parseFloat(document.getElementById('in_pbbkb_pct').value) || 0;
         const pphPct = parseFloat(document.getElementById('in_pph_pct').value) || 0;
 
-        // Rumus Pajak
         const ppn = hargaDasar * 0.11;
         const pbbkb = hargaDasar * (pbbkbPct / 100);
         const pph = hargaDasar * (pphPct / 100);
         const perLtr = hargaDasar + ppn + pbbkb + pph;
         const total = qty * perLtr;
 
-        // Update Label Tabel
-        document.getElementById('th_pbbkb').innerText = `PBBKB ${pbbkbPct}%`;
-        document.getElementById('th_pph').innerText = `PPH ${pphPct}%`;
+        // Update Header Tabel dengan Label English
+        document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Fuel Tax</span>`;
+        document.getElementById('th_pph_label').innerHTML = `PPH ${pphPct}% <br><span class="lang-en">Income Tax</span>`;
 
-        // Update Nilai Tabel
         document.getElementById('out_qty').innerText = qty.toLocaleString('id-ID');
         document.getElementById('out_harga').innerText = hargaDasar.toLocaleString('id-ID', {minimumFractionDigits: 1});
         document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID', {minimumFractionDigits: 1});
@@ -243,11 +256,9 @@
         const year = now.getFullYear();
         const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
         
-        // Default No PO
         const autoNo = `001/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
         document.getElementById('in_no').value = autoNo;
         
-        // Default Tanggal
         const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
         document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options).toUpperCase();
         
