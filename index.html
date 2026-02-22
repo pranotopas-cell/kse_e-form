@@ -8,11 +8,22 @@
     <style>
         :root { --kse-green-dark: #1a3c15; } 
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
+        
+        /* PENYESUAIAN AGAR PAS 1 HALAMAN */
         #surat-jalan-render {
-            width: 210mm; height: 297mm; padding: 15mm; margin: auto;
-            background: white; position: relative; color: #000;
-            display: flex; flex-direction: column; box-sizing: border-box;
+            width: 210mm;
+            height: 296mm; /* Sedikit kurang dari 297mm untuk toleransi margin */
+            padding: 15mm;
+            margin: auto;
+            background: white;
+            position: relative;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: hidden; /* Mencegah konten meluber ke halaman 2 */
         }
+        
         .header-clean { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .logo-main { height: 60px; width: auto; }
         .title-block { text-align: right; }
@@ -33,11 +44,10 @@
         .other-note-box { width: 100%; border: 1px solid #000; margin-top: 12px; padding: 10px 12px; font-size: 11px; min-height: 100px; }
         .copy-notes { font-size: 9px; margin-top: 8px; font-weight: bold; color: #555; }
         
-        .fixed-footer { position: absolute; bottom: 15mm; left: 15mm; right: 15mm; }
+        .fixed-footer { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
         .e-form-cap { font-size: 9px; color: #bbb; font-style: italic; text-align: left; border-left: 2px solid #eee; padding-left: 8px; line-height: 1.2; }
         
-        /* FOOTER INFO PT */
         .company-info-footer { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
         .footer-name { font-weight: bold; font-size: 15px; color: var(--kse-green-dark); margin-bottom: 0; }
         .footer-sub { font-size: 9.5px; font-weight: bold; margin-bottom: 4px; letter-spacing: 0.2px; }
@@ -227,9 +237,8 @@
     function updateData() {
         const now = new Date();
         const romawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
-        const urut = document.getElementById('in_no_urut').value.padStart(3, '0');
+        const urut = document.getElementById('in_no_urut').value.toString().padStart(3, '0');
         
-        // Mapping Panel ke Render
         document.getElementById('p_nosj').innerText = `${urut}/KSE-SJ/${romawi[now.getMonth()]}/${now.getFullYear()}`;
         document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
         document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
@@ -246,7 +255,6 @@
         document.getElementById('p_note').innerText = document.getElementById('in_note').value;
         document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_nama_sopir').value;
 
-        // Signatures
         document.getElementById('f_penerima').innerText = document.getElementById('in_nama_penerima').value || "....................";
         document.getElementById('f_sopir').innerText = document.getElementById('in_nama_sopir').value || "....................";
         document.getElementById('f_helper').innerText = document.getElementById('in_nama_helper').value || "....................";
@@ -257,13 +265,20 @@
         updateData();
         let nextNum = parseInt(document.getElementById('in_no_urut').value) + 1;
         localStorage.setItem('kse_last_num', nextNum);
+        
         const element = document.getElementById('surat-jalan-render');
-        html2pdf().set({
+        
+        // Setting khusus agar pas 1 halaman
+        const opt = {
             margin: 0,
             filename: `SJ_KSE_${document.getElementById('p_nosj').innerText}.pdf`,
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save().then(() => {
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
             alert("Berhasil! File didownload & Nomor SJ naik otomatis.");
             document.getElementById('in_no_urut').value = nextNum;
             updateData();
@@ -272,4 +287,3 @@
 </script>
 </body>
 </html>
-
