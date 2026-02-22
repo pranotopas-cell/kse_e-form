@@ -14,6 +14,9 @@
         .control-panel { background: #fff; border-bottom: 2px solid #ddd; padding: 15px; position: sticky; top: 0; z-index: 1000; }
         .btn-download { background-color: #0d6efd; color: white; border-radius: 5px; font-weight: bold; border: none; padding: 8px 20px; }
         
+        /* Layout Sidebar Input */
+        .sidebar-input { background: white; padding: 20px; border-right: 1px solid #ddd; height: calc(100vh - 75px); overflow-y: auto; }
+
         /* Document Canvas */
         .document-canvas { 
             background: white; width: 210mm; min-height: 297mm; 
@@ -21,10 +24,9 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1); 
         }
 
-        /* Header Style (Matching Surat Jalan) */
+        /* Header Style (Logo1.png) */
         .header-logo { display: flex; align-items: center; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 20px; }
-        .kse-logo-text { font-size: 35px; font-weight: 900; color: var(--kse-dark); margin-right: 15px; }
-        .kse-logo-text span { color: var(--kse-accent); }
+        .kse-logo-img { height: 60px; object-fit: contain; }
         .doc-title { text-align: right; flex-grow: 1; }
         .doc-title h2 { font-weight: 800; margin: 0; font-size: 24px; color: #000; }
         .doc-title p { margin: 0; font-size: 11px; letter-spacing: 1px; }
@@ -33,26 +35,28 @@
         .table-po { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #000; }
         .table-po th { background-color: var(--kse-primary) !important; color: white !important; padding: 8px; border: 1px solid #000; text-transform: uppercase; font-size: 11px; }
         .table-po td { border: 1px solid #000; padding: 8px; vertical-align: middle; }
-        .col-nama { width: 35%; } /* Perpanjang Nama Barang */
+        .col-nama { width: 40%; } 
         .col-jumlah { width: 20%; text-align: right; }
 
-        /* Footer Style (Matching Surat Jalan) */
+        /* Footer Style */
         .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
-        .footer-address { font-size: 10px; line-height: 1.4; color: #333; }
-        .qr-section { display: flex; align-items: center; gap: 10px; font-size: 9px; color: #666; width: 300px; }
+        .footer-address { font-size: 10px; line-height: 1.4; color: #333; text-align: right; }
+        .qr-section { display: flex; align-items: center; gap: 10px; font-size: 9px; color: #666; }
 
         @media print {
-            .control-panel, .sidebar { display: none !important; }
-            .document-canvas { margin: 0; box-shadow: none; width: 100%; }
+            .control-panel, .sidebar-input, .no-print { display: none !important; }
             body { background: white; }
+            .document-canvas { margin: 0; box-shadow: none; width: 100%; padding: 10mm; }
+            .main-row { display: block !important; }
+            .col-lg-9 { width: 100% !important; }
         }
     </style>
 </head>
 <body>
 
-<div class="control-panel shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
+<div class="control-panel shadow-sm no-print">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
         <div class="d-flex gap-2">
             <a href="index.html" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> BACK DASHBOARD</a>
             <button class="btn btn-dark btn-sm" onclick="window.print()">PREVIEW</button>
@@ -61,116 +65,181 @@
     </div>
 </div>
 
-<div class="document-canvas">
-    <div class="header-logo">
-        <div class="kse-logo-text">K<span>S</span>E</div>
-        <div class="doc-title">
-            <h2>PURCHASE ORDER</h2>
-            <p>ELECTRONIC DOCUMENT SYSTEM</p>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-7">
-            <p class="mb-1">Kepada yang kami hormati,</p>
-            <h6 class="fw-bold mb-0" id="disp_cust">PT. KARYA MANDIRI UTAMA</h6>
-            <p class="mb-0" id="disp_addr">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
-            <table class="mt-2" style="font-size: 11px;">
-                <tr><td>Hp / Contact</td><td class="px-2">:</td><td id="disp_phone">-</td></tr>
-            </table>
-        </div>
-        <div class="col-5">
-            <table class="table table-bordered border-dark table-sm" style="font-size: 12px;">
-                <tr><td class="bg-light w-40">TANGGAL</td><td id="disp_tgl">22 FEBRUARI 2026</td></tr>
-                <tr><td class="bg-light">NOMOR PO</td><td id="disp_no">001/KSE-PO/II/2026</td></tr>
-            </table>
-        </div>
-    </div>
-
-    <p>Dengan hormat, Bersama ini kami kirimkan purchase order dengan rincian sebagai berikut :</p>
-
-    <table class="table-po">
-        <thead>
-            <tr class="text-center">
-                <th class="col-nama">NAMA BARANG</th>
-                <th>QUANTITY</th>
-                <th>HARGA DASAR</th>
-                <th>PPN 11%</th>
-                <th>PER LTR</th>
-                <th class="col-jumlah">JUMLAH</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="fw-bold">BBM SOLAR INDUSTRI (B35)</td>
-                <td class="text-center">150.000 Liter</td>
-                <td class="text-center">13.063,1</td>
-                <td class="text-center">1.436,9</td>
-                <td class="text-center">14.500,0</td>
-                <td class="text-end fw-bold">Rp 2.175.000.000</td>
-            </tr>
-            <tr style="height: 40px;">
-                <td colspan="5" class="text-center fw-bold bg-light">JUMLAH TOTAL</td>
-                <td class="text-end fw-bold">Rp 2.175.000.000</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="mt-3">
-        <p class="mb-1">Sistem Pembayaran : <b>Cash / Transfer</b></p>
-        <p>Mohon dibantu untuk prosesnya, demikian terima kasih.</p>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col-6">
-            <p class="mb-0">Regard,</p>
-            <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
-            <div class="mt-4">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=SUPRANOTO_PO_VALID" width="70">
-                <p class="mt-2 fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
-                <p class="small">Direktur Operasional</p>
+<div class="container-fluid">
+    <div class="row main-row">
+        <div class="col-lg-3 sidebar-input no-print">
+            <h6 class="fw-bold mb-3"><i class="bi bi-pencil-square"></i> FORM INPUT PO</h6>
+            
+            <div class="mb-2">
+                <label class="small fw-bold">Nomor PO</label>
+                <input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()">
+            </div>
+            <div class="mb-2">
+                <label class="small fw-bold">Tanggal</label>
+                <input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()">
+            </div>
+            <hr>
+            <div class="mb-2">
+                <label class="small fw-bold">Customer / Kepada</label>
+                <input type="text" id="in_cust" class="form-control form-control-sm" placeholder="Nama Perusahaan" oninput="updateView()">
+            </div>
+            <div class="mb-2">
+                <label class="small fw-bold">Alamat Customer</label>
+                <textarea id="in_addr" class="form-control form-control-sm" rows="2" oninput="updateView()"></textarea>
+            </div>
+            <hr>
+            <div class="mb-2">
+                <label class="small fw-bold">Nama Barang</label>
+                <input type="text" id="in_barang" class="form-control form-control-sm" value="BBM SOLAR INDUSTRI (B35)" oninput="updateView()">
+            </div>
+            <div class="mb-2">
+                <label class="small fw-bold">Quantity (Liter)</label>
+                <input type="number" id="in_qty" class="form-control form-control-sm" value="150000" oninput="calculate()">
+            </div>
+            <div class="mb-2">
+                <label class="small fw-bold">Harga Dasar</label>
+                <input type="number" id="in_harga" class="form-control form-control-sm" value="13063.1" oninput="calculate()">
+            </div>
+            <div class="alert alert-info small mt-3">
+                <i class="bi bi-info-circle"></i> PPN 11% akan dihitung otomatis oleh sistem.
             </div>
         </div>
-    </div>
 
-    <div class="footer-kse">
-        <div class="footer-content">
-            <div class="qr-section">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_SYSTEM_VERIFIED" width="45">
-                <div>
-                    <b>Digital E-Form KSE System</b><br>
-                    Dokumen ini sah & divalidasi sistem.<br>
-                    Scan QR untuk verifikasi nomor PO.
+        <div class="col-lg-9">
+            <div class="document-canvas" id="printable">
+                <div class="header-logo">
+                    <img src="logo1.png" alt="KSE LOGO" class="kse-logo-img">
+                    <div class="doc-title">
+                        <h2>PURCHASE ORDER</h2>
+                        <p>ELECTRONIC DOCUMENT SYSTEM</p>
+                    </div>
                 </div>
-            </div>
-            <div class="footer-address text-end">
-                <b style="font-size: 12px;">PT. KHATULISTIWA SINAR ENERGI</b><br>
-                <i>Mitra Penyalur dan Transportir BBM Industri</i><br>
-                Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah<br>
-                pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0
+
+                <div class="row mb-4">
+                    <div class="col-7">
+                        <p class="mb-1">Kepada yang kami hormati,</p>
+                        <h6 class="fw-bold mb-0" id="disp_cust">PT. KARYA MANDIRI UTAMA</h6>
+                        <p class="mb-0" id="disp_addr">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
+                        <table class="mt-2" style="font-size: 11px;">
+                            <tr><td>Hp / Contact</td><td class="px-2">:</td><td id="disp_phone">-</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-5 text-end">
+                        <table class="table table-bordered border-dark table-sm ms-auto" style="font-size: 12px; width: 250px;">
+                            <tr><td class="bg-light text-start" width="40%">TANGGAL</td><td id="disp_tgl" class="text-start">22 FEBRUARI 2026</td></tr>
+                            <tr><td class="bg-light text-start">NOMOR PO</td><td id="disp_no" class="text-start">001/KSE-PO/II/2026</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <p>Dengan hormat, Bersama ini kami kirimkan purchase order dengan rincian sebagai berikut :</p>
+
+                <table class="table-po">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="col-nama">NAMA BARANG</th>
+                            <th>QUANTITY</th>
+                            <th>HARGA DASAR</th>
+                            <th>PPN 11%</th>
+                            <th>PER LTR</th>
+                            <th class="col-jumlah">JUMLAH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold" id="disp_barang">BBM SOLAR INDUSTRI (B35)</td>
+                            <td class="text-center" id="disp_qty">150.000 Liter</td>
+                            <td class="text-center" id="disp_harga">13.063,1</td>
+                            <td class="text-center" id="disp_ppn">1.436,9</td>
+                            <td class="text-center" id="disp_per_ltr">14.500,0</td>
+                            <td class="text-end fw-bold">Rp <span id="disp_jumlah">2.175.000.000</span></td>
+                        </tr>
+                        <tr style="height: 40px;">
+                            <td colspan="5" class="text-center fw-bold bg-light">JUMLAH TOTAL</td>
+                            <td class="text-end fw-bold">Rp <span id="disp_total">2.175.000.000</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mt-3">
+                    <p class="mb-1">Sistem Pembayaran : <b>Cash / Transfer</b></p>
+                    <p>Mohon dibantu untuk prosesnya, demikian terima kasih.</p>
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-6">
+                        <p class="mb-0">Regard,</p>
+                        <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
+                        <div class="mt-4">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=SUPRANOTO_PO_VALID" width="70">
+                            <p class="mt-2 fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
+                            <p class="small">Direktur Operasional</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-kse">
+                    <div class="footer-content">
+                        <div class="qr-section">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_SYSTEM_VERIFIED" width="45">
+                            <div>
+                                <b>Digital E-Form KSE System</b><br>
+                                Dokumen ini sah & divalidasi sistem.<br>
+                                Scan QR untuk verifikasi nomor PO.
+                            </div>
+                        </div>
+                        <div class="footer-address">
+                            <b style="font-size: 12px;">PT. KHATULISTIWA SINAR ENERGI</b><br>
+                            <i>Mitra Penyalur dan Transportir BBM Industri</i><br>
+                            Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah<br>
+                            pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Sistem Penomoran Otomatis (Mengikuti format Surat Jalan Anda)
-    function generatePONumber() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-        const month = monthRomawi[now.getMonth()];
-        const randomNum = Math.floor(Math.random() * 900) + 100; // Contoh random 3 digit
-        
-        const noPO = `${randomNum}/KSE-PO/${month}/${year}`;
-        document.getElementById('disp_no').innerText = noPO;
-        
-        // Set Tanggal Otomatis
-        const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
-        document.getElementById('disp_tgl').innerText = now.toLocaleDateString('id-ID', options).toUpperCase();
+    function updateView() {
+        document.getElementById('disp_no').innerText = document.getElementById('in_no').value;
+        document.getElementById('disp_tgl').innerText = document.getElementById('in_tgl').value.toUpperCase();
+        document.getElementById('disp_cust').innerText = document.getElementById('in_cust').value.toUpperCase();
+        document.getElementById('disp_addr').innerText = document.getElementById('in_addr').value.toUpperCase();
+        document.getElementById('disp_barang').innerText = document.getElementById('in_barang').value.toUpperCase();
     }
 
-    window.onload = generatePONumber;
+    function calculate() {
+        const qty = parseFloat(document.getElementById('in_qty').value) || 0;
+        const hargaDasar = parseFloat(document.getElementById('in_harga').value) || 0;
+        
+        const ppn = hargaDasar * 0.11;
+        const perLtr = hargaDasar + ppn;
+        const total = qty * perLtr;
+
+        document.getElementById('disp_qty').innerText = qty.toLocaleString('id-ID') + " Liter";
+        document.getElementById('disp_harga').innerText = hargaDasar.toLocaleString('id-ID', {minimumFractionDigits: 1});
+        document.getElementById('disp_ppn').innerText = ppn.toLocaleString('id-ID', {minimumFractionDigits: 1});
+        document.getElementById('disp_per_ltr').innerText = perLtr.toLocaleString('id-ID', {minimumFractionDigits: 1});
+        document.getElementById('disp_jumlah').innerText = total.toLocaleString('id-ID');
+        document.getElementById('disp_total').innerText = total.toLocaleString('id-ID');
+        
+        updateView();
+    }
+
+    // Default Values
+    window.onload = function() {
+        const now = new Date();
+        const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
+        
+        document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options);
+        document.getElementById('in_no').value = "001/KSE-PO/II/2026";
+        document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
+        document.getElementById('in_addr').value = "JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL";
+        
+        calculate();
+    }
 </script>
 
 </body>
