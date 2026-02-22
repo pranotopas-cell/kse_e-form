@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE System - Purchase Order Generator</title>
+    <title>KSE - Purchase Order</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -15,7 +15,7 @@
         
         .document-canvas { 
             background: white; width: 210mm; min-height: 297mm; 
-            margin: 20px auto; padding: 20mm; position: relative;
+            margin: 20px auto; padding: 10mm; position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); 
         }
 
@@ -113,13 +113,13 @@
                     <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x80?text=KSE+LOGO'">
                     <div class="doc-identity">
                         <h2>PURCHASE ORDER</h2>
-                        <span class="lang-en text-uppercase">Purchase Requisition System</span>
+                        <span class="lang-en text-uppercase">Electronic Purchase Order System</span>
                     </div>
                 </div>
 
                 <div class="row info-spacing">
                     <div class="col-7">
-                        <p class="mb-1">Kepada yang kami hormati, <br><span class="lang-en">To our Honorable Customer,</span></p>
+                        <p class="mb-1">Kepada yang kami hormati, <br>
                         <h6 class="fw-bold mb-0 text-uppercase" id="out_cust" style="font-size: 14px; margin-top: 5px;">PT. KARYA MANDIRI UTAMA</h6>
                         <p id="out_addr" class="mb-0 mt-1">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
                     </div>
@@ -184,7 +184,7 @@
                         <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data=VERIFIED_KSE_PO" class="my-3 shadow-sm">
                         <p class="fw-bold text-decoration-underline mb-0" style="font-size: 13px;">SUPRANOTO</p>
-                        <p class="small">Direktur Operasional / <span class="lang-en d-inline">Operational Director</span></p>
+                        <p class="small">Direktur Operasional</span></p>
                     </div>
                 </div>
 
@@ -270,3 +270,4 @@
 
 </body>
 </html>
+
