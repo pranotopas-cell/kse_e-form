@@ -20,8 +20,8 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
         }
 
-        /* Header */
-        .header-section { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 35px; }
+        /* Header Update: Removed Border */
+        .header-section { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 10px; margin-bottom: 35px; }
         .logo-img { height: 45px; width: auto; object-fit: contain; }
         .doc-identity { text-align: right; line-height: 1; }
         .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: #000; letter-spacing: 1px; }
@@ -32,13 +32,16 @@
         .table-po td { border: 1px solid #000; padding: 10px 8px; vertical-align: middle; font-size: 11px; }
 
         /* Spacing & Typography */
-        .info-spacing { margin-bottom: 45px; } 
+        .info-spacing { margin-bottom: 60px; } /* Increased spacing */
         .lang-en { font-style: italic; font-size: 9px; color: #666; display: block; margin-top: -2px; }
 
         /* Footer */
         .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-tagline { font-size: 10px; color: #444; display: block; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* Table No-Border for Date/No PO */
+        .table-clean td { border: none !important; padding: 2px 0; }
 
         @media print {
             @page { size: A4; margin: 0; }
@@ -73,44 +76,44 @@
             <div class="row g-2">
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Nomor PO</label>
-                    <input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()">
+                    <input type="text" id="in_no" class="form-control form-control-sm" oninput="saveAndUpdate()">
                 </div>
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Tanggal</label>
-                    <input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()">
+                    <input type="text" id="in_tgl" class="form-control form-control-sm" oninput="saveAndUpdate()">
                 </div>
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Customer</label>
-                    <input type="text" id="in_cust" class="form-control form-control-sm" oninput="updateView()">
+                    <input type="text" id="in_cust" class="form-control form-control-sm" oninput="saveAndUpdate()">
                 </div>
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Alamat</label>
-                    <textarea id="in_addr" class="form-control form-control-sm" rows="2" oninput="updateView()"></textarea>
+                    <textarea id="in_addr" class="form-control form-control-sm" rows="2" oninput="saveAndUpdate()"></textarea>
                 </div>
                 <hr>
                 <div class="col-12 mb-2">
                     <label class="fw-bold">Nama Barang</label>
-                    <input type="text" id="in_barang" class="form-control form-control-sm" oninput="updateView()">
+                    <input type="text" id="in_barang" class="form-control form-control-sm" oninput="saveAndUpdate()">
                 </div>
                 <div class="col-6 mb-2">
                     <label class="fw-bold">Quantity (Ltr)</label>
-                    <input type="number" id="in_qty" class="form-control form-control-sm" value="150000" oninput="calculate()">
+                    <input type="number" id="in_qty" class="form-control form-control-sm" oninput="saveAndCalculate()">
                 </div>
                 <div class="col-6 mb-2">
                     <label class="fw-bold">Harga Dasar</label>
-                    <input type="number" id="in_harga" class="form-control form-control-sm" value="13063.1" oninput="calculate()">
+                    <input type="number" id="in_harga" class="form-control form-control-sm" oninput="saveAndCalculate()">
                 </div>
                 <div class="col-6 mb-2">
                     <label class="fw-bold">PBBKB (%)</label>
-                    <input type="number" id="in_pbbkb_pct" class="form-control form-control-sm" value="7.5" step="0.1" oninput="calculate()">
+                    <input type="number" id="in_pbbkb_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
                 </div>
                 <div class="col-6 mb-2">
                     <label class="fw-bold">PPh (%)</label>
-                    <input type="number" id="in_pph_pct" class="form-control form-control-sm" value="0.3" step="0.1" oninput="calculate()">
+                    <input type="number" id="in_pph_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
                 </div>
                 <div class="col-12 mb-3">
                     <label class="fw-bold">Sistem Pembayaran</label>
-                    <input type="text" id="in_pay" class="form-control form-control-sm" value="Cash / CBD" oninput="updateView()">
+                    <input type="text" id="in_pay" class="form-control form-control-sm" oninput="saveAndUpdate()">
                 </div>
             </div>
         </div>
@@ -128,25 +131,30 @@
                 <div class="row info-spacing">
                     <div class="col-7">
                         <p class="mb-1">Kepada yang kami hormati, <br>
-                        <h6 class="fw-bold mb-0 text-uppercase" id="out_cust" style="font-size: 14px; margin-top: 5px;">PT. KARYA MANDIRI UTAMA</h6>
-                        <p id="out_addr" class="mb-0 mt-1">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
+                        <h6 class="fw-bold mb-0 text-uppercase" id="out_cust" style="font-size: 14px; margin-top: 5px;"></h6>
+                        <p id="out_addr" class="mb-0 mt-1"></p>
                     </div>
                     <div class="col-5">
-                        <table class="table table-bordered border-dark table-sm mb-0">
+                        <table class="table table-sm table-clean mb-0">
                             <tr>
-                                <td class="bg-light fw-bold" width="45%">TANGGAL <br><span class="lang-en">Date</span></td>
-                                <td id="out_tgl" class="align-middle text-center"></td>
+                                <td width="40%">TANGGAL / <span class="lang-en d-inline">Date</span></td>
+                                <td width="5%">:</td>
+                                <td id="out_tgl"></td>
                             </tr>
                             <tr>
-                                <td class="bg-light fw-bold">NOMOR PO <br><span class="lang-en">PO Number</span></td>
-                                <td id="out_no" class="fw-bold align-middle text-center"></td>
+                                <td class="fw-bold">NOMOR PO / <span class="lang-en d-inline">PO Number</span></td>
+                                <td>:</td>
+                                <td id="out_no" class="fw-bold"></td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <p class="mb-3">Dengan hormat, Bersama ini kami kirimkan purchase order dengan rincian sebagai berikut :<br>
-                <span class="lang-en">Sincerely, herewith we send the purchase order with the following details:</span></p>
+                <div class="mt-4">
+                    <p class="mb-0 fw-bold">Dengan hormat,</p>
+                    <p class="mb-3">Bersama ini kami kirimkan purchase order dengan rincian sebagai berikut :<br>
+                    <span class="lang-en">Sincerely, herewith we send the purchase order with the following details:</span></p>
+                </div>
 
                 <table class="table-po">
                     <thead>
@@ -222,17 +230,46 @@
 </div>
 
 <script>
+    // Storage Keys
+    const STORAGE_KEY = 'KSE_PO_LAST_DATA';
+
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
         const noPo = document.getElementById('in_no').value.replace(/\//g, '-');
         const opt = {
             margin:       0,
-            filename:     `KSE_PO_${noPo}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
+            filename:      `KSE_PO_${noPo}.pdf`,
+            image:         { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF:         { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save();
+    }
+
+    function saveToLocal() {
+        const data = {
+            no: document.getElementById('in_no').value,
+            tgl: document.getElementById('in_tgl').value,
+            cust: document.getElementById('in_cust').value,
+            addr: document.getElementById('in_addr').value,
+            barang: document.getElementById('in_barang').value,
+            qty: document.getElementById('in_qty').value,
+            harga: document.getElementById('in_harga').value,
+            pbbkb_pct: document.getElementById('in_pbbkb_pct').value,
+            pph_pct: document.getElementById('in_pph_pct').value,
+            pay: document.getElementById('in_pay').value,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function saveAndCalculate() {
+        calculate();
+        saveToLocal();
+    }
+
+    function saveAndUpdate() {
+        updateView();
+        saveToLocal();
     }
 
     function calculate() {
@@ -241,16 +278,13 @@
         const pbbkbPct = parseFloat(document.getElementById('in_pbbkb_pct').value) || 0;
         const pphPct = parseFloat(document.getElementById('in_pph_pct').value) || 0;
 
-        // Hitungan per komponen dengan pembulatan 1 desimal agar sinkron dengan tampilan
         const ppn = Math.round((hargaDasar * 0.11) * 10) / 10;
         const pbbkb = Math.round((hargaDasar * (pbbkbPct / 100)) * 10) / 10;
         const pph = Math.round((hargaDasar * (pphPct / 100)) * 10) / 10;
         
-        // Harga per liter adalah hasil penjumlahan komponen yang sudah dibulatkan
         const perLtr = hargaDasar + ppn + pbbkb + pph;
         const total = qty * perLtr;
 
-        // Format tampilan ke tabel
         const localeOpts = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
         
         document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Fuel Tax</span>`;
@@ -263,7 +297,6 @@
         document.getElementById('out_pph').innerText = pph.toLocaleString('id-ID', localeOpts);
         document.getElementById('out_perltr').innerText = perLtr.toLocaleString('id-ID', localeOpts);
         
-        // Total Akhir (biasanya tanpa desimal untuk IDR)
         document.getElementById('out_total').innerText = Math.round(total).toLocaleString('id-ID');
         document.getElementById('out_grandtotal').innerText = Math.round(total).toLocaleString('id-ID');
         
@@ -280,17 +313,39 @@
     }
 
     function initSystem() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+        const savedData = localStorage.getItem(STORAGE_KEY);
         
-        document.getElementById('in_no').value = `001/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
-        const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
-        document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options).toUpperCase();
-        
-        document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
-        document.getElementById('in_addr').value = "JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL";
-        document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI (B35)";
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            document.getElementById('in_no').value = data.no;
+            document.getElementById('in_tgl').value = data.tgl;
+            document.getElementById('in_cust').value = data.cust;
+            document.getElementById('in_addr').value = data.addr;
+            document.getElementById('in_barang').value = data.barang;
+            document.getElementById('in_qty').value = data.qty;
+            document.getElementById('in_harga').value = data.harga;
+            document.getElementById('in_pbbkb_pct').value = data.pbbkb_pct;
+            document.getElementById('in_pph_pct').value = data.pph_pct;
+            document.getElementById('in_pay').value = data.pay;
+        } else {
+            // Default Values if no storage
+            const now = new Date();
+            const year = now.getFullYear();
+            const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+            
+            document.getElementById('in_no').value = `001/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
+            const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
+            document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options).toUpperCase();
+            
+            document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
+            document.getElementById('in_addr').value = "JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL";
+            document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI (B35)";
+            document.getElementById('in_qty').value = 150000;
+            document.getElementById('in_harga').value = 13063.1;
+            document.getElementById('in_pbbkb_pct').value = 7.5;
+            document.getElementById('in_pph_pct').value = 0.3;
+            document.getElementById('in_pay').value = "Cash / CBD";
+        }
         
         calculate();
     }
