@@ -2,27 +2,22 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Surat Jalan KSE - Gaspol Version</title>
+    <title>Surat Jalan KSE - Pro Layout</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
         #surat-jalan-render {
-            width: 210mm; min-height: 297mm; padding: 15mm; margin: auto;
+            width: 210mm; height: 297mm; padding: 15mm; margin: auto;
             background: white; position: relative; color: #000;
             display: flex; flex-direction: column;
+            box-sizing: border-box;
         }
-        /* Header Sejajar */
         .header-clean { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; /* Membuat logo dan teks sejajar tengah */
-            margin-bottom: 20px; 
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;
         }
-        .logo-main { height: 60px; width: auto; } /* Ukuran logo disesuaikan */
-        
+        .logo-main { height: 60px; width: auto; }
         .title-block { text-align: right; }
         .title-block h2 { font-weight: 900; font-size: 24px; margin: 0; color: #1a3c15; }
         .en-label { font-size: 9px; font-style: italic; color: #666; display: block; }
@@ -31,34 +26,30 @@
         .table-custom th { background-color: #1a3c15 !important; color: white !important; text-align: center; padding: 6px; font-size: 12px; border: 1px solid #000; }
         .table-custom td { border: 1px solid #000; padding: 5px 10px; font-size: 11px; vertical-align: top; }
 
-        .footer-sign { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        /* Kotak Tanda Tangan Lebih Tinggi */
+        .footer-sign { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .footer-sign th { background-color: #1a3c15 !important; color: white !important; font-size: 11px; padding: 5px; border: 1px solid #000; text-align: center; }
-        .footer-sign td { border: 1px solid #000; height: 70px; width: 25%; position: relative; vertical-align: bottom; padding: 5px; font-size: 10px; font-weight: bold; text-align: center; }
+        .footer-sign td { border: 1px solid #000; height: 100px; width: 25%; vertical-align: bottom; padding: 10px; font-size: 10px; font-weight: bold; text-align: center; }
 
-        /* Kotak Other Note */
+        /* Kotak Other Note Terpisah */
         .other-note-box {
             width: 100%;
             border: 1px solid #000;
-            border-top: none; /* Menyatu dengan kotak tanda tangan di atasnya */
-            padding: 5px 10px;
+            margin-top: 15px; /* Memberi jarak/terpisah */
+            padding: 8px 12px;
             font-size: 11px;
-            min-height: 40px;
+            min-height: 60px;
         }
 
-        /* Garis sebelum footer */
-        .footer-separator {
-            margin-top: 20px;
-            border-bottom: 2px solid #1a3c15;
-            width: 100%;
+        /* Footer di Dasar Kertas */
+        .fixed-footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 15mm;
+            right: 15mm;
         }
-
-        .company-info-footer { 
-            margin-top: 10px; 
-            text-align: right; 
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
+        .footer-separator { border-bottom: 2px solid #1a3c15; width: 100%; margin-bottom: 10px; }
+        .company-info-footer { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
         .footer-name { font-weight: bold; font-size: 14px; color: #1a3c15; margin-bottom: 2px; }
         .footer-sub { font-weight: bold; font-size: 10px; margin-bottom: 5px; }
         .contact-item { font-size: 9px; margin-bottom: 2px; }
@@ -69,8 +60,8 @@
 <body onload="initApp()">
 
 <div class="container my-4 no-print">
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-success text-white">Panel Input Surat Jalan</div>
+    <div class="card shadow-sm mb-4 border-success">
+        <div class="card-header bg-success text-white font-weight-bold">Panel Input Surat Jalan</div>
         <div class="card-body">
             <div class="row g-2">
                 <div class="col-md-4"><label class="small">Nama PT Penerima</label><input type="text" class="form-control form-control-sm" id="in_pt" value="PT. KARYA DUTA SEJAHTERA"></div>
@@ -90,8 +81,8 @@
                 <div class="col-md-2"><label class="small">Berat Jenis</label><input type="text" class="form-control form-control-sm" id="in_bj" value="0,825"></div>
             </div>
             <div class="mt-3 text-end">
-                <button class="btn btn-secondary btn-sm" onclick="updateData()">Update Preview</button>
-                <button class="btn btn-primary btn-sm" onclick="saveAndDownload()">Download PDF & Lanjut Nomor</button>
+                <button class="btn btn-secondary btn-sm" onclick="updateData()">Preview</button>
+                <button class="btn btn-primary btn-sm" onclick="saveAndDownload()">Download & Lanjut Nomor</button>
             </div>
         </div>
     </div>
@@ -106,10 +97,10 @@
         </div>
     </div>
 
-    <div class="row" style="font-size: 12px; margin-top: 5px;">
+    <div class="row" style="font-size: 12px;">
         <div class="col-7">
             Kepada yang kami hormati,<br>
-            <strong id="p_pt" style="font-size: 14px;">PT. KARYA DUTA SEJAHTERA</strong><br>
+            <strong id="p_pt" style="font-size: 14px;">-</strong><br>
             CONTACT PERSON: <span id="p_cp">-</span><br>
             LOKASI PENGIRIMAN: <span id="p_lokasi">-</span>
         </div>
@@ -142,7 +133,7 @@
                 <td>NAMA SOPIR<br><span class="en-label">Driver Name</span></td>
                 <td>: <span id="p_sopir">-</span></td>
                 <td>NOMOR SO / DO<br><span class="en-label">Order Number</span></td>
-                <td>: <span id="p_sodo">-</span></td>
+                <td>: -</td>
             </tr>
             <tr>
                 <td>TRANSPORTIR<br><span class="en-label">Transporter</span></td>
@@ -195,13 +186,14 @@
         <span id="p_note">-</span>
     </div>
 
-    <div class="footer-separator"></div>
-
-    <div class="company-info-footer">
-        <div class="footer-name">PT. KHATULISTIWA SINAR ENERGI</div>
-        <div class="footer-sub">Mitra Penyalur dan Transportir BBM Industri</div>
-        <div class="contact-item">Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah</div>
-        <div class="contact-item">pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0</div>
+    <div class="fixed-footer">
+        <div class="footer-separator"></div>
+        <div class="company-info-footer">
+            <div class="footer-name">PT. KHATULISTIWA SINAR ENERGI</div>
+            <div class="footer-sub">Mitra Penyalur dan Transportir BBM Industri</div>
+            <div class="contact-item">Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah</div>
+            <div class="contact-item">pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0</div>
+        </div>
     </div>
 </div>
 
@@ -209,11 +201,9 @@
     function initApp() {
         let lastNum = localStorage.getItem('kse_last_num') || 1;
         document.getElementById('in_no_urut').value = lastNum;
-
         const now = new Date();
         const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
         document.getElementById('in_tgl').value = `${now.getDate().toString().padStart(2,'0')} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
-        
         updateData();
     }
 
@@ -221,7 +211,6 @@
         const now = new Date();
         const romawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
         const urut = document.getElementById('in_no_urut').value.padStart(3, '0');
-        
         document.getElementById('p_nosj').innerText = `${urut}/KSE-SJ/${romawi[now.getMonth()]}/${now.getFullYear()}`;
         document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
         document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
@@ -242,7 +231,6 @@
         updateData();
         let nextNum = parseInt(document.getElementById('in_no_urut').value) + 1;
         localStorage.setItem('kse_last_num', nextNum);
-
         const element = document.getElementById('surat-jalan-render');
         html2pdf().set({
             margin: 0,
@@ -250,7 +238,7 @@
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save().then(() => {
-            alert("Selesai! Nomor urut berikutnya: " + nextNum);
+            alert("Berhasil! Nomor urut otomatis naik.");
             document.getElementById('in_no_urut').value = nextNum;
             updateData();
         });
