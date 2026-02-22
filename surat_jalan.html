@@ -10,7 +10,6 @@
         :root { --kse-green-dark: #1a3c15; } 
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
         
-        /* PENGATURAN HALAMAN PAS A4 */
         #surat-jalan-render {
             width: 210mm;
             height: 297mm;
@@ -29,7 +28,7 @@
         .logo-main { height: 60px; width: auto; }
         .title-block { text-align: right; }
         .title-block h2 { font-weight: 900; font-size: 24px; margin: 0; color: var(--kse-green-dark); }
-        .en-label { font-size: 9px; font-style: italic; color: #666; display: block; }
+        .en-label { font-size: 9px; font-style: italic; color: #666; display: block; line-height: 1; }
         
         .table-custom { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 6px; font-size: 12px; border: 1px solid #000; }
@@ -53,6 +52,7 @@
         
         .company-info-footer { text-align: right; }
         .footer-name { font-weight: bold; font-size: 14px; color: var(--kse-green-dark); margin: 0; }
+        .footer-tagline { font-size: 9.5px; font-weight: 600; color: #444; margin: 0; font-style: italic; }
         .contact-item { font-size: 9px; margin: 0; }
 
         @media print { .no-print { display: none; } }
@@ -91,8 +91,8 @@
                 <div class="col-md-3"><label class="small text-success fw-bold">Menyerahkan</label><input type="text" class="form-control form-control-sm border-success" id="in_nama_admin" value="Dept. Operasional" oninput="updateData()"></div>
             </div>
             <div class="mt-3 text-center">
-                <button class="btn btn-secondary px-4" onclick="location.href='index.html'">Dashboard</button>
-                <button class="btn btn-primary px-4 fw-bold" onclick="saveAndDownload()">Download & Simpan (A4)</button>
+                <button class="btn btn-secondary px-4 fw-bold" onclick="updateData()">PREVIEW</button>
+                <button class="btn btn-primary px-4 fw-bold" onclick="saveAndDownload()">DOWNLOAD (A4)</button>
             </div>
         </div>
     </div>
@@ -118,9 +118,9 @@
         </div>
         <div class="col-5">
             <table class="w-100">
-                <tr><td width="45%">TANGGAL</td><td>: <span id="p_tgl" class="fw-bold"></span></td></tr>
-                <tr><td>NO. SURAT</td><td>: <span id="p_nosj" class="fw-bold"></span></td></tr>
-                <tr><td>NOMOR PO</td><td>: <span id="p_po" class="fw-bold"></span></td></tr>
+                <tr><td width="45%">TANGGAL<br><span class="en-label">Date</span></td><td>: <span id="p_tgl" class="fw-bold"></span></td></tr>
+                <tr><td>NO. SURAT<br><span class="en-label">SJ Number</span></td><td>: <span id="p_nosj" class="fw-bold"></span></td></tr>
+                <tr><td>NOMOR PO<br><span class="en-label">PO Number</span></td><td>: <span id="p_po" class="fw-bold"></span></td></tr>
             </table>
         </div>
     </div>
@@ -220,6 +220,7 @@
             </div>
             <div class="company-info-footer">
                 <div class="footer-name">PT. KHATULISTIWA SINAR ENERGI</div>
+                <div class="footer-tagline">Mitra Penyalur dan Transportir BBM Industri</div>
                 <div class="contact-item">Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah</div>
                 <div class="contact-item">pt.khatulistiwa.sinar.energi@gmail.com | 0815-884-141-0</div>
             </div>
@@ -289,7 +290,7 @@
             localStorage.setItem('kse_last_num', nextNum);
             document.getElementById('in_no_urut').value = nextNum;
             updateData();
-            alert("Berhasil! Nomor urut naik otomatis.");
+            alert("Berhasil!");
         });
     }
 </script>
