@@ -13,7 +13,7 @@
         #surat-jalan-render {
             width: 210mm;
             height: 297mm;
-            padding: 3mm 5mm 5mm 5mm;
+            padding: 10mm 15mm;
             margin: auto;
             background: white;
             position: relative;
@@ -24,16 +24,29 @@
             overflow: hidden;
         }
         
-        .logo-main { height: 60px; width: auto;}
-.title-block { 
-    text-align: right; 
-    padding-top: 15px; /* Tambahkan baris ini untuk menurunkan tulisan agar sejajar */
-}
-        .title-block h2 { font-weight: 900; font-size: 24px; margin: 0; color: var(--kse-green-dark); }
-        .en-label { font-size: 9px; font-style: italic; color: #666; display: block; line-height: 1.2; }
+        /* HEADER REVISED: Logo & Title alignment */
+        .header-clean {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Membuat teks dan logo rata tengah secara vertikal */
+            border-bottom: 2px solid var(--kse-green-dark);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .logo-main { height: 75px; width: auto; object-fit: contain; }
+
+        .title-block { text-align: right; }
+        .title-block h2 { 
+            font-weight: 900; 
+            font-size: 32px; /* Diperbesar */
+            margin: 0; 
+            color: var(--kse-green-dark);
+            line-height: 1;
+        }
+        .en-label { font-size: 10px; font-style: italic; color: #666; display: block; line-height: 1.2; }
         
-        /* JARAK ANTARA CONTACT & PO KE BAWAHNYA DIPERLEBAR */
-        .info-section { margin-top: 15px; margin-bottom: 30px; } 
+        .info-section { margin-top: 15px; margin-bottom: 25px; } 
         
         .table-custom { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 8px; font-size: 12px; border: 1px solid #000; }
@@ -43,10 +56,10 @@
         
         .footer-sign { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .footer-sign th { background-color: var(--kse-green-dark) !important; color: white !important; font-size: 11px; padding: 5px; border: 1px solid #000; text-align: center; }
-        .footer-sign td { border: 1px solid #000; height: 95px; width: 25%; vertical-align: bottom; padding: 10px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
+        .footer-sign td { border: 1px solid #000; height: 90px; width: 25%; vertical-align: bottom; padding: 10px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
         .img-stempel { position: absolute; width: 95px; bottom: 30px; left: 50%; transform: translateX(-50%); opacity: 0.85; pointer-events: none; z-index: 10; }
         
-        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 25px; padding: 10px 12px; font-size: 11px; min-height: 100px; }
+        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 20px; padding: 10px 12px; font-size: 11px; min-height: 80px; }
         .copy-notes { font-size: 9px; margin-top: 10px; font-weight: bold; color: #555; }
         
         .fixed-footer { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; }
@@ -60,7 +73,7 @@
         .footer-tagline { font-size: 9.5px; font-weight: 600; color: #444; margin: 0; font-style: italic; }
         .contact-item { font-size: 9px; margin: 0; }
 
-        @media print { .no-print { display: none; } }
+        @media print { .no-print { display: none; } #surat-jalan-render { margin: 0; border: none; } }
     </style>
 </head>
 <body onload="initApp()">
@@ -106,7 +119,7 @@
 
 <div id="surat-jalan-render">
     <div class="header-clean">
-        <img src="header1.png" class="logo-main" onerror="this.src='https://via.placeholder.com/150x60?text=LOGO+KSE'">
+        <img src="header1.png" class="logo-main" onerror="this.src='https://via.placeholder.com/150x75?text=LOGO+KSE'">
         <div class="title-block">
             <h2>SURAT JALAN</h2>
             <span class="en-label">DELIVERY ORDER</span>
@@ -116,7 +129,7 @@
     <div class="row info-section" style="font-size: 12px;">
         <div class="col-7">
             <div style="margin-bottom: 8px;">TUJUAN PENGIRIMAN :</div>
-            <strong id="p_pt" style="font-size: 17px; display: block; color: var(--kse-green-dark); margin-bottom: 10px;">PT. KARYA DUTA SEJAHTERA</strong>
+            <strong id="p_pt" style="font-size: 17px; display: block; color: var(--kse-green-dark); margin-bottom: 10px;">-</strong>
             <div style="line-height: 1.8;">
                 LOKASI: <span id="p_lokasi" style="font-weight: bold;">-</span><br>
                 CONTACT: <span id="p_cp" style="font-weight: bold;">-</span>
@@ -236,13 +249,33 @@
 
 <script>
     let qrcode;
+    const inputIds = [
+        'in_pt', 'in_cp', 'in_lokasi', 'in_no_urut', 'in_po', 'in_sodo', 
+        'in_tgl', 'in_jns_bbm', 'in_nopol', 'in_segel', 'in_supply', 
+        'in_bj', 'in_tinggi', 'in_km_awal', 'in_km_akhir', 'in_note', 
+        'in_nama_penerima', 'in_nama_sopir', 'in_nama_helper', 'in_nama_admin'
+    ];
+
     function initApp() {
-        let lastNum = localStorage.getItem('kse_last_num') || 1;
-        document.getElementById('in_no_urut').value = lastNum;
+        // Load data dari LocalStorage jika ada
+        inputIds.forEach(id => {
+            const savedValue = localStorage.getItem('kse_form_' + id);
+            if (savedValue !== null) {
+                document.getElementById(id).value = savedValue;
+            }
+        });
+
+        // Set default nomor urut jika baru
+        if (!localStorage.getItem('kse_form_in_no_urut')) {
+            document.getElementById('in_no_urut').value = localStorage.getItem('kse_last_num') || 1;
+        }
         
-        const now = new Date();
-        const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
-        document.getElementById('in_tgl').value = `${now.getDate().toString().padStart(2,'0')} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+        // Set default tanggal jika kosong
+        if (!document.getElementById('in_tgl').value) {
+            const now = new Date();
+            const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+            document.getElementById('in_tgl').value = `${now.getDate().toString().padStart(2,'0')} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+        }
         
         qrcode = new QRCode(document.getElementById("qrcode"), { width: 55, height: 55 });
         updateData();
@@ -254,6 +287,11 @@
         const urut = document.getElementById('in_no_urut').value.toString().padStart(3, '0');
         const nosj = `${urut}/KSE-SJ/${romawi[now.getMonth()]}/${now.getFullYear()}`;
         
+        // Simpan setiap input ke LocalStorage saat diketik
+        inputIds.forEach(id => {
+            localStorage.setItem('kse_form_' + id, document.getElementById(id).value);
+        });
+
         document.getElementById('p_nosj').innerText = nosj;
         document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
         document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
@@ -287,7 +325,7 @@
             margin: 0,
             filename: `SJ_KSE_${document.getElementById('p_nosj').innerText}.pdf`,
             image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 3, useCORS: true },
+            html2canvas: { scale: 3, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
@@ -296,11 +334,9 @@
             localStorage.setItem('kse_last_num', nextNum);
             document.getElementById('in_no_urut').value = nextNum;
             updateData();
-            alert("Berhasil!");
+            alert("Download Berhasil! Nomor Urut telah diperbarui.");
         });
     }
 </script>
 </body>
 </html>
-
-
