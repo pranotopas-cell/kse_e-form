@@ -10,7 +10,7 @@
         :root { --kse-dark: #0f2d0b; --kse-primary: #1a3c15; --kse-accent: #2ecc71; }
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; }
         
-        /* UI Control Panel */
+        /* Control Panel */
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
@@ -21,26 +21,26 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1); 
         }
 
-        /* Header Style (Matching Surat Jalan) */
+        /* Header (Matching Surat Jalan) */
         .header-logo { display: flex; align-items: center; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 20px; }
         .kse-logo-text { font-size: 35px; font-weight: 900; color: var(--kse-dark); margin-right: 15px; }
         .kse-logo-text span { color: var(--kse-accent); }
         .doc-title { text-align: right; flex-grow: 1; }
         .doc-title h2 { font-weight: 800; margin: 0; font-size: 22px; }
 
-        /* Table Style */
+        /* Table PO */
         .table-po { width: 100%; border-collapse: collapse; margin: 15px 0; border: 1px solid #000; }
-        .table-po th { background-color: var(--kse-primary) !important; color: white !important; padding: 6px; border: 1px solid #000; text-align: center; font-size: 10px; }
-        .table-po td { border: 1px solid #000; padding: 6px; vertical-align: middle; }
+        .table-po th { background-color: var(--kse-primary) !important; color: white !important; padding: 6px; border: 1px solid #000; text-align: center; font-size: 9px; }
+        .table-po td { border: 1px solid #000; padding: 6px; vertical-align: middle; font-size: 11px; }
 
-        /* Footer Style */
+        /* Footer (Matching Surat Jalan) */
         .footer-kse { position: absolute; bottom: 10mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
 
         @media print {
             .control-nav, .input-sidebar { display: none !important; }
-            .document-canvas { margin: 0; box-shadow: none; width: 100%; }
-            .col-lg-8 { width: 100% !important; }
+            .document-canvas { margin: 0; box-shadow: none; width: 100%; border: none; }
+            .col-lg-9 { width: 100% !important; }
             body { background: white; }
         }
     </style>
@@ -58,35 +58,37 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3 input-sidebar">
-            <h6 class="fw-bold mb-3 text-success">PENGATURAN DOKUMEN</h6>
+            <h6 class="fw-bold mb-3 text-success">PENGATURAN PURCHASE ORDER</h6>
             <div class="mb-2">
-                <label class="x-small fw-bold">Customer</label>
-                <input type="text" id="in_cust" class="form-control form-control-sm" value="PT. KARYA MANDIRI UTAMA" oninput="updateView()">
+                <label class="small fw-bold">No. PO (Manual/Auto)</label>
+                <input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()">
             </div>
             <div class="mb-2">
-                <label class="x-small fw-bold">Alamat</label>
-                <textarea id="in_addr" class="form-control form-control-sm" rows="2" oninput="updateView()">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</textarea>
+                <label class="small fw-bold">Customer</label>
+                <input type="text" id="in_cust" class="form-control form-control-sm" value="PT. KARYA MANDIRI UTAMA" oninput="updateView()">
             </div>
             <hr>
             <div class="mb-2">
-                <label class="x-small fw-bold">Nama Barang</label>
-                <input type="text" id="in_barang" class="form-control form-control-sm" value="BBM SOLAR INDUSTRI (B35)" oninput="updateView()">
-            </div>
-            <div class="mb-2">
-                <label class="x-small fw-bold">Quantity (Liter)</label>
+                <label class="small fw-bold">Quantity (Liter)</label>
                 <input type="number" id="in_qty" class="form-control form-control-sm" value="150000" oninput="calculate()">
             </div>
             <div class="mb-2">
-                <label class="x-small fw-bold">Harga Dasar (Rp)</label>
+                <label class="small fw-bold">Harga Dasar (Rp)</label>
                 <input type="number" id="in_harga" class="form-control form-control-sm" value="13063.1" oninput="calculate()">
             </div>
+            <div class="row">
+                <div class="col-6 mb-2">
+                    <label class="small fw-bold">PBBKB (%)</label>
+                    <input type="number" id="in_pbbkb_pct" class="form-control form-control-sm" value="7.5" step="0.1" oninput="calculate()">
+                </div>
+                <div class="col-6 mb-2">
+                    <label class="small fw-bold">PPh (%)</label>
+                    <input type="number" id="in_pph_pct" class="form-control form-control-sm" value="0.3" step="0.1" oninput="calculate()">
+                </div>
+            </div>
             <div class="mb-3">
-                <label class="x-small fw-bold">Sistem Pembayaran</label>
-                <select id="in_pay" class="form-select form-select-sm" onchange="updateView()">
-                    <option value="Cash">Cash</option>
-                    <option value="Transfer Bank">Transfer Bank</option>
-                    <option value="CBD (Cash Before Delivery)">CBD</option>
-                </select>
+                <label class="small fw-bold">Sistem Pembayaran</label>
+                <input type="text" id="in_pay" class="form-control form-control-sm" value="Cash / CBD" oninput="updateView()">
             </div>
         </div>
 
@@ -104,11 +106,7 @@
                     <div class="col-7">
                         <p class="mb-1">Kepada yang kami hormati,</p>
                         <h6 class="fw-bold mb-0" id="out_cust">PT. KARYA MANDIRI UTAMA</h6>
-                        <p id="out_addr">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
-                        <table style="font-size: 11px;">
-                            <tr><td width="80">PIC</td><td>: -</td></tr>
-                            <tr><td>HP/Email</td><td>: -</td></tr>
-                        </table>
+                        <p id="out_addr" class="mb-0">JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL</p>
                     </div>
                     <div class="col-5">
                         <table class="table table-bordered border-dark table-sm mb-0">
@@ -123,19 +121,19 @@
                 <table class="table-po">
                     <thead>
                         <tr>
-                            <th>NAMA BARANG</th>
-                            <th>QUANTITY (Ltr)</th>
+                            <th width="25%">NAMA BARANG</th>
+                            <th>QTY (Ltr)</th>
                             <th>HARGA DASAR</th>
                             <th>PPN 11%</th>
-                            <th>PBBKB 7.5%</th>
-                            <th>PPH 0.3%</th>
+                            <th id="th_pbbkb">PBBKB 7.5%</th>
+                            <th id="th_pph">PPH 0.3%</th>
                             <th>PER LTR</th>
-                            <th>JUMLAH</th>
+                            <th width="20%">JUMLAH</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="fw-bold" id="out_barang">BBM SOLAR INDUSTRI (B35)</td>
+                            <td class="fw-bold">BBM SOLAR INDUSTRI (B35)</td>
                             <td class="text-center" id="out_qty">150.000</td>
                             <td class="text-center" id="out_harga">13.063,1</td>
                             <td class="text-center" id="out_ppn">1.436,9</td>
@@ -152,17 +150,17 @@
                 </table>
 
                 <div class="mt-2">
-                    <p class="mb-1">Sistem pembayaran : <b id="out_pay">Cash</b></p>
-                    <p>Mohon di bantu untuk prosesnya , demikian terima kasih.</p>
+                    <p class="mb-1">Sistem pembayaran : <b id="out_pay">Cash / CBD</b></p>
+                    <p>Mohon di bantu untuk prosesnya, demikian terima kasih.</p>
                 </div>
 
                 <div class="row mt-4">
                     <div class="col-6">
-                        <p class="mb-0">regard.</p>
+                        <p class="mb-0 italic">regard.</p>
                         <p class="fw-bold mb-4">PT. Khatulistiwa Sinar Energi</p>
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=VALID_KSE_PO" class="my-2">
                         <p class="fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
-                        <p>Direktur Operasional</p>
+                        <p class="small">Direktur Operasional</p>
                     </div>
                 </div>
 
@@ -173,7 +171,7 @@
                             <div style="font-size: 9px; color: #666;">
                                 <b>Digital E-Form KSE System</b><br>
                                 Dokumen ini sah & divalidasi sistem.<br>
-                                Scan QR untuk verifikasi nomor surat.
+                                Scan QR untuk verifikasi nomor PO.
                             </div>
                         </div>
                         <div class="text-end" style="font-size: 10px;">
@@ -192,15 +190,21 @@
     function calculate() {
         const qty = parseFloat(document.getElementById('in_qty').value) || 0;
         const hargaDasar = parseFloat(document.getElementById('in_harga').value) || 0;
+        const pbbkbPct = parseFloat(document.getElementById('in_pbbkb_pct').value) || 0;
+        const pphPct = parseFloat(document.getElementById('in_pph_pct').value) || 0;
 
         // Rumus Pajak
         const ppn = hargaDasar * 0.11;
-        const pbbkb = hargaDasar * 0.075;
-        const pph = hargaDasar * 0.003;
+        const pbbkb = hargaDasar * (pbbkbPct / 100);
+        const pph = hargaDasar * (pphPct / 100);
         const perLtr = hargaDasar + ppn + pbbkb + pph;
         const total = qty * perLtr;
 
-        // Update View Tabel
+        // Update Label Tabel
+        document.getElementById('th_pbbkb').innerText = `PBBKB ${pbbkbPct}%`;
+        document.getElementById('th_pph').innerText = `PPH ${pphPct}%`;
+
+        // Update Nilai Tabel
         document.getElementById('out_qty').innerText = qty.toLocaleString('id-ID');
         document.getElementById('out_harga').innerText = hargaDasar.toLocaleString('id-ID', {minimumFractionDigits: 1});
         document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID', {minimumFractionDigits: 1});
@@ -216,26 +220,27 @@
     function updateView() {
         document.getElementById('out_cust').innerText = document.getElementById('in_cust').value;
         document.getElementById('out_addr').innerText = document.getElementById('in_addr').value;
-        document.getElementById('out_barang').innerText = document.getElementById('in_barang').value;
         document.getElementById('out_pay').innerText = document.getElementById('in_pay').value;
+        document.getElementById('out_no').innerText = document.getElementById('in_no').value;
     }
 
-    function generateSystemData() {
+    function initSystem() {
         const now = new Date();
         const year = now.getFullYear();
         const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-        const noPO = `0${Math.floor(Math.random()*9)+1}/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
         
-        document.getElementById('out_no').innerText = noPO;
+        // Auto-Generate No PO awal
+        const autoNo = `0${Math.floor(Math.random()*9)+1}/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
+        document.getElementById('in_no').value = autoNo;
+        
+        // Set Tanggal
         const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
         document.getElementById('out_tgl').innerText = now.toLocaleDateString('id-ID', options).toUpperCase();
+        
+        calculate();
     }
 
-    // Initialize
-    window.onload = function() {
-        generateSystemData();
-        calculate();
-    };
+    window.onload = initSystem;
 </script>
 
 </body>
