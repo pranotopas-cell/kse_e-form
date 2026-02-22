@@ -20,9 +20,9 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
         }
 
-        /* Header - Logo disesuaikan tingginya dengan teks PO */
+        /* Header */
         .header-section { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid var(--kse-dark); padding-bottom: 10px; margin-bottom: 35px; }
-        .logo-img { height: 45px; width: auto; object-fit: contain; } /* Ukuran diperkecil agar proporsional */
+        .logo-img { height: 45px; width: auto; object-fit: contain; }
         .doc-identity { text-align: right; line-height: 1; }
         .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: #000; letter-spacing: 1px; }
 
@@ -135,11 +135,11 @@
                         <table class="table table-bordered border-dark table-sm mb-0">
                             <tr>
                                 <td class="bg-light fw-bold" width="45%">TANGGAL <br><span class="lang-en">Date</span></td>
-                                <td id="out_tgl" class="align-middle text-center">22 FEBRUARI 2026</td>
+                                <td id="out_tgl" class="align-middle text-center"></td>
                             </tr>
                             <tr>
                                 <td class="bg-light fw-bold">NOMOR PO <br><span class="lang-en">PO Number</span></td>
-                                <td id="out_no" class="fw-bold align-middle text-center">001/KSE-PO/II/2026</td>
+                                <td id="out_no" class="fw-bold align-middle text-center"></td>
                             </tr>
                         </table>
                     </div>
@@ -151,36 +151,36 @@
                 <table class="table-po">
                     <thead>
                         <tr>
-                            <th width="30%">NAMA BARANG <br><span class="lang-en">Description of Goods</span></th>
+                            <th width="28%">NAMA BARANG <br><span class="lang-en">Description of Goods</span></th>
                             <th>QUANTITY (Ltr) <br><span class="lang-en">Volume</span></th>
                             <th>HARGA DASAR <br><span class="lang-en">Basic Price</span></th>
                             <th>PPN 11% <br><span class="lang-en">VAT</span></th>
-                            <th id="th_pbbkb_label">PBBKB 7.5% <br><span class="lang-en">Fuel Tax</span></th>
-                            <th id="th_pph_label">PPH 0.3% <br><span class="lang-en">Income Tax</span></th>
+                            <th id="th_pbbkb_label">PBBKB <br><span class="lang-en">Fuel Tax</span></th>
+                            <th id="th_pph_label">PPH <br><span class="lang-en">Income Tax</span></th>
                             <th>PER LTR <br><span class="lang-en">Unit Price</span></th>
                             <th width="18%">JUMLAH <br><span class="lang-en">Amount (IDR)</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="fw-bold text-uppercase" id="out_barang">BBM SOLAR INDUSTRI (B35)</td>
-                            <td class="text-center" id="out_qty">150.000</td>
-                            <td class="text-center" id="out_harga">13.063,1</td>
-                            <td class="text-center" id="out_ppn">1.436,9</td>
-                            <td class="text-center" id="out_pbbkb">979,7</td>
-                            <td class="text-center" id="out_pph">39,2</td>
-                            <td class="text-center fw-bold" id="out_perltr">15.518,9</td>
-                            <td class="text-end fw-bold">Rp <span id="out_total">2.327.835.000</span></td>
+                            <td class="fw-bold text-uppercase" id="out_barang"></td>
+                            <td class="text-center" id="out_qty"></td>
+                            <td class="text-center" id="out_harga"></td>
+                            <td class="text-center" id="out_ppn"></td>
+                            <td class="text-center" id="out_pbbkb"></td>
+                            <td class="text-center" id="out_pph"></td>
+                            <td class="text-center fw-bold" id="out_perltr"></td>
+                            <td class="text-end fw-bold">Rp <span id="out_total"></span></td>
                         </tr>
                         <tr class="bg-light fw-bold">
                             <td colspan="7" class="text-center">JUMLAH TOTAL / <span class="lang-en d-inline">GRAND TOTAL</span></td>
-                            <td class="text-end">Rp <span id="out_grandtotal">2.327.835.000</span></td>
+                            <td class="text-end">Rp <span id="out_grandtotal"></span></td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div class="mt-4">
-                    <p class="mb-1">Sistem pembayaran : <b id="out_pay">Cash / CBD</b><br>
+                    <p class="mb-1">Sistem pembayaran : <b id="out_pay"></b><br>
                     <span class="lang-en">Payment terms</span></p>
                     <p class="mt-2">Mohon di bantu untuk prosesnya, demikian terima kasih.<br>
                     <span class="lang-en">Please kindly process this order, thank you.</span></p>
@@ -222,10 +222,9 @@
 </div>
 
 <script>
-    // Fungsi untuk Download PDF
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
-        const noPo = document.getElementById('in_no').value || 'PO';
+        const noPo = document.getElementById('in_no').value.replace(/\//g, '-');
         const opt = {
             margin:       0,
             filename:     `KSE_PO_${noPo}.pdf`,
@@ -242,23 +241,31 @@
         const pbbkbPct = parseFloat(document.getElementById('in_pbbkb_pct').value) || 0;
         const pphPct = parseFloat(document.getElementById('in_pph_pct').value) || 0;
 
-        const ppn = hargaDasar * 0.11;
-        const pbbkb = hargaDasar * (pbbkbPct / 100);
-        const pph = hargaDasar * (pphPct / 100);
+        // Hitungan per komponen dengan pembulatan 1 desimal agar sinkron dengan tampilan
+        const ppn = Math.round((hargaDasar * 0.11) * 10) / 10;
+        const pbbkb = Math.round((hargaDasar * (pbbkbPct / 100)) * 10) / 10;
+        const pph = Math.round((hargaDasar * (pphPct / 100)) * 10) / 10;
+        
+        // Harga per liter adalah hasil penjumlahan komponen yang sudah dibulatkan
         const perLtr = hargaDasar + ppn + pbbkb + pph;
         const total = qty * perLtr;
 
+        // Format tampilan ke tabel
+        const localeOpts = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
+        
         document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Fuel Tax</span>`;
         document.getElementById('th_pph_label').innerHTML = `PPH ${pphPct}% <br><span class="lang-en">Income Tax</span>`;
 
         document.getElementById('out_qty').innerText = qty.toLocaleString('id-ID');
-        document.getElementById('out_harga').innerText = hargaDasar.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_pbbkb').innerText = pbbkb.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_pph').innerText = pph.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_perltr').innerText = perLtr.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_total').innerText = total.toLocaleString('id-ID');
-        document.getElementById('out_grandtotal').innerText = total.toLocaleString('id-ID');
+        document.getElementById('out_harga').innerText = hargaDasar.toLocaleString('id-ID', localeOpts);
+        document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID', localeOpts);
+        document.getElementById('out_pbbkb').innerText = pbbkb.toLocaleString('id-ID', localeOpts);
+        document.getElementById('out_pph').innerText = pph.toLocaleString('id-ID', localeOpts);
+        document.getElementById('out_perltr').innerText = perLtr.toLocaleString('id-ID', localeOpts);
+        
+        // Total Akhir (biasanya tanpa desimal untuk IDR)
+        document.getElementById('out_total').innerText = Math.round(total).toLocaleString('id-ID');
+        document.getElementById('out_grandtotal').innerText = Math.round(total).toLocaleString('id-ID');
         
         updateView();
     }
