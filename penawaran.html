@@ -3,48 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Quotation System V3.2</title>
+    <title>KSE - Quotation System V3.3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root { --kse-dark: #0f2d0b; --kse-primary: #1a3c15; --kse-accent: #2ecc71; }
-        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; margin: 0; padding: 0; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; margin: 0; padding: 0; }
         
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
         .document-canvas { 
             background: white; width: 210mm; min-height: 297mm; 
-            margin: 20px auto; padding: 5mm; position: relative;
+            margin: 20px auto; padding: 15mm; position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
-            color: #000; line-height: 1.5;
+            color: #000; line-height: 1.6;
         }
 
-        /* Garis horizontal hitam dihapus sesuai permintaan */
-        .header-section { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 15px; margin-bottom: 35px; }
-        .logo-img { height: 60px; width: auto; object-fit: contain; }
-        .doc-identity { text-align: right; line-height: 1.1; }
-        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 24px; color: var(--kse-primary); }
+        .header-section { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 30px; border-bottom: 2px solid var(--kse-primary); padding-bottom: 10px; }
+        .logo-img { height: 70px; width: auto; object-fit: contain; }
+        .doc-identity { text-align: right; }
+        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 26px; color: var(--kse-primary); letter-spacing: 1px; }
 
-        .info-meta { margin-bottom: 25px; } 
-        .info-dest { margin-top: 20px; margin-bottom: 25px; }
+        .lang-en { font-style: italic; color: #777; font-size: 10px; display: block; }
 
-        .table-custom { width: 100%; border: 1px solid #000; border-collapse: collapse; margin-top: 15px; }
-        .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 10px; text-align: center; font-size: 11px; }
-        .table-custom td { border: 1px solid #000; padding: 8px 10px; vertical-align: middle; }
+        .table-custom { width: 100%; border: 1.5px solid #000; border-collapse: collapse; margin-top: 15px; }
+        .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 10px; text-align: center; }
+        .table-custom td { border: 1px solid #000; padding: 8px; vertical-align: middle; }
         
-        .nested-table { width: 100%; height: 100%; border-collapse: collapse; margin: -8px -10px; }
-        .nested-table td { border: none !important; border-bottom: 1px solid #eee !important; padding: 6px 10px; }
+        .nested-table { width: 100%; border-collapse: collapse; margin: -8px; }
+        .nested-table td { border: none !important; border-bottom: 1px solid #eee !important; padding: 8px; }
         .nested-table tr:last-child td { border-bottom: none !important; }
 
-        .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 40mm); border-top: 1px solid #ccc; padding-top: 10px; }
+        .terms-section { background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 4px; }
+        .terms-table td { padding: 3px 5px; vertical-align: top; }
+
+        .footer-kse { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; border-top: 1px solid #ccc; padding-top: 10px; }
         
         @media print {
             @page { size: A4; margin: 0; }
             body { background: white; }
             .control-nav, .input-sidebar { display: none !important; }
-            .col-lg-9 { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .document-canvas { margin: 0 !important; box-shadow: none !important; width: 210mm !important; padding: 15mm !important; }
+            .document-canvas { margin: 0 !important; box-shadow: none !important; width: 210mm !important; height: 297mm !important; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -75,8 +75,7 @@
                     <label class="small fw-bold">Periode</label>
                     <input type="text" id="in_periode" class="form-control form-control-sm" oninput="updateView()">
                 </div>
-                <hr>
-                <div class="col-12 mb-1">
+                <div class="col-12 mb-1 border-top pt-2">
                     <label class="small fw-bold">Customer</label>
                     <input type="text" id="in_cust" class="form-control form-control-sm" oninput="updateView()">
                 </div>
@@ -86,7 +85,7 @@
                 </div>
             </div>
             
-            <h6 class="fw-bold mb-3 text-primary border-bottom pb-2">SYARAT & KETENTUAN</h6>
+            <h6 class="fw-bold mb-3 text-primary border-bottom pb-2">SYARAT & HARGA</h6>
             <div class="row g-2 mb-4">
                 <div class="col-12 mb-1">
                     <label class="small fw-bold">Produk</label>
@@ -114,40 +113,52 @@
         <div class="col-lg-9 p-0" id="pdf-area">
             <div class="document-canvas">
                 <div class="header-section">
-                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x60?text=PT.+KSE+LOGO'">
+                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x70?text=PT.+KSE+LOGO'">
                     <div class="doc-identity">
                         <h2>PENAWARAN HARGA</h2>
-                        <small style="color: #666; font-style: italic;">Official Fuel Quotation</small>
+                        <span style="color: #666; font-style: italic;">Official Fuel Quotation</span>
                     </div>
                 </div>
 
                 <div class="info-meta">
-                    <table class="table table-sm table-borderless" style="width: auto; min-width: 300px;">
-                        <tr><td width="80">Tanggal</td><td>: <span id="out_tgl_surat"></span></td></tr>
-                        <tr><td>Nomor</td><td>: <span id="out_no" class="fw-bold"></span></td></tr>
-                        <tr><td>Periode</td><td>: <span id="out_periode"></span></td></tr>
+                    <table class="table-borderless" style="width: auto; min-width: 320px;">
+                        <tr>
+                            <td width="100">Tanggal <span class="lang-en">Date</span></td>
+                            <td width="15">:</td>
+                            <td><span id="out_tgl_surat"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Nomor <span class="lang-en">Reference No.</span></td>
+                            <td>:</td>
+                            <td><span id="out_no" class="fw-bold"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Periode <span class="lang-en">Validity Period</span></td>
+                            <td>:</td>
+                            <td><span id="out_periode"></span></td>
+                        </tr>
                     </table>
                 </div>
 
-                <div class="info-dest">
+                <div class="info-dest mt-4">
                     <p class="mb-0">Kepada Yth,</p>
-                    <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 14px;"></h6>
+                    <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 14px; text-transform: uppercase;"></h6>
                     <p id="out_addr" class="mb-0"></p>
                 </div>
 
                 <div class="mt-4">
                     <p class="mb-2">Dengan hormat,</p>
-                    <p>Bersama ini kami <b>PT. Khatulistiwa Sinar Energi</b> mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
+                    <p class="text-justify">Bersama ini kami <b>PT. Khatulistiwa Sinar Energi</b> selaku mitra penyalur BBM Industri, bermaksud mengajukan penawaran harga suplai BBM untuk mendukung kelancaran operasional perusahaan Bapak/Ibu, dengan rincian sebagai berikut:</p>
                 </div>
 
                 <table class="table-custom">
                     <thead>
                         <tr>
                             <th width="40">No</th>
-                            <th>Produk</th>
-                            <th>Tujuan Pengiriman</th>
-                            <th width="240">Rincian Harga</th>
-                            <th width="80">Satuan</th>
+                            <th>Produk <span class="lang-en" style="color: #ddd;">Product</span></th>
+                            <th>Tujuan Pengiriman <span class="lang-en" style="color: #ddd;">Destination</span></th>
+                            <th width="260">Rincian Harga <span class="lang-en" style="color: #ddd;">Price Details</span></th>
+                            <th width="80">Satuan <span class="lang-en" style="color: #ddd;">Unit</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -163,7 +174,7 @@
                                         <td width="100" class="text-end" id="out_h_dasar"></td>
                                     </tr>
                                     <tr>
-                                        <td>Ppn (11%)</td>
+                                        <td>PPN (11%)</td>
                                         <td>Rp</td>
                                         <td class="text-end" id="out_ppn"></td>
                                     </tr>
@@ -179,32 +190,47 @@
                     </tbody>
                 </table>
 
-                <div class="mt-2 mb-4">
-                    <p class="small"><i>Note: Harga sudah termasuk ppn 11 % dan OAT.</i></p>
-                </div>
+                <p class="small mt-2"><i>* Harga sudah termasuk PPN 11% dan OAT (Ongkos Angkut Transportir).</i></p>
 
-                <div class="mt-4 bg-light p-3 border">
-                    <div class="row g-2">
-                        <div class="col-4">Sistem pembayaran</div><div class="col-8">: <span id="out_pay" class="fw-bold"></span></div>
-                        <div class="col-4">Quantity</div><div class="col-8">: <span id="out_qty"></span></div>
-                        <div class="col-4">Toleransi</div><div class="col-8">: 0,3 %</div>
-                        <div class="col-4">Contact Person</div><div class="col-8">: Supranoto - 08158841410</div>
-                    </div>
+                <div class="terms-section mt-4">
+                    <h6 class="fw-bold border-bottom pb-1 mb-2" style="font-size: 12px;">SYARAT & KETENTUAN <span class="lang-en" style="display:inline;">(Terms & Conditions)</span></h6>
+                    <table class="table-borderless terms-table w-100">
+                        <tr>
+                            <td width="160">Sistem Pembayaran <span class="lang-en">Payment System</span></td>
+                            <td width="15">:</td>
+                            <td><b id="out_pay"></b></td>
+                        </tr>
+                        <tr>
+                            <td>Kuantitas <span class="lang-en">Quantity</span></td>
+                            <td>:</td>
+                            <td><span id="out_qty"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Toleransi <span class="lang-en">Tolerance</span></td>
+                            <td>:</td>
+                            <td>0,3 % (Toleransi susut standar)</td>
+                        </tr>
+                        <tr>
+                            <td>Kontak Person <span class="lang-en">Contact Person</span></td>
+                            <td>:</td>
+                            <td><b>Supranoto (0815-8841-410)</b></td>
+                        </tr>
+                    </table>
                 </div>
 
                 <div class="mt-4">
-                    <p>Demikian penawaran ini kami sampaikan, besar harapan kami bisa menjalin kerja sama dengan perusahaan Bpk / Ibu Pimpin. Atas perhatiannya kami ucapkan Terima Kasih.</p>
+                    <p>Demikian penawaran ini kami sampaikan. Besar harapan kami dapat menjalin kerja sama yang baik dengan perusahaan yang Bapak/Ibu pimpin. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
                 </div>
 
                 <div class="row mt-5">
                     <div class="col-6">
                         <p class="mb-0">Hormat kami,</p>
-                        <p class="fw-bold mb-3">PT. Khatulistiwa Sinar Energi</p>
+                        <p class="fw-bold mb-2">PT. Khatulistiwa Sinar Energi</p>
                         <div class="py-2">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=SIGNED_BY_SUPRANOTO_KSE" class="border p-1">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=SIGNED_BY_SUPRANOTO_KSE" class="border p-1" style="border-radius: 5px;">
                         </div>
                         <p class="fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
-                        <p class="small">Direktur Operasional</p>
+                        <p class="small text-muted">Direktur Operasional</p>
                     </div>
                 </div>
 
@@ -212,15 +238,16 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_VALID_QUOTATION" width="45" class="border p-1 bg-white">
-                            <div style="font-size: 8px; color: #555;">
+                            <div style="font-size: 8px; color: #555; line-height: 1.2;">
                                 <b>OFFICIAL DIGITAL QUOTATION</b><br>
-                                Dokumen ini diterbitkan secara resmi oleh sistem administrasi PT. KSE.
+                                Dokumen ini diterbitkan secara resmi melalui sistem<br>administrasi PT. Khatulistiwa Sinar Energi.
                             </div>
                         </div>
                         <div class="text-end">
                             <b style="font-size: 11px; color: var(--kse-primary);">PT. KHATULISTIWA SINAR ENERGI</b><br>
                             <span style="font-size: 8px; color: #666;">
-                                Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah
+                                Jl. H.M. Rafi'i RT.24 Pangkalan Bun, Kalimantan Tengah<br>
+                                Email: kse.energy@gmail.com | Web: www.kse-energy.co.id
                             </span>
                         </div>
                     </div>
@@ -243,15 +270,13 @@
     }
 
     function updateView() {
-        document.getElementById('out_tgl_surat').innerText = document.getElementById('in_tgl_surat').value;
-        document.getElementById('out_no').innerText = document.getElementById('in_no').value;
-        document.getElementById('out_periode').innerText = document.getElementById('in_periode').value;
-        document.getElementById('out_cust').innerText = document.getElementById('in_cust').value;
-        document.getElementById('out_addr').innerText = document.getElementById('in_addr').value;
-        document.getElementById('out_produk').innerText = document.getElementById('in_produk').value;
-        document.getElementById('out_tujuan').innerText = document.getElementById('in_tujuan').value;
-        document.getElementById('out_pay').innerText = document.getElementById('in_pay').value;
-        document.getElementById('out_qty').innerText = document.getElementById('in_qty').value;
+        const fields = [
+            'tgl_surat', 'no', 'periode', 'cust', 'addr', 
+            'produk', 'tujuan', 'pay', 'qty'
+        ];
+        fields.forEach(f => {
+            document.getElementById('out_' + f).innerText = document.getElementById('in_' + f).value;
+        });
     }
 
     function downloadPDF() {
@@ -260,8 +285,8 @@
         html2pdf().set({
             margin: 0,
             filename: fileName,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { scale: 3, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
     }
@@ -273,13 +298,12 @@
         document.getElementById('in_cust').value = "PIMPINAN PERUSAHAAN";
         document.getElementById('in_addr').value = "Di Tempat";
         document.getElementById('in_produk').value = "Bbm Solar B40";
-        document.getElementById('in_tujuan').value = "site Tarjun";
+        document.getElementById('in_tujuan').value = "Site Tarjun";
         document.getElementById('in_harga').value = 15586;
         document.getElementById('in_pay').value = "TOP 7 hari setelah Invoice diterima";
-        document.getElementById('in_qty').value = "5.000 / 10.000 ltr";
+        document.getElementById('in_qty').value = "5.000 / 10.000 Liter";
         calculate();
     };
 </script>
 </body>
 </html>
-
