@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Quotation System</title>
+    <title>KSE - Quotation System V3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -20,21 +20,19 @@
             color: #000;
         }
 
-        .header-section { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 10px; margin-bottom: 25px; }
-        .logo-img { height: 45px; width: auto; object-fit: contain; }
+        .header-section { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 10px; margin-bottom: 25px; border-bottom: 2px solid var(--kse-primary); }
+        .logo-img { height: 50px; width: auto; object-fit: contain; }
         .doc-identity { text-align: right; line-height: 1.1; }
-        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: #000; }
+        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: var(--kse-primary); }
 
-        /* Tabel Sesuai Foto */
         .table-custom { width: 100%; border: 1px solid #000; border-collapse: collapse; margin-top: 15px; }
-        .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 8px; text-align: center; }
+        .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 8px; text-align: center; font-size: 11px; }
         .table-custom td { border: 1px solid #000; padding: 6px 10px; vertical-align: middle; }
         
         .nested-table { width: 100%; height: 100%; border-collapse: collapse; margin: -6px -10px; }
         .nested-table td { border: none !important; border-bottom: 1px solid #000 !important; padding: 6px 10px; }
         .nested-table tr:last-child td { border-bottom: none !important; }
 
-        .lang-label { display: block; font-size: 9px; color: #666; font-style: italic; margin-top: 1px; }
         .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
         
         @media print {
@@ -51,64 +49,64 @@
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
-        <a href="index.html" class="btn btn-outline-secondary btn-sm">HOME</a>
-        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT</button>
+        <a href="#" class="btn btn-outline-secondary btn-sm">DASHBOARD</a>
+        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> CETAK SURAT</button>
     </div>
-    <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-download"></i> DOWNLOAD PDF</button>
+    <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
 </div>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3 input-sidebar shadow-sm">
-            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">DATA PENAWARAN</h6>
-            <div class="row g-2">
-                <div class="col-6 mb-1">
-                    <label class="small fw-bold">No. Surat</label>
+            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">IDENTITAS SURAT</h6>
+            <div class="row g-2 mb-4">
+                <div class="col-12 mb-1">
+                    <label class="small fw-bold">Nomor Surat</label>
                     <input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()">
                 </div>
-                <div class="col-6 mb-1">
+                <div class="col-12 mb-1">
                     <label class="small fw-bold">Tanggal</label>
                     <input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()">
+                </div>
+                <div class="col-12 mb-1">
+                    <label class="small fw-bold">Perihal</label>
+                    <input type="text" id="in_hal" class="form-control form-control-sm" oninput="updateView()">
                 </div>
                 <div class="col-12 mb-1">
                     <label class="small fw-bold">Customer</label>
                     <input type="text" id="in_cust" class="form-control form-control-sm" oninput="updateView()">
                 </div>
-                <div class="col-12 mb-2">
-                    <label class="small fw-bold">Alamat</label>
+                <div class="col-12 mb-1">
+                    <label class="small fw-bold">Alamat Tujuan</label>
                     <input type="text" id="in_addr" class="form-control form-control-sm" oninput="updateView()">
                 </div>
-                
-                <h6 class="fw-bold mt-3 mb-2 text-success border-bottom pb-2">RINCIAN HARGA</h6>
+            </div>
+            
+            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">DETAIL PRODUK & HARGA</h6>
+            <div class="row g-2 mb-4">
                 <div class="col-12 mb-1">
-                    <label class="small fw-bold">Produk</label>
+                    <label class="small fw-bold">Nama Produk</label>
                     <input type="text" id="in_produk" class="form-control form-control-sm" oninput="updateView()">
                 </div>
                 <div class="col-12 mb-1">
-                    <label class="small fw-bold">Tujuan Pengiriman</label>
+                    <label class="small fw-bold">Tujuan Kirim</label>
                     <input type="text" id="in_tujuan" class="form-control form-control-sm" oninput="updateView()">
                 </div>
                 <div class="col-12 mb-1">
-                    <label class="small fw-bold">Harga Dasar</label>
+                    <label class="small fw-bold">Harga Dasar (Ltr)</label>
                     <input type="number" id="in_harga" class="form-control form-control-sm" oninput="calculate()">
                 </div>
+            </div>
 
-                <h6 class="fw-bold mt-3 mb-2 text-success border-bottom pb-2">SYARAT & KETENTUAN</h6>
+            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">S & K</h6>
+            <div class="row g-2">
                 <div class="col-12 mb-1">
-                    <label class="small fw-bold">Sistem Pembayaran</label>
+                    <label class="small fw-bold">Sistem Bayar</label>
                     <input type="text" id="in_pay" class="form-control form-control-sm" oninput="updateView()">
                 </div>
                 <div class="col-12 mb-1">
                     <label class="small fw-bold">Quantity</label>
                     <input type="text" id="in_qty" class="form-control form-control-sm" oninput="updateView()">
-                </div>
-                <div class="col-12 mb-1">
-                    <label class="small fw-bold">Toleransi</label>
-                    <input type="text" id="in_tol" class="form-control form-control-sm" oninput="updateView()">
-                </div>
-                <div class="col-12 mb-1">
-                    <label class="small fw-bold">Contact Person</label>
-                    <input type="text" id="in_cp" class="form-control form-control-sm" oninput="updateView()">
                 </div>
             </div>
         </div>
@@ -116,38 +114,41 @@
         <div class="col-lg-9 p-0" id="pdf-area">
             <div class="document-canvas">
                 <div class="header-section">
-                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/150x45?text=KSE+LOGO'">
+                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/180x50?text=PT.+KSE+LOGO'">
                     <div class="doc-identity">
                         <h2>PENAWARAN HARGA</h2>
-                        <span class="lang-label">Fuel Quotation System</span>
+                        <small style="color: #666; font-style: italic;">Fuel Quotation System</small>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between mb-4">
-                    <div>
-                        <p class="mb-0">Nomor: <span id="out_no" class="fw-bold"></span></p>
-                        <p class="mb-0">Tanggal: <span id="out_tgl" class="fw-bold"></span></p>
-                    </div>
-                    <div class="text-end">
-                        <p class="mb-0">Kepada Yth,</p>
-                        <h6 class="fw-bold mb-0" id="out_cust"></h6>
-                        <p id="out_addr" class="mb-0"></p>
+                <div class="row mb-4">
+                    <div class="col-7">
+                        <table class="table table-sm table-borderless" style="line-height: 1.2;">
+                            <tr><td width="80">Nomor</td><td>: <span id="out_no" class="fw-bold"></span></td></tr>
+                            <tr><td>Tanggal</td><td>: <span id="out_tgl"></span></td></tr>
+                            <tr><td>Perihal</td><td>: <span id="out_hal" class="fw-bold"></span></td></tr>
+                        </table>
+                        <div class="mt-3">
+                            <p class="mb-0">Kepada Yth,</p>
+                            <h6 class="fw-bold mb-0" id="out_cust"></h6>
+                            <p id="out_addr" class="mb-0"></p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-2">
-                    <p class="mb-0">Dengan hormat,</p>
-                    <p>Bersama ini kami PT. Khatulistiwa Sinar Energi mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
+                <div class="mt-4">
+                    <p class="mb-2">Dengan hormat,</p>
+                    <p>Bersama ini kami <b>PT. Khatulistiwa Sinar Energi</b> mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
                 </div>
 
                 <table class="table-custom">
                     <thead>
                         <tr>
-                            <th width="50">No</th>
-                            <th width="180">Produk</th>
-                            <th width="180">Tujuan Pengiriman</th>
-                            <th>Harga</th>
-                            <th width="80">Satuan</th>
+                            <th width="40">No</th>
+                            <th>Produk</th>
+                            <th>Tujuan Pengiriman</th>
+                            <th width="220">Rincian Harga</th>
+                            <th width="70">Satuan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -159,8 +160,8 @@
                                 <table class="nested-table">
                                     <tr>
                                         <td>Harga Dasar</td>
-                                        <td width="30">Rp</td>
-                                        <td width="80" class="text-end" id="out_h_dasar"></td>
+                                        <td width="20">Rp</td>
+                                        <td width="90" class="text-end" id="out_h_dasar"></td>
                                     </tr>
                                     <tr>
                                         <td>Ppn (11%)</td>
@@ -180,39 +181,50 @@
                 </table>
 
                 <div class="mt-2 mb-4">
-                    <p class="small"><b>Note: Harga sudah termasuk ppn 11 % dan OAT.</b></p>
+                    <p class="small"><i>Note: Harga sudah termasuk ppn 11 % dan OAT.</i></p>
                 </div>
 
-                <div class="mt-4" style="line-height: 1.8;">
-                    <div class="row">
+                <div class="mt-4 bg-light p-3 border">
+                    <div class="row g-2">
                         <div class="col-4">Sistem pembayaran</div><div class="col-8">: <span id="out_pay" class="fw-bold"></span></div>
                         <div class="col-4">Quantity</div><div class="col-8">: <span id="out_qty"></span></div>
-                        <div class="col-4">Toleransi</div><div class="col-8">: <span id="out_tol"></span></div>
-                        <div class="col-4">Contact Person</div><div class="col-8">: <span id="out_cp" class="fw-bold"></span></div>
+                        <div class="col-4">Toleransi</div><div class="col-8">: 0,3 %</div>
+                        <div class="col-4">Contact Person</div><div class="col-8">: Supranoto - 08158841410</div>
                     </div>
                 </div>
 
-                <div class="mt-5">
+                <div class="mt-4">
                     <p>Demikian penawaran ini kami sampaikan, besar harapan kami bisa menjalin kerja sama dengan perusahaan Bpk / Ibu Pimpin. Atas perhatiannya kami ucapkan Terima Kasih.</p>
                 </div>
 
-                <div class="mt-5 row">
+                <div class="row mt-5">
                     <div class="col-6">
-                        <p class="mb-0 italic">regard,</p>
-                        <p class="fw-bold mb-5">PT. Khatulistiwa Sinar Energi</p>
+                        <p class="mb-0">Hormat kami,</p>
+                        <p class="fw-bold mb-2">PT. Khatulistiwa Sinar Energi</p>
+                        <div class="py-2">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=SIGNED_BY_SUPRANOTO_KSE" class="border p-1">
+                        </div>
                         <p class="fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
                         <p class="small">Direktur Operasional</p>
                     </div>
                 </div>
 
                 <div class="footer-kse">
-                    <div class="d-flex justify-content-between align-items-end">
-                        <div style="font-size: 8px; color: #666;">
-                            <b>Digital Quotation System</b> | Dokumen ini divalidasi secara elektronik.
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_VALID_QUOTATION" width="45" class="border p-1 bg-white">
+                            <div style="font-size: 8px; color: #555;">
+                                <b>OFFICIAL DIGITAL QUOTATION</b><br>
+                                Dokumen ini diterbitkan secara resmi oleh sistem administrasi PT. KSE.<br>
+                                Verifikasi keaslian dokumen dapat dipindai melalui QR Code di samping.
+                            </div>
                         </div>
                         <div class="text-end">
-                            <b style="font-size: 10px; color: var(--kse-dark);">PT. KHATULISTIWA SINAR ENERGI</b><br>
-                            <span style="font-size: 8px;">Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah</span>
+                            <b style="font-size: 11px; color: var(--kse-primary);">PT. KHATULISTIWA SINAR ENERGI</b><br>
+                            <span style="font-size: 8px; color: #666;">
+                                Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah<br>
+                                Email: pt.khatulistiwa.sinar.energi@gmail.com
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -236,38 +248,39 @@
     function updateView() {
         document.getElementById('out_no').innerText = document.getElementById('in_no').value;
         document.getElementById('out_tgl').innerText = document.getElementById('in_tgl').value;
+        document.getElementById('out_hal').innerText = document.getElementById('in_hal').value;
         document.getElementById('out_cust').innerText = document.getElementById('in_cust').value;
         document.getElementById('out_addr').innerText = document.getElementById('in_addr').value;
         document.getElementById('out_produk').innerText = document.getElementById('in_produk').value;
         document.getElementById('out_tujuan').innerText = document.getElementById('in_tujuan').value;
         document.getElementById('out_pay').innerText = document.getElementById('in_pay').value;
         document.getElementById('out_qty').innerText = document.getElementById('in_qty').value;
-        document.getElementById('out_tol').innerText = document.getElementById('in_tol').value;
-        document.getElementById('out_cp').innerText = document.getElementById('in_cp').value;
     }
 
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
+        const fileName = "PENAWARAN_KSE_" + (document.getElementById('in_no').value || "DOC") + ".pdf";
         html2pdf().set({
             margin: 0,
-            filename: 'Penawaran_KSE.pdf',
+            filename: fileName,
+            image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
     }
 
     window.onload = function() {
-        // Default Values sesuai foto
+        // Data Default
         document.getElementById('in_no').value = "045/KSE-QUO/II/2026";
         document.getElementById('in_tgl').value = "23 FEBRUARI 2026";
-        document.getElementById('in_cust').value = "PT. NAMA CUSTOMER";
+        document.getElementById('in_hal').value = "Penawaran Harga BBM Solar Industri";
+        document.getElementById('in_cust').value = "PIMPINAN PERUSAHAAN";
+        document.getElementById('in_addr').value = "Di Tempat";
         document.getElementById('in_produk').value = "Bbm Solar B40";
         document.getElementById('in_tujuan').value = "site Tarjun";
         document.getElementById('in_harga').value = 15586;
-        document.getElementById('in_pay').value = "TOP 7 hari setelah Invoice di terima.";
+        document.getElementById('in_pay').value = "TOP 7 hari setelah Invoice diterima";
         document.getElementById('in_qty').value = "5.000 / 10.000 ltr";
-        document.getElementById('in_tol').value = "0,3 %";
-        document.getElementById('in_cp').value = "Supranoto - 08158841410";
         calculate();
     };
 </script>
