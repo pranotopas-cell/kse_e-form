@@ -158,6 +158,8 @@
             <a href="penawaran.html" class="nav-link"><i class="bi bi-file-earmark-text me-2"></i> Penawaran</a>
             <a href="purchase-order.html" class="nav-link"><i class="bi bi-cart-check me-2"></i> Purchase Order</a>
             <a href="invoice.html" class="nav-link"><i class="bi bi-receipt me-2"></i> Invoice</a>
+            <a href="memo.html" class="nav-link"><i class="bi bi-journal-text me-2"></i> Memo</a>
+            <a href="berita-acara.html" class="nav-link"><i class="bi bi-file-earmark-check me-2"></i> Berita Acara</a>
             
             <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link btn-logout mt-auto">
                 <i class="bi bi-box-arrow-left me-2"></i> Sign Out
@@ -169,7 +171,7 @@
         <div class="welcome-banner">
             <div style="position: relative; z-index: 2;">
                 <h1 class="fw-bold display-5">Welcome</h1>
-                <p class="lead opacity-75">PT. Khatulistiwa Sinar Energi - Manajemen Dokumen Terintegrasi</p>
+                <p class="lead opacity-75">PT. Khatulistiwa Sinar Energi - Manajemen Dokumen Terintegrated</p>
             </div>
             <i class="bi bi-building-fill" style="position: absolute; right: -20px; bottom: -30px; font-size: 12rem; opacity: 0.1;"></i>
         </div>
@@ -211,6 +213,24 @@
                     <p class="text-muted small">Manajemen penagihan.</p>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="card card-stat" onclick="location.href='memo.html'">
+                    <div class="icon-box bg-secondary bg-opacity-10 text-secondary">
+                        <i class="bi bi-journal-text fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">MEMO</h5>
+                    <p class="text-muted small">Kelola komunikasi internal.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stat" onclick="location.href='berita-acara.html'">
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-file-earmark-check-fill fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">BERITA ACARA</h5>
+                    <p class="text-muted small">Dokumentasi kejadian/pekerjaan.</p>
+                </div>
+            </div>
         </div>
     </main>
 </div>
@@ -249,7 +269,3 @@
 
 </body>
 </html>
-
-
-
-
