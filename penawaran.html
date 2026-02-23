@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - System Penawaran</title>
+    <title>KSE - Sistem Penawaran</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { --primary-green: #2e7d32; --dark-blue: #1a2a3a; }
@@ -13,7 +13,7 @@
         .navbar { background: var(--dark-blue); color: white; padding: 10px 20px; display: flex; align-items: center; gap: 15px; z-index: 1000; }
         .btn-nav { background: #34495e; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-size: 13px; text-decoration: none; }
         .btn-nav:hover { background: #4e6a85; }
-        .btn-download { background: #2980b9; margin-left: auto; }
+        .btn-download { background: #2980b9; margin-left: auto; font-weight: bold; }
 
         /* Main Layout */
         .main-container { display: flex; flex: 1; overflow: hidden; }
@@ -22,7 +22,7 @@
         .sidebar { width: 340px; background: white; border-right: 1px solid #ddd; padding: 20px; overflow-y: auto; }
         .sidebar h3 { font-size: 16px; color: var(--primary-green); border-bottom: 2px solid var(--primary-green); padding-bottom: 8px; margin-top: 0; }
         .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; margin-bottom: 4px; font-weight: bold; color: #555; font-size: 12px; }
+        .input-group label { display: block; margin-bottom: 4px; font-weight: bold; color: #555; font-size: 11px; }
         .input-group input, .input-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
 
         /* Preview Area */
@@ -35,17 +35,22 @@
         .header-top { display: flex; justify-content: space-between; margin-bottom: 20px; }
         .logo-img { height: 75px; }
         
-        /* Table (Persis Foto Pertama) */
+        /* Table */
         .table-main { width: 100%; border-collapse: collapse; margin: 15px 0; }
-        .table-main th { background: #f2f2f2; border: 1px solid black; padding: 8px; }
+        .table-main th { background: #f2f2f2; border: 1px solid black; padding: 8px; font-size: 11px; }
         .table-main td { border: 1px solid black; padding: 8px; }
 
-        /* Footer Regard (Persis Foto Pertama) */
-        .footer-regard { margin-top: 40px; }
-        .qr-box { width: 90px; height: 90px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; margin: 10px 0; }
+        /* FOOTER TANDA TANGAN (SAMA DENGAN SURAT JALAN) */
+        .signature-container { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px; }
         
-        /* Footer Bottom Info */
-        .footer-bottom-info { position: absolute; bottom: 15mm; left: 20mm; right: 20mm; border-top: 3px solid var(--primary-green); padding-top: 8px; display: flex; justify-content: space-between; font-size: 10px; }
+        .sig-left { text-align: center; }
+        .qr-placeholder { width: 90px; height: 90px; border: 1px solid #000; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+        
+        .sig-right { text-align: center; width: 250px; }
+        .space-blank { height: 80px; } /* Ruang tanda tangan */
+
+        /* Footer Green Line */
+        .footer-line { position: absolute; bottom: 15mm; left: 20mm; right: 20mm; border-top: 3px solid var(--primary-green); padding-top: 8px; display: flex; justify-content: space-between; font-size: 9px; font-weight: bold; }
 
         @media print { .navbar, .sidebar { display: none !important; } .preview-area { padding: 0; } .paper { box-shadow: none; margin: 0; } }
     </style>
@@ -60,7 +65,7 @@
 
     <div class="main-container">
         <aside class="sidebar">
-            <h3>📝 INPUT PENAWARAN</h3>
+            <h3>📝 EDIT DATA</h3>
             <div class="input-group">
                 <label>Nomor Surat</label>
                 <input type="text" id="inNomor" value="001/ KSE - SPH / I / 2026" oninput="update()">
@@ -70,7 +75,7 @@
                 <textarea id="inPerihal" rows="2" oninput="update()">Penawaran Harga BBM Industri Periode 14 Januari s/d 30 Januari 2026</textarea>
             </div>
             <div class="input-group">
-                <label>Customer (Nama PT)</label>
+                <label>Customer</label>
                 <input type="text" id="inCustomer" value="PT. PARAMITHA BANGUN SARANA, Tbk." oninput="update()">
             </div>
             <div class="input-group">
@@ -100,7 +105,7 @@
         </aside>
 
         <main class="preview-area">
-            <div class="paper" id="print-area">
+            <div class="paper" id="print-content">
                 <div class="header-top">
                     <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/180x75?text=LOGO+KSE'">
                     <div style="text-align: right;">Pangkalan Bun, 01 Januari 2026</div>
@@ -108,7 +113,6 @@
 
                 <div style="margin-bottom: 20px;">
                     Nomor : <span id="outNomor">001/ KSE - SPH / I / 2026</span><br>
-                    Lamp : -<br>
                     Perihal : <u><strong id="outPerihal">Penawaran Harga BBM Industri Periode 14 Januari s/d 30 Januari 2026</strong></u>
                 </div>
 
@@ -117,8 +121,7 @@
                 <span id="outCustomer">PT. PARAMITHA BANGUN SARANA, Tbk.</span><br>
                 Di - Tempat</p>
 
-                <p>Dengan hormat,<br>
-                Bersama ini kami PT. Khatulistiwa Sinar Energi mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
+                <p>Dengan hormat, Kami menawarkan suplai BBM dengan rincian sebagai berikut :</p>
 
                 <table class="table-main">
                     <thead>
@@ -127,7 +130,7 @@
                             <th>Produk</th>
                             <th>Tujuan Pengiriman</th>
                             <th colspan="2">Harga</th>
-                            <th width="70">Satuan</th>
+                            <th width="80">Satuan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -143,7 +146,7 @@
                             <td>Ppn</td>
                             <td align="right">Rp <span id="outPpn">1.714</span></td>
                         </tr>
-                        <tr style="font-weight: bold;">
+                        <tr style="font-weight: bold; background: #f9f9f9;">
                             <td colspan="3">Note: Harga sudah termasuk ppn 11 % dan OAT.</td>
                             <td>Grand Total</td>
                             <td align="right">Rp <span id="outTotal">17.300</span></td>
@@ -159,18 +162,25 @@
                     Contact Person : <span id="outPicDisp">SUPRANOTO - 08158841410</span>
                 </div>
 
-                <p>Demikian penawaran ini kami sampaikan, besar harapan kami bisa menjalin kerja sama dengan perusahaan Bpk / Ibu Pimpinan. Atas perhatiannya kami ucapkan Terima Kasih.</p>
+                <p>Demikian penawaran ini kami sampaikan, Terima Kasih.</p>
 
-                <div class="footer-regard">
-                    regard,<br>
-                    <strong>PT. Khatulistiwa Sinar Energi</strong>
-                    <div class="qr-box">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=85x85&data=KSE-SPH" width="85">
+                <div class="signature-container">
+                    <div class="sig-left">
+                        <div class="qr-placeholder">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=85x85&data=KSE-VALID" width="85">
+                        </div>
+                        <strong id="outNameLeft">SUPRANOTO</strong>
                     </div>
-                    <strong id="outPicName">SUPRANOTO</strong>
+
+                    <div class="sig-right">
+                        Regard,<br>
+                        <strong>PT. Khatulistiwa Sinar Energi</strong>
+                        <div class="space-blank"></div>
+                        ( __________________________ )
+                    </div>
                 </div>
 
-                <div class="footer-bottom-info">
+                <div class="footer-line">
                     <div>📍 Jl. H.M. Rafi'i rt.24 Pangkalan Bun</div>
                     <div>✉️ pt.khatulistiwa.sinar.energi@gmail.com</div>
                     <div>📞 0815-884-141-0</div>
@@ -189,7 +199,7 @@
             document.getElementById('outToleransi').innerText = document.getElementById('inToleransi').value;
             
             let name = document.getElementById('inPic').value;
-            document.getElementById('outPicName').innerText = name.toUpperCase();
+            document.getElementById('outNameLeft').innerText = name.toUpperCase();
             document.getElementById('outPicDisp').innerText = name + " - 08158841410";
         }
 
@@ -205,7 +215,7 @@
         }
 
         function downloadPDF() {
-            const element = document.getElementById('print-area');
+            const element = document.getElementById('print-content');
             html2pdf().set({
                 margin: 0,
                 filename: 'Penawaran_KSE.pdf',
@@ -218,3 +228,4 @@
     </script>
 </body>
 </html>
+
