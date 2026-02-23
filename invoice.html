@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Invoice System V3.5.1</title>
+    <title>KSE - Invoice System V3.5</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -13,6 +13,7 @@
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
+        /* Document Canvas Optimized for 1 Page */
         .document-canvas { 
             background: white; width: 210mm; height: 296mm; 
             margin: 10px auto; padding: 10mm 15mm; position: relative;
@@ -42,7 +43,7 @@
             @page { size: A4; margin: 0; }
             .control-nav, .input-sidebar { display: none !important; }
             body { background: white; padding: 0; }
-            .document-canvas { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 10mm 15mm !important; }
+            .document-canvas { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 3mm 8mm 5mm 8mm !important; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -51,7 +52,7 @@
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
-        <a href="index.html" class="btn btn-outline-dark btn-sm"><i class="bi bi-house"></i> HOME</a>
+        <button class="btn btn-outline-dark btn-sm" onclick="clearData()"><i class="bi bi-house"></i> RESET/HOME</button>
         <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT</button>
     </div>
     <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
@@ -218,7 +219,6 @@
         return kalimat.replace(/\s+/g, ' ').trim();
     }
 
-    // Fungsi Simpan Otomatis & Kalkulasi
     function saveAndCalc() {
         const data = {
             cust: document.getElementById('in_cust').value,
@@ -261,14 +261,16 @@
 
     function updateView() {
         const fields = ['cust', 'addr', 'no', 'tgl', 'po', 'term', 'due', 'produk'];
-        fields.forEach(f => {
-            const val = document.getElementById('in_' + f).value;
-            document.getElementById('out_' + f).innerText = val;
-        });
-
-        const addrValue = document.getElementById('in_addr').value;
-        const addrParts = addrValue.split('\n');
+        fields.forEach(f => document.getElementById('out_' + f).innerText = document.getElementById('in_' + f).value);
+        const addrParts = document.getElementById('in_addr').value.split('\n');
         document.getElementById('out_city').innerText = addrParts[addrParts.length - 1].toUpperCase();
+    }
+
+    function clearData() {
+        if(confirm("Hapus semua data dan kembali ke awal?")) {
+            localStorage.removeItem('kse_invoice_data');
+            location.reload();
+        }
     }
 
     function downloadPDF() {
@@ -285,15 +287,14 @@
         const saved = localStorage.getItem('kse_invoice_data');
         if(saved) {
             const d = JSON.parse(saved);
-            Object.keys(d).forEach(key => {
-                if(document.getElementById('in_' + key)) {
-                    document.getElementById('in_' + key).value = d[key];
-                }
-            });
+            Object.keys(d).forEach(key => document.getElementById('in_' + key).value = d[key]);
+        } else {
+            document.getElementById('in_no').value = "001/KSE-INV/I/2026";
+            document.getElementById('in_tgl').value = "12 Februari 2026";
+            document.getElementById('in_produk').value = "BBM SOLAR INDUSTRI";
         }
         calculate();
     };
 </script>
 </body>
 </html>
-
