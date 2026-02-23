@@ -47,6 +47,7 @@
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
+        <a href="index.html" class="btn btn-outline-dark btn-sm"><i class="bi bi-arrow-left"></i> KEMBALI</a>
         <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT</button>
     </div>
     <button class="btn btn-primary btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN BERITA ACARA</button>
@@ -166,13 +167,19 @@
         const mapping = {
             'in_no': 'out_no', 'in_hari': 'out_hari', 'in_tgl_lengkap': 'out_tgl_lengkap', 'in_note': 'out_note',
             's_nopol': 'os_nopol', 's_pt': 'os_pt', 's_segel_a': 'os_segel_a', 's_segel_b': 'os_segel_b',
-            's_tc': 'os_tc', 's_sopir': 'os_sopir', 's_sopir': 'os_sopir_sig',
-            't_nopol': 'ot_nopol', 't_pt': 'ot_pt', 't_tc': 'ot_tc', 't_sopir': 'ot_sopir', 't_sopir': 'ot_sopir_sig'
+            's_tc': 'os_tc', 's_sopir': 'os_sopir', 
+            't_nopol': 'ot_nopol', 't_pt': 'ot_pt', 't_tc': 'ot_tc', 't_sopir': 'ot_sopir'
         };
 
         for (let id in mapping) {
-            document.getElementById(mapping[id]).innerText = document.getElementById(id).value;
+            const el = document.getElementById(id);
+            const out = document.getElementById(mapping[id]);
+            if(el && out) out.innerText = el.value;
         }
+        
+        // Update tanda tangan secara spesifik agar tidak tertimpa
+        document.getElementById('os_sopir_sig').innerText = document.getElementById('s_sopir').value || "......................";
+        document.getElementById('ot_sopir_sig').innerText = document.getElementById('t_sopir').value || "......................";
 
         // Handle Qty formatting
         const sqty = document.getElementById('s_qty').value;
@@ -184,16 +191,23 @@
 
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
-        const filename = 'BA_Oper_Muatan_' + document.getElementById('s_nopol').value + '.pdf';
+        const filename = 'BA_Oper_Muatan_' + (document.getElementById('s_nopol').value || 'Doc') + '.pdf';
         html2pdf().set({
             margin: 0,
             filename: filename,
-            html2canvas: { scale: 3 },
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
     }
 
     window.onload = function() {
+        // Proteksi jika user belum login (Opsional, sesuai sistem index.html Anda)
+        if (localStorage.getItem('kse_session') !== 'active') {
+            window.location.href = 'index.html';
+            return;
+        }
+
         document.getElementById('in_no').value = "012 / BA-OM / KSE / I / 2026";
         document.getElementById('in_hari').value = "Jumat";
         document.getElementById('in_tgl_lengkap').value = "tanggal 23 bulan Januari tahun 2026";
