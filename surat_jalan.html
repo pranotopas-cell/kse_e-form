@@ -50,6 +50,14 @@
         .info-grid td { vertical-align: top; border: none; padding: 2px; }
         .label-en { font-size: 10px; font-style: italic; color: #666; display: block; margin-top: -2px; }
 
+        /* Jarak lebar sebelum tabel */
+        .intro-text {
+            margin-top: 35px; 
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
         .table-main { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         .table-main th { 
             background-color: var(--kse-green) !important; 
@@ -85,7 +93,10 @@
 
 <div class="container my-4 no-print">
     <div class="card border-success shadow">
-        <div class="card-header bg-success text-white"><b>DATA ENTRY - SURAT JALAN KSE</b></div>
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <b>DATA ENTRY - SURAT JALAN KSE</b>
+            <a href="dashboard.html" class="btn btn-sm btn-light fw-bold">← BACK TO DASHBOARD</a>
+        </div>
         <div class="card-body">
             <div class="row g-2" id="mainForm">
                 <div class="col-md-4"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm kse-input" id="in_pt" value="PT. KARYA DUTA SEJAHTERA"></div>
@@ -146,6 +157,10 @@
         </tr>
     </table>
 
+    <div class="intro-text">
+        Telah kami kirimkan barang dengan rincian sebagai berikut / <span style="font-style: italic; color: #666;">We hereby deliver the following items:</span>
+    </div>
+
     <table class="table-main">
         <thead><tr><th colspan="4">DESCRIPTION / <span style="font-size: 11px; font-weight: normal; font-style: italic;">RINCIAN BARANG</span></th></tr></thead>
         <tbody>
@@ -176,7 +191,7 @@
         </tbody>
     </table>
 
-    <p style="font-size: 10px; text-align: center; font-style: italic; margin: 10px 0;">" Barang diterima dalam keadaan bersegel, baik dan cukup ukuran... "</p>
+    <p style="font-size: 10px; text-align: center; font-style: italic; margin: 10px 0;">" Barang diterima dalam keadaan bersegel, baik dan cukup ukuran, komplain tidak berlaku apabila surat jalan ini sudah ditandatangani dan berstempel perusahaan "</p>
 
     <table class="footer-sig">
         <thead><tr><th>RECIPIENT</th><th>DRIVER</th><th>HELPER</th><th>DELIVER</th></tr></thead>
@@ -253,13 +268,15 @@
         }
     }
 
-    function resetForm() { if(confirm("Hapus data?")) { localStorage.removeItem('kse_last_session'); location.reload(); } }
+    function resetForm() { if(confirm("Hapus semua data entry?")) { localStorage.removeItem('kse_last_session'); location.reload(); } }
 
     function downloadPDF() {
         const element = document.getElementById('surat-jalan-render');
         html2pdf().set({
-            margin: 0, filename: `SJ_KSE.pdf`, image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin: 0, filename: `SJ_KSE_${document.getElementById('p_nosj').innerText.replace(/\//g,'-')}.pdf`, 
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
     }
 </script>
