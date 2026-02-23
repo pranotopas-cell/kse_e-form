@@ -22,12 +22,12 @@
             position: relative;
         }
 
-        /* HEADER: Menggunakan Tabel agar pasti sejajar sempurna */
+        /* HEADER: Garis di bawah logo dihapus */
         .header-table {
             width: 100%;
-            border-bottom: 3px solid var(--kse-green);
             margin-bottom: 40px;
             border-collapse: collapse;
+            /* border-bottom dihapus sesuai permintaan */
         }
         .header-table td { vertical-align: middle; padding-bottom: 10px; border: none; }
         
@@ -35,7 +35,7 @@
         
         .title-text { 
             text-align: right; 
-            font-size: 38px; /* Diperbesar signifikan */
+            font-size: 38px; 
             font-weight: 900; 
             color: var(--kse-green);
             line-height: 1;
@@ -85,19 +85,25 @@
         <div class="card-body">
             <div class="row g-2" id="mainForm">
                 <div class="col-md-4"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm kse-input" id="in_pt" value="PT. KARYA DUTA SEJAHTERA"></div>
-                <div class="col-md-4"><label class="small fw-bold">Lokasi</label><input type="text" class="form-control form-control-sm kse-input" id="in_lokasi" value="Pangkalan Bun"></div>
-                <div class="col-md-4"><label class="small fw-bold">Phone</label><input type="text" class="form-control form-control-sm kse-input" id="in_cp" value="0812-xxxx-xxxx"></div>
-                <div class="col-md-2"><label class="small fw-bold">No Urut</label><input type="number" class="form-control form-control-sm kse-input" id="in_no_urut"></div>
-                <div class="col-md-4"><label class="small fw-bold">Nomor PO</label><input type="text" class="form-control form-control-sm kse-input" id="in_po" value="-"></div>
-                <div class="col-md-3"><label class="small fw-bold">Nomor SO/DO</label><input type="text" class="form-control form-control-sm kse-input" id="in_sodo" value="-"></div>
-                <div class="col-md-3"><label class="small fw-bold">Tanggal</label><input type="text" class="form-control form-control-sm kse-input" id="in_tgl"></div>
-                <div class="col-md-3"><label class="small fw-bold">Nopol</label><input type="text" class="form-control form-control-sm kse-input" id="in_nopol" value="KH 6562 GC"></div>
-                <div class="col-md-3"><label class="small fw-bold">Sopir</label><input type="text" class="form-control form-control-sm kse-input" id="in_nama_sopir" value="WANTO"></div>
-                <div class="col-md-3"><label class="small fw-bold">Segel</label><input type="text" class="form-control form-control-sm kse-input" id="in_segel" value="A-88271"></div>
-                <div class="col-md-3"><label class="small fw-bold">Supply Point</label><input type="text" class="form-control form-control-sm kse-input" id="in_supply" value="DEPO SADP"></div>
+                <div class="col-md-4"><label class="small fw-bold">CP / Phone</label><input type="text" class="form-control form-control-sm kse-input" id="in_cp" value="0812-xxxx-xxxx"></div>
+                <div class="col-md-4"><label class="small fw-bold">Lokasi Kirim</label><input type="text" class="form-control form-control-sm kse-input" id="in_lokasi" value="Pangkalan Bun"></div>
+                <div class="col-md-2"><label class="small fw-bold">No. Urut SJ</label><input type="number" class="form-control form-control-sm kse-input" id="in_no_urut"></div>
+                <div class="col-md-3"><label class="small fw-bold">Nomor PO</label><input type="text" class="form-control form-control-sm kse-input" id="in_po" value="-"></div>
+                <div class="col-md-3"><label class="small fw-bold">Nomor SO / DO</label><input type="text" class="form-control form-control-sm kse-input" id="in_sodo" value="-"></div>
+                <div class="col-md-4"><label class="small fw-bold">Tanggal</label><input type="text" class="form-control form-control-sm kse-input" id="in_tgl"></div>
                 <div class="col-md-3"><label class="small fw-bold">Jenis BBM</label><input type="text" class="form-control form-control-sm kse-input" id="in_jns_bbm" value="BBM SOLAR B40"></div>
-                <div class="col-md-3"><label class="small fw-bold">Penerima (Ttd)</label><input type="text" class="form-control form-control-sm kse-input" id="in_nama_penerima"></div>
-                <div class="col-md-6"><label class="small fw-bold">Notes</label><input type="text" class="form-control form-control-sm kse-input" id="in_note" value="-"></div>
+                <div class="col-md-3"><label class="small fw-bold">No. Polisi</label><input type="text" class="form-control form-control-sm kse-input" id="in_nopol" value="KH 6562 GC"></div>
+                <div class="col-md-3"><label class="small fw-bold">Nomor Segel</label><input type="text" class="form-control form-control-sm kse-input" id="in_segel" value="A-88271"></div>
+                <div class="col-md-3"><label class="small fw-bold">Supply Point</label><input type="text" class="form-control form-control-sm kse-input" id="in_supply" value="DEPO SADP"></div>
+                <div class="col-md-2"><label class="small fw-bold">Berat Jenis</label><input type="text" class="form-control form-control-sm kse-input" id="in_bj" value="0,825"></div>
+                <div class="col-md-2"><label class="small fw-bold">Tinggi Cairan</label><input type="text" class="form-control form-control-sm kse-input" id="in_tinggi" value="-"></div>
+                <div class="col-md-2"><label class="small fw-bold">KM Awal</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_awal" value="-"></div>
+                <div class="col-md-2"><label class="small fw-bold">KM Akhir</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_akhir" value="-"></div>
+                <div class="col-md-4"><label class="small fw-bold">Note Box</label><input type="text" class="form-control form-control-sm kse-input" id="in_note" value="-"></div>
+                <div class="col-md-3"><label class="small text-success fw-bold">Penerima</label><input type="text" class="form-control form-control-sm border-success kse-input" id="in_nama_penerima"></div>
+                <div class="col-md-3"><label class="small text-success fw-bold">Sopir</label><input type="text" class="form-control form-control-sm border-success kse-input" id="in_nama_sopir" value="WANTO"></div>
+                <div class="col-md-3"><label class="small text-success fw-bold">Helper</label><input type="text" class="form-control form-control-sm border-success kse-input" id="in_nama_helper" value="-"></div>
+                <div class="col-md-3"><label class="small text-success fw-bold">Menyerahkan</label><input type="text" class="form-control form-control-sm border-success kse-input" id="in_nama_admin" value="Dept. Operasional"></div>
             </div>
             <div class="mt-4 text-center">
                 <button class="btn btn-dark px-4" onclick="resetForm()">RESET FORM</button>
@@ -124,7 +130,7 @@
         <tr>
             <td width="60%">
                 TUJUAN PENGIRIMAN:<br>
-                <strong id="p_pt" style="font-size: 20px; color: var(--kse-green);">PT. KARYA DUTA SEJAHTERA</strong><br>
+                <strong id="p_pt" style="font-size: 20px; color: var(--kse-green);">-</strong><br>
                 LOKASI: <span id="p_lokasi" class="fw-bold">-</span><br>
                 CONTACT: <span id="p_cp" class="fw-bold">-</span>
             </td>
@@ -159,6 +165,14 @@
                 <td>NOMOR SEGEL</td><td>: <span id="p_segel">-</span></td>
                 <td>SUPPLY POINT</td><td>: <span id="p_supply">-</span></td>
             </tr>
+            <tr>
+                <td>KM AWAL / AKHIR</td><td>: <span id="p_km_awal">-</span> / <span id="p_km_akhir">-</span></td>
+                <td>BERAT JENIS (BJ)</td><td>: <span id="p_bj">-</span></td>
+            </tr>
+            <tr>
+                <td>TINGGI CAIRAN</td><td>: <span id="p_tinggi">-</span></td>
+                <td>STATUS</td><td>: SEALED / GOOD CONDITION</td>
+            </tr>
         </tbody>
     </table>
 
@@ -172,10 +186,10 @@
             <tr>
                 <td><span id="f_penerima">.</span></td>
                 <td><span id="f_sopir">.</span></td>
-                <td>.</td>
+                <td><span id="f_helper">.</span></td>
                 <td>
                     <img src="stempel.png" class="stempel" onerror="this.style.display='none'">
-                    <span>Dept. Operasional</span>
+                    <span id="f_admin">.</span>
                 </td>
             </tr>
         </tbody>
@@ -208,7 +222,6 @@
         loadSavedData();
         updateDisplay();
         
-        // Auto save on every keystroke
         inputs.forEach(input => {
             input.addEventListener('input', () => {
                 updateDisplay();
@@ -235,10 +248,16 @@
         document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_nama_sopir').value;
         document.getElementById('p_segel').innerText = document.getElementById('in_segel').value;
         document.getElementById('p_supply').innerText = document.getElementById('in_supply').value;
+        document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
+        document.getElementById('p_tinggi').innerText = document.getElementById('in_tinggi').value;
+        document.getElementById('p_km_awal').innerText = document.getElementById('in_km_awal').value;
+        document.getElementById('p_km_akhir').innerText = document.getElementById('in_km_akhir').value;
         document.getElementById('p_note').innerText = document.getElementById('in_note').value;
         
         document.getElementById('f_penerima').innerText = document.getElementById('in_nama_penerima').value || "................";
-        document.getElementById('f_sopir').innerText = document.getElementById('in_nama_sopir').value;
+        document.getElementById('f_sopir').innerText = document.getElementById('in_nama_sopir').value || "................";
+        document.getElementById('f_helper').innerText = document.getElementById('in_nama_helper').value || "................";
+        document.getElementById('f_admin').innerText = document.getElementById('in_nama_admin').value || "................";
 
         qr.makeCode("KSE-VERIFY-" + nosj);
     }
@@ -257,7 +276,6 @@
                 if(document.getElementById(key)) document.getElementById(key).value = data[key];
             });
         } else {
-            // Default Date
             const d = new Date();
             const m = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
             document.getElementById('in_tgl').value = `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;
