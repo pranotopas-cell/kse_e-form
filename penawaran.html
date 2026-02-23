@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Quotation System V3.7 Final</title>
+    <title>KSE - Quotation System V3.8</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root { --kse-primary: #1a3c15; }
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 11.5px; margin: 0; padding: 0; }
         
-        /* Layout Controls */
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
-        /* A4 Canvas Optimization */
         .document-canvas { 
             background: white; width: 210mm; height: 297mm;
             margin: 20px auto; padding: 5mm 15mm; position: relative;
@@ -22,17 +20,12 @@
             color: #000; line-height: 1.4; overflow: hidden;
         }
 
-        .header-section { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 15px; padding-top: 5mm; }
+        .header-section { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-top: 5mm; }
         .logo-img { height: 55px; width: auto; }
         .doc-identity { text-align: right; }
         .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: var(--kse-primary); }
         .lang-en { font-style: italic; color: #777; font-size: 9px; display: block; }
 
-        /* Meta Info - Sekarang Rata Kiri */
-        .info-meta-left { margin-bottom: 20px; }
-        .info-meta-left table td { padding: 1px 0; }
-
-        /* Tables */
         .table-custom { width: 100%; border: 1px solid #000; border-collapse: collapse; margin-top: 10px; }
         .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 8px; text-align: center; font-size: 10px; }
         .table-custom td { border: 1px solid #000; padding: 6px 10px; vertical-align: middle; }
@@ -41,7 +34,6 @@
         .nested-table td { border: none !important; border-bottom: 1px solid #eee !important; padding: 4px 10px; }
         .nested-table tr:last-child td { border-bottom: none !important; }
 
-        /* Footer Fixed at Bottom */
         .footer-kse { 
             position: absolute; bottom: 10mm; left: 15mm; right: 15mm; 
             border-top: 1px solid #000; padding-top: 8px;
@@ -65,7 +57,7 @@
         <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> CETAK</button>
         <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
     </div>
-    <span class="text-muted small fw-bold">KSE QUOTATION SYSTEM V3.7</span>
+    <span class="text-muted small fw-bold">KSE SYSTEM V3.8</span>
 </div>
 
 <div class="container-fluid">
@@ -99,23 +91,21 @@
                     </div>
                 </div>
 
-                <div class="info-meta-left">
-                    <table class="table-borderless">
-                        <tr><td width="90">Tanggal <span class="lang-en">Date</span></td><td width="15" class="text-center">:</td><td><span id="out_tgl"></span></td></tr>
-                        <tr><td>Nomor <span class="lang-en">Ref No</span></td><td class="text-center">:</td><td><b id="out_no"></b></td></tr>
-                        <tr><td>Periode <span class="lang-en">Period</span></td><td class="text-center">:</td><td><span id="out_per"></span></td></tr>
-                    </table>
-                </div>
-
-                <div class="mb-3">
+                <div class="mb-4">
                     <p class="mb-0">Kepada Yth,</p>
                     <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 13px;"></h6>
                     <p id="out_addr" class="mb-0"></p>
                 </div>
 
-                <div class="mb-2">
-                    <p class="mb-1">Dengan hormat,</p>
-                    <p>Bersama ini kami <b>PT. Khatulistiwa Sinar Energi</b> mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
+                <div class="mb-3">
+                    <p class="mb-2">Dengan hormat,</p>
+                    <p class="mb-3">Bersama ini kami <b>PT. Khatulistiwa Sinar Energi</b> mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
+                    
+                    <table class="table-borderless mb-2">
+                        <tr><td width="90">Tanggal <span class="lang-en">Date</span></td><td width="15" class="text-center">:</td><td><span id="out_tgl"></span></td></tr>
+                        <tr><td>Nomor <span class="lang-en">Ref No</span></td><td class="text-center">:</td><td><b id="out_no"></b></td></tr>
+                        <tr><td>Periode <span class="lang-en">Period</span></td><td class="text-center">:</td><td><span id="out_per"></span></td></tr>
+                    </table>
                 </div>
 
                 <table class="table-custom">
@@ -213,7 +203,7 @@
         const element = document.getElementById('the-canvas');
         const opt = {
             margin: 0,
-            filename: 'Penawaran_KSE_Final.pdf',
+            filename: 'Penawaran_KSE_V3.8.pdf',
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { scale: 3, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
