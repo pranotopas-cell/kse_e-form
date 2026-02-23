@@ -1,302 +1,278 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Invoice System V3.4</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        :root { --kse-primary: #0f2d0b; --kse-header-table: #0f2d0b; }
-        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; }
-        
-        .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
-        .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
-        
-        .document-canvas { 
-            background: white; width: 210mm; min-height: 297mm; 
-            margin: 20px auto; padding: 5mm 15mm; position: relative;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1); color: #000;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSE - Invoice System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root { --kse-primary: #062006; --kse-header-table: #062006; }
+        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 11px; }
+        
+        .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
+        .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
+        
+        .document-canvas { 
+            background: white; width: 210mm; min-height: 296mm; 
+            margin: 10px auto; padding: 10mm 15mm; position: relative;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1); color: #000;
+        }
 
-        /* Header Style - Adjusted Logo & Title */
-        .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
-        .logo-container { display: flex; flex-direction: column; align-items: flex-start; }
-        .logo-img { height: 45px; width: auto; margin-bottom: 5px; } /* Logo diperkecil */
-        .invoice-title { font-size: 52px; font-weight: 900; font-style: italic; color: #000; letter-spacing: -2px; line-height: 1; }
+        /* Header Style */
+        .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .logo-img { height: 40px; width: auto; }
+        .invoice-title { font-size: 36px; font-weight: 900; font-style: italic; color: var(--kse-primary); letter-spacing: -1px; }
 
-        .info-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px; margin-bottom: 20px; }
-        .meta-table td { padding: 1px 2px; line-height: 1.2; }
-        .eng-sub { font-size: 9px; color: #666; font-style: italic; display: block; margin-top: -2px; }
+        .info-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px; margin-bottom: 15px; }
+        .meta-table td { padding: 1px 2px; line-height: 1.1; }
+        .eng-sub { font-size: 8px; color: #666; font-style: italic; display: block; }
 
-        /* Table Main Style - Dark Green */
-        .table-main { width: 100%; border: 1.5px solid #000; border-collapse: collapse; }
-        .table-main th { background-color: var(--kse-header-table) !important; color: white !important; border: 1px solid #000; padding: 8px 4px; text-align: center; font-size: 11px; }
-        .table-main td { border: 1px solid #000; padding: 8px; vertical-align: middle; }
+        /* Table Main Style */
+        .table-main { width: 100%; border: 1.5px solid #000; border-collapse: collapse; }
+        .table-main th { background-color: var(--kse-header-table) !important; color: white !important; border: 1px solid #000; padding: 6px 4px; text-align: center; }
+        .table-main td { border: 1px solid #000; padding: 6px; vertical-align: middle; }
 
-        .calc-inner { width: 100%; border-collapse: collapse; }
-        .calc-inner td { border: 1px solid #000 !important; padding: 4px 8px !important; font-size: 11px; }
-        
-        .terbilang-box { border: 1.5px solid #000; border-top: none; padding: 8px 10px; font-style: italic; background: #fff; margin-bottom: 20px; min-height: 35px; }
+        .calc-inner td { border: 1px solid #000 !important; padding: 3px 8px !important; font-size: 10px; }
+        .terbilang-box { border: 1.5px solid #000; border-top: none; padding: 6px 10px; font-style: italic; background: #fdfdfd; margin-bottom: 15px; }
 
-        /* Footer & Sign Area */
-        .footer-kse { position: absolute; bottom: 10mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
-        .sign-area { margin-top: 30px; text-align: left; }
+        .footer-kse { position: absolute; bottom: 8mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 8px; }
+        .sign-area { margin-top: 20px; }
 
-        @media print {
-            .control-nav, .input-sidebar { display: none !important; }
-            body { background: white; }
-            .document-canvas { margin: 0; box-shadow: none; width: 210mm; padding: 3mm 8mm 5mm 8mm !important; }
-            .footer-kse { bottom: 5mm; }
-        }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        @media print {
+            @page { size: A4; margin: 0; }
+            .control-nav, .input-sidebar { display: none !important; }
+            body { background: white; padding: 0; }
+            .document-canvas { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 3mm 8mm 5mm 8mm !important; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
-    <div class="d-flex gap-2">
-        <button class="btn btn-outline-dark btn-sm" onclick="index.html()"><i class="bi bi-house"></i> HOME</button>
-        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT</button>
-    </div>
-    <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
+    <div class="d-flex gap-2">
+        <a href="index.html" class="btn btn-outline-dark btn-sm"><i class="bi bi-house"></i> HOME</a>
+        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT</button>
+    </div>
+    <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
 </div>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-3 input-sidebar shadow-sm">
-            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">DATA PENERIMA</h6>
-            <input type="text" id="in_cust" class="form-control form-control-sm mb-2" placeholder="Nama Perusahaan" oninput="updateView()">
-            <textarea id="in_addr" class="form-control form-control-sm mb-2" placeholder="Alamat & Kota" rows="3" oninput="updateView()"></textarea>
-            
-            <h6 class="fw-bold mb-3 text-primary border-bottom pb-2 mt-3">META INVOICE</h6>
-            <div class="row g-2">
-                <div class="col-12"><label class="small fw-bold">No. Invoice</label><input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Tanggal</label><input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">No. PO</label><input type="text" id="in_po" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-6"><label class="small fw-bold">Term</label><input type="text" id="in_term" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-6"><label class="small fw-bold">Due Date</label><input type="text" id="in_due" class="form-control form-control-sm" oninput="updateView()"></div>
-            </div>
+    <div class="row">
+        <div class="col-lg-3 input-sidebar shadow-sm">
+            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">DATA PENERIMA</h6>
+            <input type="text" id="in_cust" class="form-control form-control-sm mb-2" placeholder="Nama Perusahaan" oninput="updateView()">
+            <textarea id="in_addr" class="form-control form-control-sm mb-2" placeholder="Alamat & Kota" rows="3" oninput="updateView()"></textarea>
+            
+            <h6 class="fw-bold mb-3 text-primary border-bottom pb-2 mt-3">META INVOICE</h6>
+            <div class="row g-2">
+                <div class="col-12"><label class="small fw-bold">No. Invoice</label><input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Tanggal</label><input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">No. PO</label><input type="text" id="in_po" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-6"><label class="small fw-bold">Term</label><input type="text" id="in_term" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-6"><label class="small fw-bold">Due Date</label><input type="text" id="in_due" class="form-control form-control-sm" oninput="updateView()"></div>
+            </div>
 
-            <h6 class="fw-bold mb-3 text-primary border-bottom pb-2 mt-3">PRODUK & HARGA</h6>
-            <div class="row g-2">
-                <div class="col-12"><label class="small fw-bold">Nama Barang</label><input type="text" id="in_produk" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-6"><label class="small fw-bold">Qty (Ltr)</label><input type="number" id="in_qty" class="form-control form-control-sm" oninput="calculate()"></div>
-                <div class="col-6"><label class="small fw-bold">Harga/Ltr (Nett)</label><input type="number" id="in_h_final" class="form-control form-control-sm" oninput="calculate()"></div>
-                <div class="col-12">
-                    <label class="small fw-bold">Harga Satuan Sebelum Pajak</label>
-                    <input type="text" id="in_h_tax_display" class="form-control form-control-sm bg-light" readonly>
-                </div>
-            </div>
-        </div>
+            <h6 class="fw-bold mb-3 text-primary border-bottom pb-2 mt-3">PRODUK & HARGA</h6>
+            <div class="row g-2">
+                <div class="col-12"><label class="small fw-bold">Nama Barang</label><input type="text" id="in_produk" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-6"><label class="small fw-bold">Qty (Ltr)</label><input type="number" id="in_qty" class="form-control form-control-sm" oninput="calculate()"></div>
+                <div class="col-6"><label class="small fw-bold">Harga/Ltr (Nett)</label><input type="number" id="in_h_final" class="form-control form-control-sm" oninput="calculate()"></div>
+                <div class="col-12">
+                    <label class="small fw-bold">Harga Satuan Sebelum Pajak</label>
+                    <input type="text" id="in_h_tax_display" class="form-control form-control-sm bg-light" readonly>
+                </div>
+            </div>
+        </div>
 
-        <div class="col-lg-9 p-0" id="pdf-area">
-            <div class="document-canvas">
-                <div class="header-section">
-                    <div class="logo-container">
-                        <img src="header1.png" class="logo-img" onerror="this.src='https://via.placeholder.com/150x45?text=PT.+KSE'">
-                    </div>
-                    <div class="invoice-title">INVOICE</div>
-                </div>
+        <div class="col-lg-9 p-0" id="pdf-area">
+            <div class="document-canvas">
+                <div class="header-section">
+                    <img src="header1.png" class="logo-img" onerror="this.src='https://via.placeholder.com/140x40/062006/FFFFFF?text=PT.+KSE'">
+                    <div class="invoice-title">INVOICE</div>
+                </div>
 
-                <div class="info-grid">
-                    <div>
-                        <p class="mb-1">Kepada yth,</p>
-                        <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 14px; text-transform: uppercase;"></h6>
-                        <p id="out_addr" class="mb-1"></p>
-                        <p class="mb-0">di<br><span id="out_city" class="fw-bold"></span></p>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <table class="meta-table">
-                            <tr><td>Tanggal<br><span class="eng-sub">Date</span></td><td>: <span id="out_tgl"></span></td></tr>
-                            <tr><td>Nomor Invoice<br><span class="eng-sub">Invoice Number</span></td><td>: <span id="out_no"></span></td></tr>
-                            <tr><td>Nomor PO<br><span class="eng-sub">PO Number</span></td><td>: <span id="out_po"></span></td></tr>
-                            <tr><td>Term Payment<br><span class="eng-sub">Payment Term</span></td><td>: <span id="out_term"></span></td></tr>
-                            <tr><td>Jatuh Tempo<br><span class="eng-sub">Due Date</span></td><td>: <span id="out_due"></span></td></tr>
-                        </table>
-                    </div>
-                </div>
+                <div class="info-grid">
+                    <div>
+                        <p class="mb-1">Kepada yth,</p>
+                        <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 13px; color: var(--kse-primary);"></h6>
+                        <p id="out_addr" class="mb-1"></p>
+                        <p class="mb-0">di - <span id="out_city" class="fw-bold"></span></p>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <table class="meta-table">
+                            <tr><td width="90">Tanggal<span class="eng-sub">Date</span></td><td>: <span id="out_tgl"></span></td></tr>
+                            <tr><td>Nomor Invoice<span class="eng-sub">Invoice Number</span></td><td>: <span id="out_no"></span></td></tr>
+                            <tr><td>Nomor PO<span class="eng-sub">PO Number</span></td><td>: <span id="out_po"></span></td></tr>
+                            <tr><td>Term Payment<span class="eng-sub">Payment Term</span></td><td>: <span id="out_term"></span></td></tr>
+                            <tr><td>Jatuh Tempo<span class="eng-sub">Due Date</span></td><td>: <span id="out_due"></span></td></tr>
+                        </table>
+                    </div>
+                </div>
 
-                <table class="table-main">
-                    <thead>
-                        <tr>
-                            <th width="30%">NAMA BARANG</th>
-                            <th width="15%">QUANTITY ( L )</th>
-                            <th width="25%">HARGA SEBELUM PAJAK</th>
-                            <th width="30%">HARGA TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center fw-bold" id="out_produk" style="height: 60px;"></td>
-                            <td class="text-center" id="out_qty"></td>
-                            <td class="text-center" id="out_h_tax"></td>
-                            <td class="p-0">
-                                <div class="d-flex justify-content-between px-2 py-2 fw-bold">
-                                    <span>Rp</span>
-                                    <span id="out_total_net"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="p-0">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tr>
-                                        <td style="border-right: 1px solid #000; padding: 6px; width: 60px;">Harga</td>
-                                        <td style="border-right: 1px solid #000; padding: 6px; width: 40px;">Rp</td>
-                                        <td style="padding: 6px; text-align: right;" id="out_h_final"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td class="p-0">
-                                <table class="calc-inner">
-                                    <tr><td width="55%"></td><td width="10%">Rp</td><td class="text-end" id="out_total_net2"></td></tr>
-                                    <tr><td><i>DPP Nilai Lain</i></td><td>Rp</td><td class="text-end" id="out_dpp"></td></tr>
-                                    <tr><td><i>PPn (11%)</i></td><td>Rp</td><td class="text-end" id="out_ppn"></td></tr>
-                                    <tr><td><i>Penyesuaian</i></td><td></td><td class="text-end">-</td></tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr class="fw-bold" style="background: #f1f1f1;">
-                            <td colspan="3" class="text-end">Grand Total</td>
-                            <td class="p-0">
-                                <div class="d-flex justify-content-between px-2 py-1">
-                                    <span>Rp</span>
-                                    <span id="out_grand"></span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="terbilang-box">
-                    <b>Terbilang : </b> <span id="out_terbilang"></span>
-                </div>
+                <table class="table-main">
+                    <thead>
+                        <tr>
+                            <th width="30%">NAMA BARANG</th>
+                            <th width="15%">QUANTITY ( L )</th>
+                            <th width="25%">HARGA SEBELUM PAJAK</th>
+                            <th width="30%">HARGA TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center fw-bold" id="out_produk" style="height: 50px;"></td>
+                            <td class="text-center" id="out_qty"></td>
+                            <td class="text-center" id="out_h_tax"></td>
+                            <td class="p-0">
+                                <div class="d-flex justify-content-between px-2 py-2 fw-bold">
+                                    <span>Rp</span>
+                                    <span id="out_total_net"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="p-0">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="border-right: 1px solid #000; padding: 6px; width: 60px;">Harga Jual</td>
+                                        <td style="border-right: 1px solid #000; padding: 6px; width: 40px;">Rp</td>
+                                        <td style="padding: 6px; text-align: right;" id="out_h_final"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="p-0">
+                                <table class="calc-inner">
+                                    <tr><td width="55%">Sub Total</td><td width="10%">Rp</td><td class="text-end" id="out_total_net2"></td></tr>
+                                    <tr><td><i>DPP Nilai Lain</i></td><td>Rp</td><td class="text-end" id="out_dpp"></td></tr>
+                                    <tr><td><i>PPn (11%)</i></td><td>Rp</td><td class="text-end" id="out_ppn"></td></tr>
+                                    <tr><td><i>Penyesuaian</i></td><td>Rp</td><td class="text-end">-</td></tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="fw-bold" style="background: #f1f1f1; border-top: 1.5px solid #000;">
+                            <td colspan="3" class="text-end">Grand Total</td>
+                            <td class="p-0">
+                                <div class="d-flex justify-content-between px-2 py-2" style="font-size: 13px;">
+                                    <span>Rp</span>
+                                    <span id="out_grand"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="terbilang-box">
+                    <b>Terbilang : </b> <span id="out_terbilang"></span>
+                </div>
 
-                <div class="mt-3">
-                    <p class="mb-1"><i>Pembayaran :</i></p>
-                    <ul class="small list-unstyled ps-2">
-                        <li><i>1. Cash / Tunai</i></li>
-                        <li><i>2. Via transfer Bank Rek An. Khatulistiwa Sinar Energi</i></li>
-                        <li class="ps-3"><i>BRI - 0876-89887-899</i></li>
-                    </ul>
-                </div>
+                <div class="row">
+                    <div class="col-7 small">
+                        <p class="mb-1 text-decoration-underline"><b>Pembayaran :</b></p>
+                        <p class="mb-0">1. Cash / Tunai</p>
+                        <p class="mb-0">2. Transfer Bank Rek An. <b>Khatulistiwa Sinar Energi</b></p>
+                        <p class="mb-0 ms-3">BRI : 0876-89887-899</p>
+                    </div>
+                    <div class="col-5 sign-area">
+                        <p class="mb-0">Regard,</p>
+                        <p class="mb-5"><b>PT. Khatulistiwa Sinar Energi</b></p>
+                        <br><br>
+                        <p class="mt-3 mb-0 text-uppercase"><b>SUPRANOTO</b></p>
+                    </div>
+                </div>
 
-                <div class="sign-area">
-                    <p class="mb-0"><b>Regard,</b></p>
-                    <p class="mb-5"><b>PT. Khatulistiwa Sinar Energi</b></p>
-                    <br><br>
-                    <p class="mt-4 mb-0"><b>SUPRANOTO</b></p>
-                </div>
-
-                <div class="footer-kse">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_VALID_INVOICE" width="40" class="border p-1 bg-white">
-                            <div style="font-size: 8px; color: #777;">
-                                <b>OFFICIAL DIGITAL INVOICE</b><br>
-                                Dokumen ini dihasilkan secara sistem dan sah secara digital.<br>
-                                Validasi keaslian dapat dipindai via QR Code.
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <b style="font-size: 10px; color: var(--kse-primary);">PT. KHATULISTIWA SINAR ENERGI</b><br>
-                            <span style="font-size: 9px; color: #444; display: block; margin-top: -2px;">Mitra Penyalur dan Transportir BBM Industri</span>
-                            <span style="font-size: 8px; color: #888;">
-                                Jl. H.M. Rafi'i RT.24 Pangkalan Bun, Kalimantan Tengah<br>
-                                pt.khatulistiwa.sinar.energi@gmail.com
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                <div class="footer-kse">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_VALID_INVOICE" width="35">
+                            <div style="font-size: 7px; color: #777;">
+                                <b>Digital E-Form KSE System</b><br>
+                                Dokumen ini sah & Divalidasi Sytem<br>
+                                Scan QR Code untuk Verifikasi data Invoice.
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <b style="font-size: 10px; color: var(--kse-primary);">PT. KHATULISTIWA SINAR ENERGI</b><br>
+                            <span style="font-size: 8px; color: #444;">Mitra Penyalur dan Transportir BBM Industri</span><br>
+                            <span style="font-size: 7px; color: #888;">Jl. H.M. Rafi'i RT.24 Pangkalan Bun, Kalteng | pt.khatulistiwa.sinar.energi@gmail.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Fungsi Terbilang Otomatis
-    function terbilang(a) {
-        var bilangan = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
-        var kalimat = "";
-        if (a < 12) kalimat = bilangan[a];
-        else if (a < 20) kalimat = terbilang(a - 10) + " Belas";
-        else if (a < 100) kalimat = terbilang(Math.floor(a / 10)) + " Puluh " + terbilang(a % 10);
-        else if (a < 200) kalimat = " Seratus " + terbilang(a - 100);
-        else if (a < 1000) kalimat = terbilang(Math.floor(a / 100)) + " Ratus " + terbilang(a % 100);
-        else if (a < 2000) kalimat = " Seribu " + terbilang(a - 1000);
-        else if (a < 1000000) kalimat = terbilang(Math.floor(a / 1000)) + " Ribu " + terbilang(a % 1000);
-        else if (a < 1000000000) kalimat = terbilang(Math.floor(a / 1000000)) + " Juta " + terbilang(a % 1000000);
-        return kalimat.replace(/\s+/g, ' ').trim();
-    }
+    function terbilang(a) {
+        var bilangan = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+        var kalimat = "";
+        if (a < 12) kalimat = bilangan[a];
+        else if (a < 20) kalimat = terbilang(a - 10) + " Belas";
+        else if (a < 100) kalimat = terbilang(Math.floor(a / 10)) + " Puluh " + terbilang(a % 10);
+        else if (a < 200) kalimat = " Seratus " + terbilang(a - 100);
+        else if (a < 1000) kalimat = terbilang(Math.floor(a / 100)) + " Ratus " + terbilang(a % 100);
+        else if (a < 2000) kalimat = " Seribu " + terbilang(a - 1000);
+        else if (a < 1000000) kalimat = terbilang(Math.floor(a / 1000)) + " Ribu " + terbilang(a % 1000);
+        else if (a < 1000000000) kalimat = terbilang(Math.floor(a / 1000000)) + " Juta " + terbilang(a % 1000000);
+        return kalimat.replace(/\s+/g, ' ').trim();
+    }
 
-    function calculate() {
-        const qty = parseFloat(document.getElementById('in_qty').value) || 0;
-        const hFinalInput = parseFloat(document.getElementById('in_h_final').value) || 0;
-        
-        const grandTotal = Math.round(qty * hFinalInput);
-        const dpp = Math.round(grandTotal / 1.11);
-        const ppn = grandTotal - dpp;
-        const hTax = qty > 0 ? (dpp / qty) : 0;
+    function calculate() {
+        const qty = parseFloat(document.getElementById('in_qty').value) || 0;
+        const hFinalInput = parseFloat(document.getElementById('in_h_final').value) || 0;
+        
+        const grandTotal = Math.round(qty * hFinalInput);
+        const dpp = Math.round(grandTotal / 1.11);
+        const ppn = grandTotal - dpp;
+        const hTax = qty > 0 ? (dpp / qty) : 0;
 
-        // Update Panel Input Display
-        document.getElementById('in_h_tax_display').value = hTax.toLocaleString('id-ID', {minimumFractionDigits: 2});
+        document.getElementById('in_h_tax_display').value = hTax.toLocaleString('id-ID', {minimumFractionDigits: 2});
 
-        // Update Dokumen
-        document.getElementById('out_qty').innerText = qty.toLocaleString('id-ID');
-        document.getElementById('out_h_tax').innerText = hTax.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        document.getElementById('out_total_net').innerText = dpp.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_total_net2').innerText = dpp.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_dpp').innerText = dpp.toLocaleString('id-ID');
-        document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID');
-        document.getElementById('out_grand').innerText = grandTotal.toLocaleString('id-ID', {minimumFractionDigits: 1});
-        document.getElementById('out_h_final').innerText = hFinalInput.toLocaleString('id-ID');
-        
-        // Update Terbilang
-        if (grandTotal > 0) {
-            document.getElementById('out_terbilang').innerText = terbilang(Math.floor(grandTotal)) + " Rupiah";
-        } else {
-            document.getElementById('out_terbilang').innerText = "-";
-        }
-        
-        updateView();
-    }
+        document.getElementById('out_qty').innerText = qty.toLocaleString('id-ID');
+        document.getElementById('out_h_tax').innerText = hTax.toLocaleString('id-ID', {minimumFractionDigits: 2});
+        document.getElementById('out_total_net').innerText = dpp.toLocaleString('id-ID');
+        document.getElementById('out_total_net2').innerText = dpp.toLocaleString('id-ID');
+        document.getElementById('out_dpp').innerText = dpp.toLocaleString('id-ID');
+        document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID');
+        document.getElementById('out_grand').innerText = grandTotal.toLocaleString('id-ID');
+        document.getElementById('out_h_final').innerText = hFinalInput.toLocaleString('id-ID');
+        
+        document.getElementById('out_terbilang').innerText = grandTotal > 0 ? terbilang(grandTotal) + " Rupiah" : "-";
+        updateView();
+    }
 
-    function updateView() {
-        const ids = ['cust', 'addr', 'no', 'tgl', 'po', 'term', 'due', 'produk'];
-        ids.forEach(id => {
-            const val = document.getElementById('in_' + id).value;
-            document.getElementById('out_' + id).innerText = val;
-        });
+    function updateView() {
+        const fields = ['cust', 'addr', 'no', 'tgl', 'po', 'term', 'due', 'produk'];
+        fields.forEach(f => {
+            const val = document.getElementById('in_' + f).value;
+            document.getElementById('out_' + f).innerText = val;
+        });
 
-        const addrParts = document.getElementById('in_addr').value.split('\n');
-        document.getElementById('out_city').innerText = addrParts[addrParts.length - 1].toUpperCase();
-    }
+        const addrParts = document.getElementById('in_addr').value.split('\n');
+        document.getElementById('out_city').innerText = addrParts[addrParts.length - 1].toUpperCase();
+    }
 
-    function downloadPDF() {
-        const element = document.getElementById('pdf-area');
-        const opt = {
-            margin: 0,
-            filename: 'Invoice_KSE_' + (document.getElementById('in_no').value.replace(/\//g, '_') || 'Doc') + '.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 3, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    }
+    function downloadPDF() {
+        const element = document.getElementById('pdf-area');
+        html2pdf().set({
+            margin: 0,
+            filename: 'Invoice_KSE_' + document.getElementById('in_no').value.replace(/\//g,'-') + '.pdf',
+            html2canvas: { scale: 3 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).from(element).save();
+    }
 
-    window.onload = function() {
-        document.getElementById('in_no').value = "001 / KSE-INVOICE / I / 2026";
-        document.getElementById('in_tgl').value = "12 Januari 2026";
-        document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
-        document.getElementById('in_addr').value = "Jln. Karya Bahtera nusa NO. 236\nBanjarmasin";
-        document.getElementById('in_produk').value = "BBM Solar Industri";
-        document.getElementById('in_qty').value = 10000;
-        document.getElementById('in_h_final').value = 8950;
-        document.getElementById('in_po').value = "-";
-        document.getElementById('in_term').value = "-";
-        document.getElementById('in_due').value = "-";
-        calculate();
-    };
+    window.onload = function() {
+        document.getElementById('in_no').value = "001 / KSE-INVOICE / I / 2026";
+        document.getElementById('in_tgl').value = "12 Januari 2026";
+        document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
+        document.getElementById('in_addr').value = "Jln. Karya Bahtera nusa NO. 236\nBanjarmasin";
+        document.getElementById('in_produk').value = "BBM Solar Industri";
+        document.getElementById('in_qty').value = 10000;
+        document.getElementById('in_h_final').value = 8950;
+        calculate();
+    };
 </script>
 </body>
 </html>
