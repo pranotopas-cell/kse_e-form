@@ -25,19 +25,22 @@
         .invoice-title { font-size: 36px; font-weight: 900; font-style: italic; color: var(--kse-primary); letter-spacing: -1px; }
 
         .info-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px; margin-bottom: 15px; }
-        .meta-table td { padding: 1px 2px; line-height: 1.1; }
-        .eng-sub { font-size: 8px; color: #666; font-style: italic; display: block; }
+        .meta-table td { padding: 2px; line-height: 1.2; font-size: 10.5px; }
+        .eng-sub { font-size: 8px; color: #666; font-style: italic; display: block; margin-top: -2px; }
 
         /* Table Main Style */
         .table-main { width: 100%; border: 1.5px solid #000; border-collapse: collapse; }
-        .table-main th { background-color: var(--kse-header-table) !important; color: white !important; border: 1px solid #000; padding: 6px 4px; text-align: center; }
-        .table-main td { border: 1px solid #000; padding: 6px; vertical-align: middle; }
+        .table-main th { background-color: var(--kse-header-table) !important; color: white !important; border: 1px solid #000; padding: 8px 4px; text-align: center; font-size: 11px; }
+        .table-main td { border: 1px solid #000; padding: 8px; vertical-align: middle; font-size: 11px; }
 
-        .calc-inner td { border: 1px solid #000 !important; padding: 3px 8px !important; font-size: 10px; }
-        .terbilang-box { border: 1.5px solid #000; border-top: none; padding: 6px 10px; font-style: italic; background: #fdfdfd; margin-bottom: 15px; }
+        .calc-inner td { border: 1px solid #000 !important; padding: 4px 8px !important; font-size: 10.5px; }
+        .terbilang-box { border: 1.5px solid #000; border-top: none; padding: 8px 10px; font-style: italic; background: #fdfdfd; margin-bottom: 20px; font-size: 11px; }
 
         .footer-kse { position: absolute; bottom: 8mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 8px; }
-        .sign-area { margin-top: 20px; }
+        
+        /* Area Tanda Tangan Rata Kiri */
+        .signature-section { margin-top: 25px; text-align: left; width: fit-content; }
+        .payment-info { font-size: 10.5px; line-height: 1.4; }
 
         @media print {
             @page { size: A4; margin: 0; }
@@ -95,14 +98,14 @@
 
                 <div class="info-grid">
                     <div>
-                        <p class="mb-1">Kepada yth,</p>
-                        <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 13px; color: var(--kse-primary);"></h6>
-                        <p id="out_addr" class="mb-1"></p>
-                        <p class="mb-0">di - <span id="out_city" class="fw-bold"></span></p>
+                        <p class="mb-1" style="font-size: 11px;">Kepada yth,</p>
+                        <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 13px; color: var(--kse-primary); text-transform: uppercase;"></h6>
+                        <p id="out_addr" class="mb-1" style="font-size: 11px;"></p>
+                        <p class="mb-0" style="font-size: 11px;">di - <span id="out_city" class="fw-bold"></span></p>
                     </div>
                     <div class="d-flex justify-content-end">
                         <table class="meta-table">
-                            <tr><td width="90">Tanggal<span class="eng-sub">Date</span></td><td>: <span id="out_tgl"></span></td></tr>
+                            <tr><td width="95">Tanggal<span class="eng-sub">Date</span></td><td>: <span id="out_tgl"></span></td></tr>
                             <tr><td>Nomor Invoice<span class="eng-sub">Invoice Number</span></td><td>: <span id="out_no"></span></td></tr>
                             <tr><td>Nomor PO<span class="eng-sub">PO Number</span></td><td>: <span id="out_po"></span></td></tr>
                             <tr><td>Term Payment<span class="eng-sub">Payment Term</span></td><td>: <span id="out_term"></span></td></tr>
@@ -136,14 +139,14 @@
                             <td colspan="3" class="p-0">
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <tr>
-                                        <td style="border-right: 1px solid #000; padding: 6px; width: 60px;">Harga Jual</td>
+                                        <td style="border-right: 1px solid #000; padding: 6px; width: 70px;">Harga Jual</td>
                                         <td style="border-right: 1px solid #000; padding: 6px; width: 40px;">Rp</td>
                                         <td style="padding: 6px; text-align: right;" id="out_h_final"></td>
                                     </tr>
                                 </table>
                             </td>
                             <td class="p-0">
-                                <table class="calc-inner">
+                                <table class="calc-inner" style="width: 100%;">
                                     <tr><td width="55%">Sub Total</td><td width="10%">Rp</td><td class="text-end" id="out_total_net2"></td></tr>
                                     <tr><td><i>DPP Nilai Lain</i></td><td>Rp</td><td class="text-end" id="out_dpp"></td></tr>
                                     <tr><td><i>PPn (11%)</i></td><td>Rp</td><td class="text-end" id="out_ppn"></td></tr>
@@ -166,18 +169,17 @@
                     <b>Terbilang : </b> <span id="out_terbilang"></span>
                 </div>
 
-                <div class="row">
-                    <div class="col-7 small">
-                        <p class="mb-1 text-decoration-underline"><b>Pembayaran :</b></p>
-                        <p class="mb-0">1. Cash / Tunai</p>
-                        <p class="mb-0">2. Transfer Bank Rek An. <b>Khatulistiwa Sinar Energi</b></p>
-                        <p class="mb-0 ms-3">BRI : 0876-89887-899</p>
-                    </div>
-                    <div class="col-5 sign-area">
-                        <p class="mb-0">Regard,</p>
+                <div class="payment-info">
+                    <p class="mb-1 text-decoration-underline"><b>Pembayaran :</b></p>
+                    <p class="mb-0">1. Cash / Tunai</p>
+                    <p class="mb-0">2. Transfer Bank Rek An. <b>Khatulistiwa Sinar Energi</b></p>
+                    <p class="mb-0 ms-3">BRI : 0876-89887-899</p>
+                    
+                    <div class="signature-section">
+                        <p class="mb-0 mt-3">Regard,</p>
                         <p class="mb-5"><b>PT. Khatulistiwa Sinar Energi</b></p>
-                        <br><br>
-                        <p class="mt-3 mb-0 text-uppercase"><b>SUPRANOTO</b></p>
+                        <br>
+                        <p class="mt-4 mb-0 text-uppercase"><b>SUPRANOTO</b></p>
                     </div>
                 </div>
 
@@ -187,7 +189,7 @@
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_VALID_INVOICE" width="35">
                             <div style="font-size: 7px; color: #777;">
                                 <b>Digital E-Form KSE System</b><br>
-                                Dokumen ini sah & Divalidasi Sytem<br>
+                                Dokumen ini sah & Divalidasi System<br>
                                 Scan QR Code untuk Verifikasi data Invoice.
                             </div>
                         </div>
