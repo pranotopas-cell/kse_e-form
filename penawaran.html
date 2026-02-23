@@ -3,44 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Quotation System V3.4</title>
+    <title>KSE - Quotation System V3.5 Final</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root { --kse-primary: #1a3c15; }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; margin: 0; padding: 0; }
+        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; margin: 0; padding: 0; }
         
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
+        /* Canvas A4 */
         .document-canvas { 
             background: white; width: 210mm; min-height: 297mm; 
             margin: 20px auto; padding: 5mm 15mm 15mm 15mm; position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
-            color: #000; line-height: 1.4;
+            color: #000; line-height: 1.5;
         }
 
-        .header-section { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid var(--kse-primary); padding-bottom: 5px; }
-        .logo-img { height: 65px; width: auto; }
+        /* Header tanpa garis horizontal */
+        .header-section { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 35px; padding-top: 5mm; }
+        .logo-img { height: 60px; width: auto; }
         .doc-identity { text-align: right; }
         .doc-identity h2 { font-weight: 800; margin: 0; font-size: 24px; color: var(--kse-primary); }
 
-        .lang-en { font-style: italic; color: #888; font-size: 9px; display: block; }
+        .lang-en { font-style: italic; color: #777; font-size: 10px; display: block; }
 
-        .table-custom { width: 100%; border: 1.5px solid #000; border-collapse: collapse; margin-top: 10px; }
-        .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 8px; text-align: center; }
-        .table-custom td { border: 1px solid #000; padding: 6px; vertical-align: middle; }
+        /* Tabel Utama */
+        .table-custom { width: 100%; border: 1px solid #000; border-collapse: collapse; margin-top: 15px; }
+        .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 10px; text-align: center; font-size: 11px; }
+        .table-custom td { border: 1px solid #000; padding: 8px 10px; vertical-align: middle; }
         
-        .nested-table { width: 100%; border-collapse: collapse; margin: -6px; }
-        .nested-table td { border: none !important; border-bottom: 1px solid #eee !important; padding: 6px; }
+        .nested-table { width: 100%; border-collapse: collapse; margin: -8px -10px; }
+        .nested-table td { border: none !important; border-bottom: 1px solid #eee !important; padding: 6px 10px; }
         .nested-table tr:last-child td { border-bottom: none !important; }
 
-        /* Syarat & Ketentuan Padat */
-        .terms-compact { margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px; }
-        .terms-compact table td { padding: 2px 0; }
+        /* Syarat Ketentuan Padat */
+        .terms-compact { margin-top: 20px; }
+        .terms-table td { padding: 2px 0; vertical-align: top; }
 
-        .footer-kse { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; border-top: 1px solid #000; padding-top: 8px; }
-        
+        /* Footer Persis PO */
+        .footer-kse { position: absolute; bottom: 15mm; left: 15mm; right: 15mm; border-top: 1px solid #000; padding-top: 10px; }
+        .footer-logo-qr { width: 50px; height: 50px; border: 1px solid #eee; padding: 2px; }
+
         @media print {
             @page { size: A4; margin: 0; }
             body { background: white; }
@@ -53,32 +58,37 @@
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
-        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> CETAK</button>
+        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> CETAK SURAT</button>
         <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
     </div>
-    <span class="badge bg-primary">KSE System V3.4</span>
+    <span class="text-muted small fw-bold">KSE QUOTATION SYSTEM V3.5</span>
 </div>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3 input-sidebar shadow-sm">
-            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">INPUT DATA</h6>
-            <div class="row g-2 mb-3">
-                <div class="col-12"><label class="small fw-bold">No. Surat</label><input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Tanggal</label><input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()"></div>
+            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">DATA PENAWARAN</h6>
+            <div class="row g-2 mb-4">
+                <div class="col-12"><label class="small fw-bold">Tanggal Surat</label><input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Nomor Surat</label><input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()"></div>
                 <div class="col-12"><label class="small fw-bold">Periode</label><input type="text" id="in_per" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Customer</label><input type="text" id="in_cust" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Tujuan Kirim</label><input type="text" id="in_tujuan" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Harga Dasar</label><input type="number" id="in_harga" class="form-control form-control-sm" oninput="calculate()"></div>
-                <div class="col-12"><label class="small fw-bold">Pembayaran</label><input type="text" id="in_pay" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Qty</label><input type="text" id="in_qty" class="form-control form-control-sm" oninput="updateView()"></div>
+                <hr>
+                <div class="col-12"><label class="small fw-bold">Nama Customer</label><input type="text" id="in_cust" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Alamat / Lokasi</label><input type="text" id="in_addr" class="form-control form-control-sm" oninput="updateView()"></div>
+                <hr>
+                <div class="col-12"><label class="small fw-bold">Nama Produk</label><input type="text" id="in_produk" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Tujuan Pengiriman</label><input type="text" id="in_tujuan" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Harga Dasar (Liter)</label><input type="number" id="in_harga" class="form-control form-control-sm" oninput="calculate()"></div>
+                <hr>
+                <div class="col-12"><label class="small fw-bold">Sistem Pembayaran</label><input type="text" id="in_pay" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Quantity</label><input type="text" id="in_qty" class="form-control form-control-sm" oninput="updateView()"></div>
             </div>
         </div>
 
         <div class="col-lg-9 p-0" id="pdf-area">
             <div class="document-canvas">
                 <div class="header-section">
-                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x70?text=PT.+KSE+LOGO'">
+                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x60?text=PT.+KSE+LOGO'">
                     <div class="doc-identity">
                         <h2>PENAWARAN HARGA</h2>
                         <span class="lang-en">Official Fuel Quotation</span>
@@ -86,87 +96,109 @@
                 </div>
 
                 <div class="info-meta">
-                    <table class="table-borderless">
-                        <tr><td width="90">Tanggal <span class="lang-en">Date</span></td><td width="10">:</td><td><span id="out_tgl"></span></td></tr>
-                        <tr><td>Nomor <span class="lang-en">Ref. No</span></td><td>:</td><td><b id="out_no"></b></td></tr>
-                        <tr><td>Periode <span class="lang-en">Period</span></td><td>:</td><td><span id="out_per"></span></td></tr>
+                    <table class="table-borderless" style="min-width: 300px;">
+                        <tr><td width="100">Tanggal <span class="lang-en">Date</span></td><td width="10">:</td><td><span id="out_tgl"></span></td></tr>
+                        <tr><td>Nomor <span class="lang-en">Reference No</span></td><td>:</td><td><b id="out_no"></b></td></tr>
+                        <tr><td>Periode <span class="lang-en">Validity Period</span></td><td>:</td><td><span id="out_per"></span></td></tr>
                     </table>
                 </div>
 
-                <div class="mt-3">
+                <div class="mt-4">
                     <p class="mb-0">Kepada Yth,</p>
-                    <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 13px;"></h6>
-                    <p>Di Tempat</p>
+                    <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 14px;"></h6>
+                    <p id="out_addr" class="mb-0"></p>
                 </div>
 
-                <div class="mt-3">
-                    <p>Dengan hormat, <br> Bersama ini <b>PT. Khatulistiwa Sinar Energi</b> menawarkan harga BBM Industri dengan rincian:</p>
+                <div class="mt-4">
+                    <p class="mb-2">Dengan hormat,</p>
+                    <p>Bersama ini kami <b>PT. Khatulistiwa Sinar Energi</b> mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
                 </div>
 
                 <table class="table-custom">
                     <thead>
                         <tr>
-                            <th width="30">No</th>
-                            <th>Produk <span class="lang-en" style="color:#ddd">Product</span></th>
-                            <th>Tujuan <span class="lang-en" style="color:#ddd">Destination</span></th>
-                            <th width="240">Rincian Harga <span class="lang-en" style="color:#ddd">Price Details</span></th>
-                            <th width="60">Unit</th>
+                            <th width="40">No</th>
+                            <th>Produk <span class="lang-en" style="color:#eee">Product</span></th>
+                            <th>Tujuan Pengiriman <span class="lang-en" style="color:#eee">Destination</span></th>
+                            <th width="240">Rincian Harga <span class="lang-en" style="color:#eee">Price Details</span></th>
+                            <th width="80">Satuan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="text-center">1</td>
-                            <td class="text-center fw-bold">BBM Solar B40</td>
+                            <td class="text-center fw-bold" id="out_produk"></td>
                             <td class="text-center" id="out_tujuan"></td>
                             <td class="p-0">
                                 <table class="nested-table">
-                                    <tr><td>Harga Dasar</td><td width="20">Rp</td><td width="90" class="text-end" id="out_h_dasar"></td></tr>
-                                    <tr><td>PPN (11%)</td><td>Rp</td><td class="text-end" id="out_ppn"></td></tr>
-                                    <tr class="fw-bold" style="background-color: #eee;"><td>Grand Total</td><td>Rp</td><td class="text-end" id="out_grand"></td></tr>
+                                    <tr><td>Harga Dasar</td><td width="20">Rp</td><td width="100" class="text-end" id="out_h_dasar"></td></tr>
+                                    <tr><td>Ppn (11%)</td><td>Rp</td><td class="text-end" id="out_ppn"></td></tr>
+                                    <tr class="fw-bold" style="background-color: #f2f2f2;"><td>Grand Total</td><td>Rp</td><td class="text-end" id="out_grand"></td></tr>
                                 </table>
                             </td>
-                            <td class="text-center">Liter</td>
+                            <td class="text-center fw-bold">Liter</td>
                         </tr>
                     </tbody>
                 </table>
-                <p class="small mt-1"><i>* Harga sudah termasuk PPN 11% dan OAT.</i></p>
+                <p class="small mt-2"><i>Note: Harga sudah termasuk ppn 11 % dan OAT.</i></p>
 
-                <div class="terms-compact">
-                    <h6 class="fw-bold mb-1" style="font-size: 11px; text-decoration: underline;">SYARAT & KETENTUAN:</h6>
-                    <table class="table-borderless w-100">
-                        <tr><td width="130">Pembayaran <span class="lang-en">Payment</span></td><td width="10">:</td><td><b id="out_pay"></b></td></tr>
-                        <tr><td>Kuantitas <span class="lang-en">Quantity</span></td><td>:</td><td><span id="out_qty"></span></td></tr>
-                        <tr><td>Toleransi <span class="lang-en">Tolerance</span></td><td>:</td><td>0,3 %</td></tr>
-                        <tr><td>Kontak <span class="lang-en">Contact</span></td><td>:</td><td>Supranoto (0815-8841-410)</td></tr>
+                <div class="terms-compact mt-4">
+                    <table class="table-borderless terms-table w-100">
+                        <tr>
+                            <td width="160">Sistem pembayaran <span class="lang-en">Payment System</span></td>
+                            <td width="15">:</td>
+                            <td><b id="out_pay"></b></td>
+                        </tr>
+                        <tr>
+                            <td>Quantity <span class="lang-en">Order Quantity</span></td>
+                            <td>:</td>
+                            <td><span id="out_qty"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Toleransi <span class="lang-en">Tolerance</span></td>
+                            <td>:</td>
+                            <td>0,3 % (Standard Fuel Tolerance)</td>
+                        </tr>
+                        <tr>
+                            <td>Contact Person <span class="lang-en">Representative</span></td>
+                            <td>:</td>
+                            <td>Supranoto - 08158841410</td>
+                        </tr>
                     </table>
                 </div>
 
                 <div class="mt-4">
-                    <p>Demikian penawaran ini, kami menantikan kabar baik untuk kerja sama ini. Terima kasih.</p>
+                    <p>Demikian penawaran ini kami sampaikan, besar harapan kami bisa menjalin kerja sama dengan perusahaan Bpk / Ibu Pimpin. Atas perhatiannya kami ucapkan Terima Kasih.</p>
                 </div>
 
-                <div class="mt-4">
-                    <p class="mb-0">Hormat kami,</p>
-                    <p class="fw-bold mb-1">PT. Khatulistiwa Sinar Energi</p>
-                    <div class="py-1">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=KSE_SUPRANOTO" class="border">
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <p class="mb-0">Hormat kami,</p>
+                        <p class="fw-bold mb-2">PT. Khatulistiwa Sinar Energi</p>
+                        <div class="py-2">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=SIGNED_BY_SUPRANOTO_KSE" class="border p-1">
+                        </div>
+                        <p class="fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
+                        <p class="small">Direktur Operasional</p>
                     </div>
-                    <p class="fw-bold text-decoration-underline mb-0">SUPRANOTO</p>
-                    <p>Direktur Operasional</p>
                 </div>
 
                 <div class="footer-kse">
-                    <div class="d-flex justify-content-between align-items-end">
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=VERIFIED" width="40">
-                            <div style="font-size: 7px; color: #444;">
-                                <b>OFFICIAL DOCUMENT</b><br>Diterbitkan secara digital oleh<br>Sistem Administrasi PT. KSE
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=KSE_VALID_QUOTATION" class="footer-logo-qr">
+                            <div style="font-size: 8px; color: #444; line-height: 1.3;">
+                                <b>OFFICIAL DIGITAL QUOTATION</b><br>
+                                Dokumen ini dihasilkan secara otomatis oleh sistem administrasi<br>
+                                PT. Khatulistiwa Sinar Energi dan dinyatakan sah.
                             </div>
                         </div>
                         <div class="text-end">
-                            <b style="font-size: 12px; color: var(--kse-primary); display: block; margin-bottom: -2px;">PT. KHATULISTIWA SINAR ENERGI</b>
-                            <span style="font-size: 9px; font-weight: 600; color: #333;">Mitra Penyalur BBM Industri</span><br>
-                            <span style="font-size: 8px; color: #666;">Jl. H.M. Rafi'i RT.24 Pangkalan Bun, Kalimantan Tengah</span>
+                            <b style="font-size: 13px; color: var(--kse-primary);">PT. KHATULISTIWA SINAR ENERGI</b><br>
+                            <span style="font-size: 10px; font-weight: bold; color: #333;">Mitra Penyalur BBM Industri</span><br>
+                            <span style="font-size: 8px; color: #666;">
+                                Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -181,6 +213,7 @@
         const hBase = parseFloat(document.getElementById('in_harga').value) || 0;
         const ppn = Math.round(hBase * 0.11);
         const grand = hBase + ppn;
+
         document.getElementById('out_h_dasar').innerText = hBase.toLocaleString('id-ID');
         document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID');
         document.getElementById('out_grand').innerText = grand.toLocaleString('id-ID');
@@ -188,30 +221,37 @@
     }
 
     function updateView() {
-        const map = { in_no:'out_no', in_tgl:'out_tgl', in_per:'out_per', in_cust:'out_cust', in_tujuan:'out_tujuan', in_pay:'out_pay', in_qty:'out_qty' };
-        for(let key in map) { document.getElementById(map[key]).innerText = document.getElementById(key).value; }
+        const fields = ['tgl', 'no', 'per', 'cust', 'addr', 'produk', 'tujuan', 'pay', 'qty'];
+        fields.forEach(f => {
+            const val = document.getElementById('in_' + f).value;
+            document.getElementById('out_' + f).innerText = val;
+        });
     }
 
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
-        html2pdf().set({
+        const opt = {
             margin: 0,
-            filename: 'Penawaran_KSE.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2 },
+            filename: 'Penawaran_KSE_' + document.getElementById('in_no').value + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save();
+        };
+        html2pdf().set(opt).from(element).save();
     }
 
+    // Default Values
     window.onload = function() {
-        document.getElementById('in_no').value = "045/KSE-QUO/II/2026";
         document.getElementById('in_tgl').value = "23 FEBRUARI 2026";
+        document.getElementById('in_no').value = "045/KSE-QUO/II/2026";
         document.getElementById('in_per').value = "FEBRUARI 2026";
         document.getElementById('in_cust').value = "PIMPINAN PERUSAHAAN";
-        document.getElementById('in_tujuan').value = "Site Tarjun";
+        document.getElementById('in_addr').value = "Di Tempat";
+        document.getElementById('in_produk').value = "Bbm Solar B40";
+        document.getElementById('in_tujuan').value = "site Tarjun";
         document.getElementById('in_harga').value = 15586;
-        document.getElementById('in_pay').value = "TOP 7 Hari";
-        document.getElementById('in_qty').value = "5.000 / 10.000 Ltr";
+        document.getElementById('in_pay').value = "TOP 7 hari setelah Invoice diterima";
+        document.getElementById('in_qty').value = "5.000 / 10.000 ltr";
         calculate();
     };
 </script>
