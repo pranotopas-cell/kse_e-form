@@ -56,7 +56,6 @@
             padding-top: 8px;
         }
         .footer-left { display: flex; align-items: center; gap: 15px; }
-        /* QR Code Container */
         #qrcode img { display: inline-block; } 
         .qr-text { font-size: 9px; line-height: 1.3; }
         .footer-right { text-align: right; font-size: 10px; line-height: 1.3; }
@@ -91,7 +90,8 @@
                 <div class="col-md-2"><label class="small fw-bold">Tinggi Cairan</label><input type="text" class="form-control form-control-sm kse-input" id="in_tinggi" value="-"></div>
                 <div class="col-md-2"><label class="small fw-bold">KM Awal</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_awal" value="-"></div>
                 <div class="col-md-2"><label class="small fw-bold">KM Akhir</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_akhir" value="-"></div>
-                <div class="col-md-4"><label class="small fw-bold">Note Box</label><input type="text" class="form-control form-control-sm kse-input" id="in_note" value="-"></div>
+                <div class="col-md-2"><label class="small text-danger fw-bold">Quantity (Liter)</label><input type="text" class="form-control form-control-sm border-danger kse-input" id="in_qty" value="5.000 liter"></div>
+                <div class="col-md-2"><label class="small fw-bold">Note Box</label><input type="text" class="form-control form-control-sm kse-input" id="in_note" value="-"></div>
 
                 <div class="col-md-3"><label class="small text-success fw-bold">Nama Penerima</label><input type="text" class="form-control form-control-sm border-success kse-input" id="in_penerima" placeholder="-"></div>
                 <div class="col-md-3"><label class="small text-success fw-bold">Nama Sopir</label><input type="text" class="form-control form-control-sm border-success kse-input" id="in_sopir" value="-"></div>
@@ -154,7 +154,7 @@
             </tr>
             <tr>
                 <td>TRANSPORTIR <br> <span class="label-en">CARRIER</span></td><td>PT. KHATULISTIWA SINAR ENERGI</td>
-                <td>JUMLAH <br> <span class="label-en">QUANTITY</span></td><td><strong style="font-size: 16px;">5.000 liter</strong></td>
+                <td>JUMLAH <br> <span class="label-en">QUANTITY</span></td><td><strong style="font-size: 16px;" id="p_qty">5.000 liter</strong></td>
             </tr>
             <tr>
                 <td>NOMOR SEGEL <br> <span class="label-en">SEAL NUMBER</span></td><td><span id="p_segel">-</span></td>
@@ -204,7 +204,6 @@
     let qrcode;
 
     window.onload = function() {
-        // Inisialisasi QR Code saat halaman dibuka
         qrcode = new QRCode(document.getElementById("qrcode"), {
             text: "KSE-INITIALIZING",
             width: 45,
@@ -214,7 +213,6 @@
             correctLevel : QRCode.CorrectLevel.H
         });
         
-        // Atur Tanggal Otomatis jika kosong
         if(!document.getElementById('in_tgl').value) {
             const d = new Date();
             const m = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
@@ -223,7 +221,6 @@
 
         updateDisplay();
         
-        // Tambahkan event listener ke semua input
         document.querySelectorAll('.kse-input').forEach(input => {
             input.addEventListener('input', updateDisplay);
         });
@@ -235,7 +232,6 @@
         const urut = (document.getElementById('in_no_urut').value || "0").toString().padStart(3, '0');
         const nosj = `${urut}/KSE-SJ/${rom[d.getMonth()]}/${d.getFullYear()}`;
         
-        // Update Tampilan Preview
         document.getElementById('p_nosj').innerText = nosj;
         document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
         document.getElementById('p_lokasi').innerText = document.getElementById('in_lokasi').value;
@@ -251,15 +247,14 @@
         document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
         document.getElementById('p_km_awal').innerText = document.getElementById('in_km_awal').value;
         document.getElementById('p_km_akhir').innerText = document.getElementById('in_km_akhir').value;
+        document.getElementById('p_qty').innerText = document.getElementById('in_qty').value;
         document.getElementById('p_note').innerText = document.getElementById('in_note').value;
         
-        // Update Area Tanda Tangan
         document.getElementById('f_penerima').innerText = document.getElementById('in_penerima').value || "................";
         document.getElementById('f_sopir').innerText = document.getElementById('in_sopir').value || "................";
         document.getElementById('f_helper').innerText = document.getElementById('in_helper').value || "................";
         document.getElementById('f_admin').innerText = document.getElementById('in_admin').value || "................";
         
-        // Update QR Code dengan data nomor surat jalan
         qrcode.clear();
         qrcode.makeCode("VERIFIED-KSE-" + nosj);
     }
@@ -279,7 +274,3 @@
 </script>
 </body>
 </html>
-
-
-
-
