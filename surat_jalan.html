@@ -10,28 +10,27 @@
         :root { --kse-green-dark: #1a3c15; } 
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; }
         
-        /* Container Render */
+        /* Container Render Utama */
         #surat-jalan-render {
             width: 210mm;
-            height: 296mm; /* Sedikit kurang dari 297mm untuk safety margin */
+            height: 290mm; /* Dikunci agar tidak tumpah ke hal 2 */
             padding: 10mm 15mm;
-            margin: 20px auto;
+            margin: auto;
             background: white;
             position: relative;
             color: #000;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
         
         .header-clean {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 15px;
             padding-bottom: 5px;
-            margin-bottom: 25px;
-            
         }
 
         .logo-main { height: 50px; width: auto; object-fit: contain; }
@@ -39,52 +38,45 @@
         .title-block { text-align: right; }
         .title-block h2 { 
             font-weight: 900; 
-            font-size: 28px;
+            font-size: 26px;
             margin: 0; 
             color: var(--kse-green-dark);
             line-height: 1;
         }
-        .en-label { font-size: 10px; font-style: italic; color: #666; display: block; line-height: 1.2; }
+        .en-label { font-size: 9px; font-style: italic; color: #666; display: block; line-height: 1.2; }
         
-        .info-section { margin-top: 10px; margin-bottom: 15px; } 
+        .info-section { margin-bottom: 15px; } 
         
-        .table-custom { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 6px; font-size: 12px; border: 1px solid #000; }
-        .table-custom td { border: 1px solid #000; padding: 6px 10px; font-size: 11px; vertical-align: middle; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 5px; table-layout: fixed; }
+        .table-custom th { background-color: var(--kse-green-dark) !important; color: white !important; text-align: center; padding: 6px; font-size: 11px; border: 1px solid #000; }
+        .table-custom td { border: 1px solid #000; padding: 5px 8px; font-size: 10.5px; vertical-align: middle; word-wrap: break-word; }
         
-        .statement-text { font-size: 10px; font-style: italic; margin-top: 15px; margin-bottom: 10px; line-height: 1.3; text-align: center; color: #333; }
+        .statement-text { font-size: 10px; font-style: italic; margin: 12px 0; line-height: 1.3; text-align: center; color: #333; }
         
-        .footer-sign { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .footer-sign th { background-color: var(--kse-green-dark) !important; color: white !important; font-size: 11px; padding: 4px; border: 1px solid #000; text-align: center; }
-        .footer-sign td { border: 1px solid #000; height: 75px; width: 25%; vertical-align: bottom; padding: 8px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
-        .img-stempel { position: absolute; width: 85px; bottom: 20px; left: 50%; transform: translateX(-50%); opacity: 0.8; pointer-events: none; z-index: 10; }
+        .footer-sign { width: 100%; border-collapse: collapse; }
+        .footer-sign th { background-color: var(--kse-green-dark) !important; color: white !important; font-size: 10px; padding: 4px; border: 1px solid #000; text-align: center; }
+        .footer-sign td { border: 1px solid #000; height: 70px; width: 25%; vertical-align: bottom; padding: 5px; font-size: 10px; font-weight: bold; text-align: center; position: relative; }
+        .img-stempel { position: absolute; width: 80px; bottom: 15px; left: 50%; transform: translateX(-50%); opacity: 0.8; pointer-events: none; z-index: 10; }
         
-        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 15px; padding: 8px 12px; font-size: 11px; min-height: 60px; }
-        .copy-notes { font-size: 9px; margin-top: 8px; font-weight: bold; color: #555; }
+        .other-note-box { width: 100%; border: 1px solid #000; margin-top: 10px; padding: 8px; font-size: 10px; min-height: 50px; flex-grow: 0; }
+        .copy-notes { font-size: 8px; margin-top: 5px; font-weight: bold; color: #555; }
         
+        /* Footer bawah tetap di dasar halaman */
         .fixed-footer { margin-top: auto; padding-top: 10px; border-top: 1px solid #eee; }
         .footer-content { display: flex; justify-content: space-between; align-items: center; }
-        .qr-section { display: flex; align-items: center; gap: 10px; }
-        #qrcode { width: 50px; height: 50px; }
-        .e-form-cap { font-size: 9px; color: #888; line-height: 1.2; }
+        .qr-section { display: flex; align-items: center; gap: 8px; }
+        #qrcode { width: 45px; height: 45px; }
+        .e-form-cap { font-size: 8px; color: #888; line-height: 1.2; }
         
         .company-info-footer { text-align: right; }
-        .footer-name { font-weight: bold; font-size: 13px; color: var(--kse-green-dark); margin: 0; }
-        .footer-tagline { font-size: 9px; font-weight: 600; color: #444; margin: 0; font-style: italic; }
-        .contact-item { font-size: 8.5px; margin: 0; }
+        .footer-name { font-weight: bold; font-size: 12px; color: var(--kse-green-dark); margin: 0; }
+        .footer-tagline { font-size: 8.5px; font-weight: 600; color: #444; margin: 0; font-style: italic; }
+        .contact-item { font-size: 8px; margin: 0; }
 
-        /* PRINT OPTIMIZATION */
         @media print { 
-            body { background: none; margin: 0; padding: 0; }
             .no-print { display: none; } 
-            #surat-jalan-render { 
-                margin: 0; 
-                border: none; 
-                width: 210mm;
-                height: 297mm;
-                padding: 10mm 15mm;
-                box-shadow: none;
-            } 
+            body { background: white; }
+            #surat-jalan-render { margin: 0; padding: 10mm 15mm; box-shadow: none; } 
         }
     </style>
 </head>
@@ -138,25 +130,25 @@
         </div>
     </div>
 
-    <div class="row info-section" style="font-size: 12px;">
+    <div class="row info-section" style="font-size: 11px;">
         <div class="col-7">
-            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">TUJUAN PENGIRIMAN :</div>
-            <strong id="p_pt" style="font-size: 16px; display: block; color: var(--kse-green-dark); margin-bottom: 8px;">-</strong>
-            <div style="line-height: 1.5;">
+            <div style="margin-bottom: 3px; font-weight: bold;">TUJUAN PENGIRIMAN :</div>
+            <strong id="p_pt" style="font-size: 15px; display: block; color: var(--kse-green-dark); margin-bottom: 5px;">-</strong>
+            <div style="line-height: 1.4;">
                 LOKASI: <span id="p_lokasi" style="font-weight: bold;">-</span><br>
                 CONTACT: <span id="p_cp" style="font-weight: bold;">-</span>
             </div>
         </div>
         <div class="col-5">
-            <table class="w-100" style="line-height: 1.4;">
-                <tr><td width="45%">TANGGAL<br><span class="en-label">Date</span></td><td>: <span id="p_tgl" class="fw-bold"></span></td></tr>
+            <table class="w-100" style="line-height: 1.3;">
+                <tr><td width="50%">TANGGAL<br><span class="en-label">Date</span></td><td>: <span id="p_tgl" class="fw-bold"></span></td></tr>
                 <tr><td>NO. SURAT<br><span class="en-label">SJ Number</span></td><td>: <span id="p_nosj" class="fw-bold"></span></td></tr>
                 <tr><td>NOMOR PO<br><span class="en-label">PO Number</span></td><td>: <span id="p_po" class="fw-bold"></span></td></tr>
             </table>
         </div>
     </div>
 
-    <div style="font-size: 11px; margin-bottom: 8px;">
+    <div style="font-size: 10px; margin-bottom: 5px;">
         Dengan hormat, Bersama ini kami kirimkan BBM Industri, dengan rincian sebagai berikut:
     </div>
 
@@ -167,9 +159,9 @@
         <tbody>
             <tr>
                 <td width="25%">NOMOR POLISI<br><span class="en-label">Vehicle Number</span></td>
-                <td width="25%">: <strong id="p_nopol">-</strong></td>
+                <td>: <strong id="p_nopol">-</strong></td>
                 <td width="25%">JENIS BBM<br><span class="en-label">Product Type</span></td>
-                <td width="25%">: <span id="p_jns_bbm">-</span></td>
+                <td>: <span id="p_jns_bbm">-</span></td>
             </tr>
             <tr>
                 <td>NAMA SOPIR<br><span class="en-label">Driver Name</span></td>
@@ -181,7 +173,7 @@
                 <td>TRANSPORTIR<br><span class="en-label">Transporter</span></td>
                 <td>: PT. KHATULISTIWA SINAR ENERGI</td>
                 <td>JUMLAH<br><span class="en-label">Quantity</span></td>
-                <td>: <strong style="font-size: 13px;">5.000 liter</strong></td>
+                <td>: <strong style="font-size: 12px;">5.000 liter</strong></td>
             </tr>
             <tr>
                 <td>NOMOR SEGEL<br><span class="en-label">Seal Number</span></td>
@@ -246,7 +238,7 @@
                 <div class="e-form-cap">
                     <strong>Digital E-Form KSE System</strong><br>
                     Dokumen ini sah & divalidasi sistem.<br>
-                    Scan QR untuk verifikasi nomor surat.
+                    Scan QR untuk verifikasi.
                 </div>
             </div>
             <div class="company-info-footer">
@@ -286,7 +278,7 @@
             document.getElementById('in_tgl').value = `${now.getDate().toString().padStart(2,'0')} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
         }
         
-        qrcode = new QRCode(document.getElementById("qrcode"), { width: 50, height: 50 });
+        qrcode = new QRCode(document.getElementById("qrcode"), { width: 45, height: 45 });
         updateData();
     }
 
@@ -333,7 +325,7 @@
             margin: 0,
             filename: `SJ_KSE_${document.getElementById('p_nosj').innerText.replace(/\//g, '-')}.pdf`,
             image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
+            html2canvas: { scale: 3, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
@@ -342,11 +334,8 @@
             localStorage.setItem('kse_last_num', nextNum);
             document.getElementById('in_no_urut').value = nextNum;
             updateData();
-            alert("Download Berhasil! Nomor Urut telah diperbarui.");
         });
     }
 </script>
 </body>
 </html>
-
-
