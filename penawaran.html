@@ -2,236 +2,118 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Quotation System V3.8</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <title>Penawaran Harga</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
-        :root { --kse-primary: #1a3c15; }
-        body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 11.5px; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; }
         
-        .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
-        .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
+        /* Layout Header & Tabel (Tetap) */
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        table { width: 100%; line-height: inherit; text-align: left; border-collapse: collapse; }
+        table td { padding: 8px; border-bottom: 1px solid #eee; }
         
-        .document-canvas { 
-            background: white; width: 210mm; height: 297mm;
-            margin: 20px auto; padding: 5mm 15mm; position: relative;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
-            color: #000; line-height: 1.4; overflow: hidden;
+        /* Style Footer & QR */
+        .footer { 
+            margin-top: 50px; 
+            padding-top: 10px; 
+            border-top: 2px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .header-section { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; padding-top: 5mm; }
-        .logo-img { height: 55px; width: auto; }
-        .doc-identity { text-align: right; }
-        .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: var(--kse-primary); }
-        .lang-en { font-style: italic; color: #777; font-size: 9px; display: block; }
-
-        /* Meta Info di Kanan Atas */
-        .info-meta-right { display: flex; justify-content: flex-end; margin-bottom: 20px; }
-        .info-meta-right table td { padding: 1px 0; }
-
-        .table-custom { width: 100%; border: 1px solid #000; border-collapse: collapse; margin-top: 10px; }
-        .table-custom th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 8px; text-align: center; font-size: 10px; }
-        .table-custom td { border: 1px solid #000; padding: 6px 10px; vertical-align: middle; }
-        
-        .nested-table { width: 100%; border-collapse: collapse; margin: -6px -10px; }
-        .nested-table td { border: none !important; border-bottom: 1px solid #eee !important; padding: 4px 10px; }
-        .nested-table tr:last-child td { border-bottom: none !important; }
-
-        .footer-kse { 
-            position: absolute; bottom: 10mm; left: 15mm; right: 15mm; 
-            border-top: 1px solid #000; padding-top: 8px;
-        }
-        .footer-logo-qr { width: 45px; height: 45px; border: 1px solid #eee; padding: 2px; }
-
-        @media print {
-            body { background: none; }
-            .control-nav, .input-sidebar { display: none !important; }
-            .document-canvas { margin: 0 !important; box-shadow: none !important; }
-            @page { margin: 0; size: A4; }
+        #qrcode img { width: 80px; height: 80px; }
+        .btn-download { 
+            background: #2c3e50; color: white; padding: 10px 20px; 
+            border: none; cursor: pointer; margin-bottom: 20px; 
         }
     </style>
 </head>
 <body>
 
-<div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
-    <div class="d-flex gap-2">
-        <a href="index.html" class="btn btn-outline-dark btn-sm"><i class="bi bi-house-door"></i> HOME</a>
-        <div class="vr mx-1"></div>
-        <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> CETAK</button>
-        <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
-    </div>
-    <span class="text-muted small fw-bold">KSE SYSTEM V3.8</span>
-</div>
+    <button class="btn-download" onclick="generatePDF()">Download PDF</button>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-3 input-sidebar d-print-none">
-            <h6 class="fw-bold mb-3 text-success border-bottom pb-2">DATA PENAWARAN</h6>
-            <div class="row g-2 mb-4">
-                <div class="col-12"><label class="small fw-bold">Tanggal Surat</label><input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Nomor Surat</label><input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Periode</label><input type="text" id="in_per" class="form-control form-control-sm" oninput="updateView()"></div>
-                <hr class="my-1">
-                <div class="col-12"><label class="small fw-bold">Nama Customer</label><input type="text" id="in_cust" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Alamat / Lokasi</label><input type="text" id="in_addr" class="form-control form-control-sm" oninput="updateView()"></div>
-                <hr class="my-1">
-                <div class="col-12"><label class="small fw-bold">Nama Produk</label><input type="text" id="in_produk" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Tujuan Kirim</label><input type="text" id="in_tujuan" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Harga Dasar</label><input type="number" id="in_harga" class="form-control form-control-sm" oninput="calculate()"></div>
-                <hr class="my-1">
-                <div class="col-12"><label class="small fw-bold">Sistem Pembayaran</label><input type="text" id="in_pay" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Quantity</label><input type="text" id="in_qty" class="form-control form-control-sm" oninput="updateView()"></div>
+    <div id="print-area" class="invoice-box">
+        <div class="header">
+            <div>
+                <h2>PENAWARAN HARGA</h2>
+                <p>Nomor: <span id="no-penawaran">OPH/2024/001</span></p>
+                <p>Tanggal: 24 Februari 2026</p>
+            </div>
+            <div style="text-align: right;">
+                <p>Kepada Yth:</p>
+                <strong id="nama-pt">PT. Maju Mundur Sejahtera</strong>
             </div>
         </div>
 
-        <div class="col-lg-9 p-0">
-            <div class="document-canvas" id="the-canvas">
-                <div class="header-section">
-                    <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x60?text=PT.+KSE+LOGO'">
-                    <div class="doc-identity">
-                        <h2>PENAWARAN HARGA</h2>
-                        <span class="lang-en">Official Fuel Quotation</span>
-                    </div>
-                </div>
+        <table>
+            <thead>
+                <tr style="background: #f9f9f9;">
+                    <td>Deskripsi</td>
+                    <td>Jumlah</td>
+                    <td>Harga</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jasa Konsultasi IT</td>
+                    <td>1 Lot</td>
+                    <td>Rp 15.000.000</td>
+                </tr>
+            </tbody>
+        </table>
 
-                <div class="info-meta-right">
-                    <table class="table-borderless">
-                        <tr><td width="90">Tanggal <span class="lang-en">Date</span></td><td width="15" class="text-center">:</td><td width="150"><span id="out_tgl"></span></td></tr>
-                        <tr><td>Nomor <span class="lang-en">Ref No</span></td><td class="text-center">:</td><td><b id="out_no"></b></td></tr>
-                        <tr><td>Periode <span class="lang-en">Period</span></td><td class="text-center">:</td><td><span id="out_per"></span></td></tr>
-                    </table>
-                </div>
-
-                <div class="mb-4">
-                    <p class="mb-0">Kepada Yth,</p>
-                    <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 13px;"></h6>
-                    <p id="out_addr" class="mb-0"></p>
-                </div>
-
-                <div class="mb-3">
-                    <p class="mb-2">Dengan hormat,</p>
-                    <p class="mb-3">Bersama ini kami <b>PT. Khatulistiwa Sinar Energi</b> mitra penyalur bbm industri, untuk menunjang kelancaran operasional kami bermaksud menawarkan untuk supply bbm ke perusahaan Bpk / Ibu, dengan rincian harga sebagai berikut :</p>
-                </div>
-
-                <table class="table-custom">
-                    <thead>
-                        <tr>
-                            <th width="35">No</th>
-                            <th>Produk <span class="lang-en" style="color:#eee">Product</span></th>
-                            <th>Tujuan Pengiriman <span class="lang-en" style="color:#eee">Destination</span></th>
-                            <th width="220">Rincian Harga <span class="lang-en" style="color:#eee">Price Details</span></th>
-                            <th width="70">Satuan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td class="text-center fw-bold" id="out_produk"></td>
-                            <td class="text-center" id="out_tujuan"></td>
-                            <td class="p-0">
-                                <table class="nested-table">
-                                    <tr><td>Harga Dasar</td><td width="20">Rp</td><td width="90" class="text-end" id="out_h_dasar"></td></tr>
-                                    <tr><td>PPN (11%)</td><td>Rp</td><td class="text-end" id="out_ppn"></td></tr>
-                                    <tr class="fw-bold" style="background-color: #f9f9f9;"><td>Grand Total</td><td>Rp</td><td class="text-end" id="out_grand"></td></tr>
-                                </table>
-                            </td>
-                            <td class="text-center fw-bold">Liter</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p class="small mt-1 mb-3"><i>* Harga sudah termasuk PPN 11 % dan OAT (Ongkos Angkut Transportir).</i></p>
-
-                <div class="mb-3">
-                    <table class="table-borderless w-100">
-                        <tr><td width="150">Sistem pembayaran <span class="lang-en">Payment</span></td><td width="15" class="text-center">:</td><td><b id="out_pay"></b></td></tr>
-                        <tr><td>Quantity <span class="lang-en">Order Qty</span></td><td class="text-center">:</td><td><span id="out_qty"></span></td></tr>
-                        <tr><td>Toleransi <span class="lang-en">Tolerance</span></td><td class="text-center">:</td><td>0,3 % (Standard Fuel)</td></tr>
-                        <tr><td>Contact Person <span class="lang-en">Representative</span></td><td class="text-center">:</td><td>08158841410</td></tr>
-                    </table>
-                </div>
-
-                <p class="mb-3">Demikian penawaran ini kami sampaikan, besar harapan kami bisa menjalin kerja sama dengan perusahaan Bpk / Ibu Pimpin. Atas perhatiannya kami ucapkan Terima Kasih.</p>
-
-                <div class="mt-4">
-                    <p class="mb-1">Hormat kami,</p>
-                    <p class="fw-bold mb-2">PT. Khatulistiwa Sinar Energi</p>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data=SIGNED_SUPRANOTO" class="border p-1 mb-1">
-                    <p class="fw-bold'>SUPRANOTO</p>
-                    <p class="small">Marketing Director</p>
-                </div>
-
-                <div class="footer-kse">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=VALID_DOCUMENT_KSE" class="footer-logo-qr">
-                            <div style="font-size: 7.5px; color: #444; line-height: 1.2;">
-                                <b>Digital E-Form KSE System</b><br>
-                                Dokumen ini Sah & Divalidasi System <br>
-                                Scan QR untuk Verfikasi Data Penawaran.
-                            </div>
-                        </div>
-                        <div class="text-end" style="line-height: 1.2;">
-                            <b style="font-size: 12px; color: var(--kse-primary);">PT. KHATULISTIWA SINAR ENERGI</b><br>
-                            <span style="font-size: 10px; font-weight: bold; color: #333;">Mitra Penyalur dan Transportir BBM Industri</span><br>
-                            <span style="font-size: 8px; color: #666;">
-                                Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah
-                                pt.khatulistiwa.sinar.energi@gmail.com
-                            </span>
-                        </div>
-                    </div>
-                </div>
+        <div class="footer">
+            <div>
+                <p><strong>Catatan:</strong></p>
+                <p>Penawaran berlaku selama 14 hari kerja.</p>
+            </div>
+            <div style="text-align: center;">
+                <div id="qrcode"></div>
+                <p style="font-size: 10px; margin-top: 5px;">Scan Verifikasi</p>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script>
-    function calculate() {
-        const hBase = parseFloat(document.getElementById('in_harga').value) || 0;
-        const ppn = Math.round(hBase * 0.11);
-        const grand = hBase + ppn;
-        document.getElementById('out_h_dasar').innerText = hBase.toLocaleString('id-ID');
-        document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID');
-        document.getElementById('out_grand').innerText = grand.toLocaleString('id-ID');
-        updateView();
-    }
-
-    function updateView() {
-        const fields = ['tgl', 'no', 'per', 'cust', 'addr', 'produk', 'tujuan', 'pay', 'qty'];
-        fields.forEach(f => {
-            const val = document.getElementById('in_' + f).value;
-            document.getElementById('out_' + f).innerText = val;
-        });
-    }
-
-    function downloadPDF() {
-        const element = document.getElementById('the-canvas');
-        const opt = {
-            margin: 0,
-            filename: 'Penawaran_KSE_V3.8.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 3, useCORS: true, logging: false },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    <script>
+        // 1. Generate QR Code Berdasarkan Data Penawaran
+        window.onload = function() {
+            const noPenawaran = document.getElementById('no-penawaran').innerText;
+            const namaPT = document.getElementById('nama-pt').innerText;
+            
+            const qrData = `Verifikasi Penawaran\nNo: ${noPenawaran}\nClient: ${namaPT}`;
+            
+            new QRCode(document.getElementById("qrcode"), {
+                text: qrData,
+                width: 80,
+                height: 80,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
         };
-        html2pdf().set(opt).from(element).save();
-    }
 
-    window.onload = function() {
-        document.getElementById('in_tgl').value = "23 FEBRUARI 2026";
-        document.getElementById('in_no').value = "045/KSE-SPH/II/2026";
-        document.getElementById('in_per').value = "FEBRUARI 2026";
-        document.getElementById('in_cust').value = "PIMPINAN PERUSAHAAN";
-        document.getElementById('in_addr').value = "Di Tempat";
-        document.getElementById('in_produk').value = "Bbm Solar B40";
-        document.getElementById('in_tujuan').value = "site Tarjun";
-        document.getElementById('in_harga').value = 15586;
-        document.getElementById('in_pay').value = "TOP 7 hari setelah Invoice diterima";
-        document.getElementById('in_qty').value = "5.000 / 10.000 ltr";
-        calculate();
-    };
-</script>
+        // 2. Fungsi Download dengan Penamaan File Otomatis
+        function generatePDF() {
+            const noPenawaran = document.getElementById('no-penawaran').innerText;
+            const namaPT = document.getElementById('nama-pt').innerText;
+            
+            // Format: NOMOR-PENAWARAN_NAMA-PT.pdf
+            const fileName = `${noPenawaran}_${namaPT}.pdf`.replace(/[/\\?%*:|"<>]/g, '-');
+
+            const element = document.getElementById('print-area');
+            const opt = {
+                margin:       10,
+                filename:     fileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
 </body>
 </html>
-
