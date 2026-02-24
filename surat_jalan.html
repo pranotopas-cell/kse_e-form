@@ -69,7 +69,10 @@
 
 <div class="container my-3 no-print">
     <div class="card border-success shadow">
-        <div class="card-header bg-success text-white"><b>DATA ENTRY SURAT JALAN KSE</b></div>
+        <div class="card-header bg-success text-white d-flex justify-content-between">
+            <b>DATA ENTRY SURAT JALAN KSE</b>
+            <span class="badge bg-light text-dark">Auto-Save Active</span>
+        </div>
         <div class="card-body p-3">
             <div class="row g-2" id="mainForm">
                 <div class="col-md-4"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm kse-input" id="in_pt" value="PT. "></div>
@@ -86,7 +89,7 @@
                 <div class="col-md-3"><label class="small fw-bold">Nomor Segel</label><input type="text" class="form-control form-control-sm kse-input" id="in_segel" value="-"></div>
                 <div class="col-md-3"><label class="small fw-bold">Supply Point</label><input type="text" class="form-control form-control-sm kse-input" id="in_supply" value="-"></div>
                 
-                <div class="col-md-3"><label class="small fw-bold">Transportir</label><input type="text" class="form-control form-control-sm kse-input" id="in_transportir" value=" -"></div>
+                <div class="col-md-3"><label class="small fw-bold">Transportir</label><input type="text" class="form-control form-control-sm kse-input" id="in_transportir" value="PT. KHATULISTIWA SINAR ENERGI"></div>
                 <div class="col-md-2"><label class="small fw-bold">Berat Jenis</label><input type="text" class="form-control form-control-sm kse-input" id="in_bj" value="-"></div>
                 <div class="col-md-2"><label class="small fw-bold">Tinggi Cairan</label><input type="text" class="form-control form-control-sm kse-input" id="in_tinggi" value="-"></div>
                 <div class="col-md-2"><label class="small fw-bold">KM Awal</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_awal" value="-"></div>
@@ -103,6 +106,7 @@
             
             <div class="mt-4 d-flex justify-content-center gap-2">
                 <a href="index.html" class="btn btn-outline-secondary px-4 fw-bold">HOME</a>
+                <button class="btn btn-info text-white px-4 fw-bold" onclick="previewSJ()">PREVIEW</button>
                 <button class="btn btn-dark px-4" onclick="resetForm()">RESET FORM</button>
                 <button class="btn btn-primary px-5 fw-bold" onclick="downloadPDF()">DOWNLOAD PDF (A4)</button>
             </div>
@@ -216,6 +220,9 @@
             correctLevel : QRCode.CorrectLevel.H
         });
         
+        // Load Saved Data
+        loadSavedData();
+
         if(!document.getElementById('in_tgl').value) {
             const d = new Date();
             const m = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
@@ -225,7 +232,10 @@
         updateDisplay();
         
         document.querySelectorAll('.kse-input').forEach(input => {
-            input.addEventListener('input', updateDisplay);
+            input.addEventListener('input', () => {
+                updateDisplay();
+                saveData();
+            });
         });
     };
 
@@ -234,15 +244,18 @@
         const rom = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
         const urut = (document.getElementById('in_no_urut').value || "0").toString().padStart(3, '0');
         const nosj = `${urut}/KSE-SJ/${rom[d.getMonth()]}/${d.getFullYear()}`;
+        const ptName = document.getElementById('in_pt').value;
+        const qty = document.getElementById('in_qty').value;
+        const nopol = document.getElementById('in_nopol').value;
         
         document.getElementById('p_nosj').innerText = nosj;
-        document.getElementById('p_pt').innerText = document.getElementById('in_pt').value;
+        document.getElementById('p_pt').innerText = ptName;
         document.getElementById('p_lokasi').innerText = document.getElementById('in_lokasi').value;
         document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
         document.getElementById('p_po').innerText = document.getElementById('in_po').value;
         document.getElementById('p_sodo').innerText = document.getElementById('in_sodo').value;
         document.getElementById('p_tgl').innerText = document.getElementById('in_tgl').value;
-        document.getElementById('p_nopol').innerText = document.getElementById('in_nopol').value;
+        document.getElementById('p_nopol').innerText = nopol;
         document.getElementById('p_jns_bbm').innerText = document.getElementById('in_jns_bbm').value;
         document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_sopir').value;
         document.getElementById('p_segel').innerText = document.getElementById('in_segel').value;
@@ -250,7 +263,7 @@
         document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
         document.getElementById('p_km_awal').innerText = document.getElementById('in_km_awal').value;
         document.getElementById('p_km_akhir').innerText = document.getElementById('in_km_akhir').value;
-        document.getElementById('p_qty').innerText = document.getElementById('in_qty').value;
+        document.getElementById('p_qty').innerText = qty;
         document.getElementById('p_transportir').innerText = document.getElementById('in_transportir').value;
         document.getElementById('p_note').innerText = document.getElementById('in_note').value;
         
@@ -259,25 +272,54 @@
         document.getElementById('f_helper').innerText = document.getElementById('in_helper').value || "................";
         document.getElementById('f_admin').innerText = document.getElementById('in_admin').value || "................";
         
+        // Update QR Content
+        const qrContent = `SURAT JALAN KSE\nNo: ${nosj}\nPT: ${ptName}\nUnit: ${nopol}\nQty: ${qty}`;
         qrcode.clear();
-        qrcode.makeCode("VERIFIED-KSE-" + nosj);
+        qrcode.makeCode(qrContent);
+    }
+
+    function saveData() {
+        const inputs = document.querySelectorAll('.kse-input');
+        const data = {};
+        inputs.forEach(input => { data[input.id] = input.value; });
+        localStorage.setItem('kse_last_input', JSON.stringify(data));
+    }
+
+    function loadSavedData() {
+        const saved = localStorage.getItem('kse_last_input');
+        if (saved) {
+            const data = JSON.parse(saved);
+            Object.keys(data).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = data[id];
+            });
+        }
+    }
+
+    function previewSJ() {
+        document.getElementById('surat-jalan-render').scrollIntoView({ behavior: 'smooth' });
     }
 
     function downloadPDF() {
         const element = document.getElementById('surat-jalan-render');
+        const nosj = document.getElementById('p_nosj').innerText.replace(/\//g,'-');
+        const pt = document.getElementById('in_pt').value.replace(/[^a-z0-9]/gi, '_').substring(0, 30);
+        
         html2pdf().set({
             margin: 0,
-            filename: `SJ_KSE_${document.getElementById('p_nosj').innerText.replace(/\//g,'-')}.pdf`,
+            filename: `${nosj} - ${pt}.pdf`,
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { scale: 3, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
     }
 
-    function resetForm() { if(confirm("Hapus semua data entry?")) location.reload(); }
+    function resetForm() { 
+        if(confirm("Hapus semua data entry?")) {
+            localStorage.removeItem('kse_last_input');
+            location.reload(); 
+        }
+    }
 </script>
 </body>
 </html>
-
-
-
