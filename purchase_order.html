@@ -198,7 +198,7 @@
                     <div class="col-6">
                         <p class="mb-0 italic">regard,</p>
                         <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data=VERIFIED_KSE_PO" class="my-3 shadow-sm">
+                        <img id="qr_signature" src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data=VERIFIED_KSE_PO" class="my-3 shadow-sm">
                         <p class="fw-bold text-decoration-underline mb-0" style="font-size: 13px;">SUPRANOTO</p>
                         <p class="small">Direktur</p>
                     </div>
@@ -207,7 +207,7 @@
                 <div class="footer-kse">
                     <div class="footer-content">
                         <div class="d-flex align-items-center gap-2">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_EFORM_SYSTEM" width="45">
+                            <img id="qr_footer" src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_EFORM_SYSTEM" width="45">
                             <div style="font-size: 9px; color: #666;">
                                 <b>Digital E-Form KSE System</b><br>
                                 Dokumen ini sah & divalidasi sistem.<br>
@@ -219,7 +219,6 @@
                             <span class="footer-tagline">Mitra Penyalur dan Transportir BBM Industri</span>
                             <div style="font-size: 9px; color: #555; margin-top: 5px;">
                                 Jl. H.M. Rafi'i rt.24 Pangkalan Bun, Kalimantan Tengah<br>
-                            
                             </div>
                         </div>
                     </div>
@@ -230,18 +229,25 @@
 </div>
 
 <script>
-    // Storage Keys
     const STORAGE_KEY = 'KSE_PO_LAST_DATA';
 
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
-        const noPo = document.getElementById('in_no').value.replace(/\//g, '-');
+        
+        // Mengambil input untuk penamaan file
+        const rawNoPo = document.getElementById('in_no').value || '000';
+        const rawCust = document.getElementById('in_cust').value || 'CUSTOMER';
+        
+        // Membersihkan karakter ilegal untuk nama file
+        const safeNoPo = rawNoPo.replace(/[\/\\?%*:|"<>]/g, '-');
+        const safeCust = rawCust.replace(/[^a-z0-9]/gi, '_').toUpperCase();
+        
         const opt = {
             margin:       0,
-            filename:      `KSE_PO_${noPo}.pdf`,
-            image:         { type: 'jpeg', quality: 0.98 },
+            filename:      `KSE_PO_${safeNoPo}_${safeCust}.pdf`,
+            image:           { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:         { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF:           { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save();
     }
@@ -262,14 +268,31 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
 
+    function updateQRCode() {
+        const noPo = document.getElementById('in_no').value;
+        const customer = document.getElementById('in_cust').value;
+        const total = document.getElementById('out_grandtotal').innerText;
+        const date = document.getElementById('in_tgl').value;
+
+        // Data yang dimasukkan ke dalam QR Code
+        const qrContent = `VALID PO - PT KSE\nNo: ${noPo}\nDate: ${date}\nCust: ${customer}\nTotal: Rp ${total}`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(qrContent)}`;
+        
+        // Update kedua QR Code di dokumen
+        document.getElementById('qr_signature').src = qrUrl;
+        document.getElementById('qr_footer').src = qrUrl;
+    }
+
     function saveAndCalculate() {
         calculate();
         saveToLocal();
+        updateQRCode();
     }
 
     function saveAndUpdate() {
         updateView();
         saveToLocal();
+        updateQRCode();
     }
 
     function calculate() {
@@ -297,8 +320,9 @@
         document.getElementById('out_pph').innerText = pph.toLocaleString('id-ID', localeOpts);
         document.getElementById('out_perltr').innerText = perLtr.toLocaleString('id-ID', localeOpts);
         
-        document.getElementById('out_total').innerText = Math.round(total).toLocaleString('id-ID');
-        document.getElementById('out_grandtotal').innerText = Math.round(total).toLocaleString('id-ID');
+        const formattedTotal = Math.round(total).toLocaleString('id-ID');
+        document.getElementById('out_total').innerText = formattedTotal;
+        document.getElementById('out_grandtotal').innerText = formattedTotal;
         
         updateView();
     }
@@ -328,7 +352,6 @@
             document.getElementById('in_pph_pct').value = data.pph_pct;
             document.getElementById('in_pay').value = data.pay;
         } else {
-            // Default Values if no storage
             const now = new Date();
             const year = now.getFullYear();
             const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
@@ -348,6 +371,7 @@
         }
         
         calculate();
+        updateQRCode();
     }
 
     window.onload = initSystem;
@@ -355,6 +379,3 @@
 
 </body>
 </html>
-
-
-
