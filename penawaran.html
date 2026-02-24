@@ -27,10 +27,9 @@
 
         /* Preview Area */
         .preview-area { margin-left: 380px; padding: 40px; width: 100%; display: flex; justify-content: center; }
-        /* Paksa ukuran A4 agar tidak pecah ke halaman baru */
         .a4-sheet { 
             width: 210mm; 
-            height: 296mm; /* Sedikit kurang dari 297mm untuk margin aman */
+            height: 296mm; 
             background: white; 
             padding: 15mm 20mm; 
             position: relative; 
@@ -39,13 +38,12 @@
             overflow: hidden; 
         }
 
-        /* Header Layout - Sejajar & Naik ke atas */
         .header { 
             display: flex; 
             justify-content: space-between; 
-            align-items: flex-start; /* Sejajar atas */
+            align-items: flex-start; 
             margin-bottom: 25px; 
-            margin-top: -5mm; /* Menaikkan posisi header */
+            margin-top: -5mm; 
         }
         .logo-img { height: 45px; width: auto; object-fit: contain; }
         .header-meta { text-align: right; }
@@ -57,9 +55,11 @@
         .meta-table td:nth-child(2) { padding: 0 8px; }
         .lang-en-sm { display: block; font-size: 10px; color: #777; font-style: italic; line-height: 1; }
 
-        /* Content Styling */
         .doc-content { font-size: 13px; line-height: 1.4; }
-        .recipient { margin-bottom: 15px; }
+        
+        /* Lebarkan jarak antara alamat dan isi surat sesuai instruksi */
+        .recipient { margin-bottom: 35px; } 
+
         .main-table { width: 100%; border-collapse: collapse; margin: 15px 0 5px 0; }
         .main-table th { background: #1a3a1a; color: white; border: 1px solid #000; padding: 8px 5px; font-size: 11px; }
         .main-table td { border: 1px solid #000; padding: 8px; }
@@ -68,15 +68,12 @@
         .total-row { border-top: 1.5px solid #000; padding-top: 3px; margin-top: 3px; font-weight: bold; font-size: 14px; }
         .table-note { font-size: 10px; font-style: italic; margin-bottom: 15px; }
 
-        /* Syarat & Ketentuan */
         .terms-table { font-size: 12.5px; width: 100%; border-collapse: collapse; margin-top: 5px; }
         .terms-table td { padding: 3px 0; vertical-align: top; }
 
-        /* Tanda Tangan */
         .regards { margin-top: 20px; line-height: 1.3; }
         .img-signature { height: 100px; width: auto; margin: 5px 0; display: block; }
 
-        /* Footer Tetap di Bawah Halaman */
         .footer { position: absolute; bottom: 12mm; left: 20mm; right: 20mm; }
         .footer-line { border-top: 1.5px solid #000; margin-bottom: 8px; }
         .footer-grid { display: flex; justify-content: space-between; align-items: flex-end; }
@@ -129,6 +126,7 @@
 
             <div class="doc-content">
                 <div class="recipient">Kepada Yth,<br><strong id="outPT">...</strong><br><span id="outAlm">...</span></div>
+                
                 <p>Dengan hormat,<br>Bersama ini kami <strong>PT. Khatulistiwa Sinar Energi</strong> mitra penyalur bbm industri, menawarkan supply bbm untuk operasional perusahaan Bapak / Ibu, dengan rincian harga sebagai berikut :</p>
 
                 <table class="main-table">
@@ -195,31 +193,60 @@
     </div>
 
     <script>
-        const qrSm = new QRCode(document.getElementById("qrcode-small"), { width: 50, height: 50 });
+        // Inisialisasi QR Code
+        const qrContainer = document.getElementById("qrcode-small");
+        const qrSm = new QRCode(qrContainer, { width: 50, height: 50 });
+
+        // Fungsi Load Data Terakhir
+        function loadSavedData() {
+            const savedData = localStorage.getItem('kse_last_input');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('inNomor').value = data.no || "";
+                document.getElementById('inTgl').value = data.tgl || "";
+                document.getElementById('inPrd').value = data.prd || "";
+                document.getElementById('inPT').value = data.pt || "";
+                document.getElementById('inAlm').value = data.alm || "";
+                document.getElementById('inHrg').value = data.hrg || "";
+                document.getElementById('inPay').value = data.pay || "";
+                document.getElementById('inContact').value = data.contact || "";
+            }
+        }
 
         function draw() {
             const no = document.getElementById('inNomor').value;
             const tgl = document.getElementById('inTgl').value;
+            const prd = document.getElementById('inPrd').value;
             const pt = document.getElementById('inPT').value;
+            const alm = document.getElementById('inAlm').value;
             const hrgValue = document.getElementById('inHrg').value;
+            const pay = document.getElementById('inPay').value;
+            const contact = document.getElementById('inContact').value;
+
             const hrg = parseFloat(hrgValue) || 0;
             const ppn = Math.round(hrg * 0.11);
             const total = hrg + ppn;
 
+            // Update Tampilan
             document.getElementById('outNomor').innerText = no;
             document.getElementById('outTgl').innerText = tgl;
-            document.getElementById('outPrd').innerText = document.getElementById('inPrd').value;
+            document.getElementById('outPrd').innerText = prd;
             document.getElementById('outPT').innerText = pt;
-            document.getElementById('outAlm').innerText = document.getElementById('inAlm').value;
+            document.getElementById('outAlm').innerText = alm;
             document.getElementById('outHrg').innerText = hrg.toLocaleString('id-ID');
             document.getElementById('outPpn').innerText = ppn.toLocaleString('id-ID');
             document.getElementById('outTotal').innerText = total.toLocaleString('id-ID');
-            document.getElementById('outPay').innerText = document.getElementById('inPay').value;
-            document.getElementById('outContact').innerText = document.getElementById('inContact').value;
+            document.getElementById('outPay').innerText = pay;
+            document.getElementById('outContact').innerText = contact;
             document.getElementById('outID').innerText = no;
 
-            // Generate QR dengan Informasi Detail
+            // Save ke LocalStorage
+            const dataToSave = { no, tgl, prd, pt, alm, hrg: hrgValue, pay, contact };
+            localStorage.setItem('kse_last_input', JSON.stringify(dataToSave));
+
+            // Generate QR Otomatis
             const qrText = `DOKUMEN RESMI PT KSE\nNo: ${no}\nHal: Penawaran Harga BBM\nTujuan: ${pt}\nTotal: Rp ${total.toLocaleString('id-ID')}\nTanggal: ${tgl}`;
+            qrSm.clear(); 
             qrSm.makeCode(qrText);
         }
 
@@ -228,7 +255,6 @@
             const noFile = document.getElementById('inNomor').value.replace(/\//g, '-');
             const ptFile = document.getElementById('inPT').value;
             
-            // Konfigurasi agar pasti 1 halaman A4
             const opt = {
                 margin: 0,
                 filename: `${noFile}_${ptFile}.pdf`,
@@ -240,9 +266,11 @@
             html2pdf().set(opt).from(element).save();
         }
         
-        // Jalankan saat pertama kali load
-        window.onload = draw;
+        // Eksekusi saat load
+        window.onload = function() {
+            loadSavedData();
+            draw();
+        };
     </script>
 </body>
 </html>
-
