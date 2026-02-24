@@ -19,8 +19,8 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1); color: #000;
         }
 
-        /* Garis bawah header dihilangkan sesuai permintaan */
-        .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding-bottom: 10px; }
+        /* Hilangkan garis bawah di header sesuai permintaan */
+        .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; border-bottom: none !important; padding-bottom: 10px; }
         .logo-img { height: 45px; width: auto; }
         .ba-title { text-align: center; margin-bottom: 25px; }
         .ba-title h5 { font-weight: 900; text-decoration: underline; margin-bottom: 5px; font-size: 14px; }
@@ -51,7 +51,7 @@
         <a href="index.html" class="btn btn-outline-dark btn-sm"><i class="bi bi-arrow-left"></i> KEMBALI</a>
         <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT</button>
     </div>
-    <button class="btn btn-primary btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN BERITA ACARA</button>
+    <button class="btn btn-primary btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
 </div>
 
 <div class="container-fluid">
@@ -59,38 +59,31 @@
         <div class="col-lg-3 input-sidebar shadow-sm">
             <h6 class="fw-bold text-primary border-bottom pb-2">NOMOR & WAKTU</h6>
             <input type="text" id="in_no" class="form-control form-control-sm mb-2" placeholder="Nomor BA" oninput="updateView()">
-            <input type="text" id="in_hari" class="form-control form-control-sm mb-2" placeholder="Hari (Senin, dsb)" oninput="updateView()">
+            <input type="text" id="in_hari" class="form-control form-control-sm mb-2" placeholder="Hari" oninput="updateView()">
             <input type="text" id="in_tgl_lengkap" class="form-control form-control-sm mb-2" placeholder="Tanggal Lengkap" oninput="updateView()">
 
-            <h6 class="fw-bold text-success border-bottom pb-2 mt-3">DATA SUMBER (BONGKAR)</h6>
+            <h6 class="fw-bold text-success border-bottom pb-2 mt-3">SUMBER (BONGKAR)</h6>
             <input type="text" id="s_nopol" class="form-control form-control-sm mb-1" placeholder="Nopol" oninput="updateView()">
-            <input type="text" id="s_pt" class="form-control form-control-sm mb-1" placeholder="Nama Perusahaan" oninput="updateView()">
+            <input type="text" id="s_pt" class="form-control form-control-sm mb-1" placeholder="Perusahaan" oninput="updateView()">
             <input type="text" id="s_segel_a" class="form-control form-control-sm mb-1" placeholder="Segel Atas" oninput="updateView()">
             <input type="text" id="s_segel_b" class="form-control form-control-sm mb-1" placeholder="Segel Bawah" oninput="updateView()">
-            <input type="number" id="s_qty" class="form-control form-control-sm mb-1" placeholder="Quantity" oninput="updateView()">
-            <input type="text" id="s_tc" class="form-control form-control-sm mb-1" placeholder="TC saat Bongkar" oninput="updateView()">
+            <input type="number" id="s_qty" class="form-control form-control-sm mb-1" placeholder="Qty" oninput="updateView()">
+            <input type="text" id="s_tc" class="form-control form-control-sm mb-1" placeholder="TC" oninput="updateView()">
             <input type="text" id="s_sopir" class="form-control form-control-sm mb-1" placeholder="Nama Sopir" oninput="updateView()">
 
-            <h6 class="fw-bold text-danger border-bottom pb-2 mt-3">DATA TUJUAN (MUAT)</h6>
+            <h6 class="fw-bold text-danger border-bottom pb-2 mt-3">TUJUAN (MUAT)</h6>
             <input type="text" id="t_nopol" class="form-control form-control-sm mb-1" placeholder="Nopol" oninput="updateView()">
-            <input type="text" id="t_pt" class="form-control form-control-sm mb-1" placeholder="Nama Perusahaan" oninput="updateView()">
-            <input type="number" id="t_qty" class="form-control form-control-sm mb-1" placeholder="Quantity" oninput="updateView()">
-            <input type="text" id="t_tc" class="form-control form-control-sm mb-1" placeholder="TC saat Muat" oninput="updateView()">
+            <input type="text" id="t_pt" class="form-control form-control-sm mb-1" placeholder="Perusahaan" oninput="updateView()">
+            <input type="number" id="t_qty" class="form-control form-control-sm mb-1" placeholder="Qty" oninput="updateView()">
+            <input type="text" id="t_tc" class="form-control form-control-sm mb-1" placeholder="TC" oninput="updateView()">
             <input type="text" id="t_sopir" class="form-control form-control-sm mb-1" placeholder="Nama Sopir" oninput="updateView()">
-
-            <div class="mt-3 p-2 border rounded bg-light">
-                <label class="small fw-bold">Note:</label>
-                <textarea id="in_note" class="form-control form-control-sm" rows="2" oninput="updateView()"></textarea>
-            </div>
         </div>
 
         <div class="col-lg-9 p-0" id="pdf-area">
             <div class="document-canvas">
                 <div class="header-section">
                     <img src="header1.png" class="logo-img" onerror="this.src='https://via.placeholder.com/140x40/062006/FFFFFF?text=PT.+KSE'">
-                    <div class="text-end">
-                        <small>Form: KSE-BAOM-2026</small>
-                    </div>
+                    <div class="text-end"><small>Form: KSE-BAOM-2026</small></div>
                 </div>
 
                 <div class="ba-title">
@@ -98,7 +91,7 @@
                     <span>Nomor: <span id="out_no"></span></span>
                 </div>
 
-                <p>Pada hari ini <b id="out_hari"></b>, <span id="out_tgl_lengkap"></span>, bertempat di <b>Pangkalan Bun</b> telah dilakukan kegiatan oper (pemindahan) muatan Bahan Bakar Minyak (BBM) dengan rincian sebagai berikut:</p>
+                <p>Pada hari ini <b id="out_hari"></b>, <span id="out_tgl_lengkap"></span>, bertempat di <b>Pangkalan Bun</b> telah dilakukan pemindahan muatan BBM:</p>
 
                 <div class="section-title">DATA SUMBER MUATAN</div>
                 <div class="data-grid">
@@ -120,10 +113,6 @@
                     <div class="data-row"><div class="data-label">Nama Sopir</div><div id="ot_sopir"></div></div>
                 </div>
 
-                <p class="mt-4" style="text-align: justify;">
-                    Berita Acara ini dibuat untuk dipergunakan sebagai dokumen resmi pelaksanaan oper muatan BBM dan menjadi dasar administrasi internal maupun konfirmasi kepada konsumen.
-                </p>
-
                 <div class="signature-grid">
                     <div class="sig-box">
                         <span>Sopir Penyerah</span>
@@ -134,24 +123,21 @@
                         <div class="mt-auto"><b>( <span id="ot_sopir_sig">......................</span> )</b></div>
                     </div>
                     <div class="sig-box">
-                        <span>Pangkalan Bun, 23 Januari 2026<br><b>Mengetahui</b></span>
+                        <span><b>Mengetahui,</b></span>
                         <div class="mt-auto">
                             <br><br><b>....................................</b><br><small>Operasional</small>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    <b>Note :</b> <span id="out_note"></span>
-                </div>
-
                 <div class="footer-kse">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=VALID_OPER_MUATAN_KSE" width="40">
-                            <div style="font-size: 7px; color: #777;">
-                                <b>KSE Logistics System</b> | BA-OM Digital Validated<br>
-                                Dokumen ini adalah bukti serah terima muatan antar unit armada.
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=VALID_OPER_MUATAN_KSE" width="50">
+                            <div style="font-size: 8px; color: #555;">
+                                <b>KSE LOGISTICS SYSTEM</b><br>
+                                Digital Signature & QR Validated<br>
+                                Dokumen Sah PT. Khatulistiwa Sinar Energi
                             </div>
                         </div>
                         <div class="text-end">
@@ -168,7 +154,7 @@
 <script>
     function updateView() {
         const mapping = {
-            'in_no': 'out_no', 'in_hari': 'out_hari', 'in_tgl_lengkap': 'out_tgl_lengkap', 'in_note': 'out_note',
+            'in_no': 'out_no', 'in_hari': 'out_hari', 'in_tgl_lengkap': 'out_tgl_lengkap',
             's_nopol': 'os_nopol', 's_pt': 'os_pt', 's_segel_a': 'os_segel_a', 's_segel_b': 'os_segel_b',
             's_tc': 'os_tc', 's_sopir': 'os_sopir', 
             't_nopol': 'ot_nopol', 't_pt': 'ot_pt', 't_tc': 'ot_tc', 't_sopir': 'ot_sopir'
@@ -192,34 +178,27 @@
 
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
-        const filename = 'BA_Oper_Muatan_' + (document.getElementById('s_nopol').value || 'Doc') + '.pdf';
         html2pdf().set({
             margin: 0,
-            filename: filename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3, useCORS: true },
+            filename: 'BA_Oper_Muatan.pdf',
+            html2canvas: { scale: 3 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
     }
 
     window.onload = function() {
-        // Jika butuh login check, nyalakan bagian ini
-        /*
-        if (localStorage.getItem('kse_session') !== 'active') {
-            window.location.href = 'index.html';
+        // PERBAIKAN: Jika index.html error, baris di bawah ini penyebabnya.
+        // Saya beri komentar (disable) supaya Anda bisa melihat hasilnya dulu.
+        /* if (localStorage.getItem('kse_session') !== 'active') {
+            window.location.href = 'index.html'; 
             return;
         }
         */
 
+        // Data Default
         document.getElementById('in_no').value = "012 / BA-OM / KSE / I / 2026";
         document.getElementById('in_hari').value = "Jumat";
-        document.getElementById('in_tgl_lengkap').value = "tanggal 23 bulan Januari tahun 2026";
-        document.getElementById('s_nopol').value = "KH 8812 GI";
-        document.getElementById('s_pt').value = "PT. KHATULISTIWA SINAR ENERGI";
-        document.getElementById('s_qty').value = "5000";
-        document.getElementById('t_nopol').value = "KH 1123 GK";
-        document.getElementById('t_pt').value = "PT. SINARINDO SUKSES SELALU";
-        document.getElementById('t_qty').value = "5000";
+        document.getElementById('in_tgl_lengkap').value = "23 Januari 2026";
         updateView();
     };
 </script>
