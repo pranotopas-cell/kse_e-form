@@ -56,7 +56,8 @@
             padding-top: 8px;
         }
         .footer-left { display: flex; align-items: center; gap: 15px; }
-        #qrcode img { display: inline-block; } 
+        #qrcode { width: 50px; height: 50px; background: #fff; }
+        #qrcode img { display: block; width: 50px !important; height: 50px !important; } 
         .qr-text { font-size: 9px; line-height: 1.3; }
         .footer-right { text-align: right; font-size: 10px; line-height: 1.3; }
         .footer-right strong { font-size: 14px; color: #000; display: block; }
@@ -212,20 +213,15 @@
     let qrcode;
 
     window.onload = function() {
-        // Optimasi QR Code: Menaikkan resolusi render agar teks panjang tetap terbaca
+        // Inisialisasi QR dengan pengaturan optimal untuk scan jarak dekat
         qrcode = new QRCode(document.getElementById("qrcode"), {
-            text: "KSE-INITIALIZING",
-            width: 128,  // Render lebih besar secara internal
-            height: 128,
+            width: 100,
+            height: 100,
             colorDark : "#000000",
             colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.M // Level Medium agar QR tidak terlalu rapat
+            correctLevel : QRCode.CorrectLevel.L // Level L membuat pola lebih renggang/mudah discan
         });
         
-        // Atur tampilan CSS agar QR tetap berukuran kecil di dokumen (48px)
-        const qrImg = document.querySelector("#qrcode img");
-        if(qrImg) { qrImg.style.width = "48px"; qrImg.style.height = "48px"; }
-
         loadSavedData();
 
         if(!document.getElementById('in_tgl').value) {
@@ -252,7 +248,6 @@
         const ptName = document.getElementById('in_pt').value;
         const qty = document.getElementById('in_qty').value;
         const nopol = document.getElementById('in_nopol').value;
-        const tgl = document.getElementById('in_tgl').value;
         
         document.getElementById('p_nosj').innerText = nosj;
         document.getElementById('p_pt').innerText = ptName;
@@ -260,7 +255,7 @@
         document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
         document.getElementById('p_po').innerText = document.getElementById('in_po').value;
         document.getElementById('p_sodo').innerText = document.getElementById('in_sodo').value;
-        document.getElementById('p_tgl').innerText = tgl;
+        document.getElementById('p_tgl').innerText = document.getElementById('in_tgl').value;
         document.getElementById('p_nopol').innerText = nopol;
         document.getElementById('p_jns_bbm').innerText = document.getElementById('in_jns_bbm').value;
         document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_sopir').value;
@@ -278,18 +273,10 @@
         document.getElementById('f_helper').innerText = document.getElementById('in_helper').value || "................";
         document.getElementById('f_admin').innerText = document.getElementById('in_admin').value || "................";
         
-        // QR Code Content: Informasi lengkap Surat Jalan
-        const qrContent = `VERIFIED BY KSE SYSTEM\nNo SJ: ${nosj}\nTanggal: ${tgl}\nCustomer: ${ptName}\nUnit: ${nopol}\nQty: ${qty}`;
+        // Update QR Code Content (Data Ringkas agar pola QR tetap besar dan mudah discan)
+        const qrData = `KSE-SJ:${nosj}|PT:${ptName}|UNIT:${nopol}|QTY:${qty}`;
         qrcode.clear();
-        qrcode.makeCode(qrContent);
-        
-        // Memastikan ukuran display tetap kecil meski render internal besar
-        setTimeout(() => {
-            const qrImg = document.querySelector("#qrcode img");
-            const qrCanv = document.querySelector("#qrcode canvas");
-            if(qrImg) { qrImg.style.width = "48px"; qrImg.style.height = "48px"; }
-            if(qrCanv) { qrCanv.style.width = "48px"; qrCanv.style.height = "48px"; }
-        }, 50);
+        qrcode.makeCode(qrData);
     }
 
     function saveData() {
