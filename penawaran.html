@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Penawaran Harga</title>
+    <title>KSE - Penawaran Harga Resmi</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -29,7 +29,7 @@
         .preview-area { margin-left: 380px; padding: 40px; width: 100%; display: flex; justify-content: center; }
         .a4-sheet { 
             width: 210mm; 
-            height: 296mm; 
+            height: 297mm; /* Standard A4 Height */
             background: white; 
             padding: 15mm 20mm; 
             position: relative; 
@@ -38,39 +38,35 @@
             overflow: hidden; 
         }
 
-        /* Bagian Header Baru */
+        /* Header Sejajar */
         .header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 30px; 
+            margin-bottom: 25px; 
             margin-top: -5mm; 
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
         }
         .logo-img { height: 45px; width: auto; object-fit: contain; }
-        .title-area { text-align: right; }
-        .title-area h1 { margin: 0; font-size: 22px; font-weight: bold; color: #000; line-height: 1.1; }
+        .title-text { text-align: right; }
+        .title-text h1 { margin: 0; font-size: 22px; font-weight: bold; color: #000; line-height: 1.1; }
         .sub-eng { font-size: 11px; color: #666; font-style: italic; display: block; }
 
-        /* Container Sejajar: Alamat & Meta */
+        /* Row Alamat & Meta Sejajar */
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .recipient { font-size: 13px; flex: 1; }
-        
-        .meta-box { flex: 0 0 250px; }
+        .meta-box { flex: 0 0 240px; }
         .meta-table { width: 100%; font-size: 12px; border-collapse: collapse; }
         .meta-table td { padding: 2px 0; vertical-align: top; }
         .meta-table td:nth-child(2) { padding: 0 8px; }
         .lang-en-sm { display: block; font-size: 10px; color: #777; font-style: italic; line-height: 1; }
 
-        .doc-content { font-size: 13px; line-height: 1.5; }
-
+        .doc-content { font-size: 13px; line-height: 1.4; }
         .main-table { width: 100%; border-collapse: collapse; margin: 15px 0 5px 0; }
         .main-table th { background: #1a3a1a; color: white; border: 1px solid #000; padding: 8px 5px; font-size: 11px; }
         .main-table td { border: 1px solid #000; padding: 8px; }
@@ -95,7 +91,7 @@
         @media print {
             .sidebar { display: none; }
             .preview-area { margin: 0; padding: 0; }
-            .a4-sheet { box-shadow: none; margin: 0; border: none; }
+            .a4-sheet { box-shadow: none; margin: 0; border: none; width: 210mm; height: 297mm; }
             body { background: white; }
         }
     </style>
@@ -114,7 +110,7 @@
         <div class="input-group"><label>Kontak Person</label><input type="text" id="inContact" value="08158841410" oninput="draw()"></div>
 
         <div class="actions">
-            <a href="index.html" class="btn btn-home">Home</a>
+            <a href="index.html" class="btn btn-home">Home (index.html)</a>
             <button onclick="window.print()" class="btn btn-print">Print Preview</button>
             <button onclick="saveA4()" class="btn btn-save">Save Download A4</button>
         </div>
@@ -124,7 +120,7 @@
         <div id="print-document" class="a4-sheet">
             <div class="header">
                 <img src="header1.png" alt="Logo KSE" class="logo-img" onerror="this.src='https://via.placeholder.com/150x80?text=LOGO+KSE'">
-                <div class="title-area">
+                <div class="title-text">
                     <h1>PENAWARAN HARGA</h1>
                     <span class="sub-eng">Official Fuel Quotation</span>
                 </div>
@@ -133,11 +129,10 @@
             <div class="doc-content">
                 <div class="info-row">
                     <div class="recipient">
-                        Kepada yang kami hormati,<br>
+                        Kepada Yth,<br>
                         <strong id="outPT">...</strong><br>
                         <span id="outAlm">...</span>
                     </div>
-
                     <div class="meta-box">
                         <table class="meta-table">
                             <tr><td>Tanggal <span class="lang-en-sm">Date</span></td><td>:</td><td><span id="outTgl">...</span></td></tr>
@@ -213,7 +208,6 @@
     </div>
 
     <script>
-        // Inisialisasi QR Code
         const qrContainer = document.getElementById("qrcode-small");
         const qrSm = new QRCode(qrContainer, { width: 50, height: 50 });
 
@@ -258,10 +252,9 @@
             document.getElementById('outContact').innerText = contact;
             document.getElementById('outID').innerText = no;
 
-            const dataToSave = { no, tgl, prd, pt, alm, hrg: hrgValue, pay, contact };
-            localStorage.setItem('kse_last_input', JSON.stringify(dataToSave));
+            localStorage.setItem('kse_last_input', JSON.stringify({ no, tgl, prd, pt, alm, hrg: hrgValue, pay, contact }));
 
-            const qrText = `DOKUMEN RESMI PT KSE\nNo: ${no}\nHal: Penawaran Harga BBM\nTujuan: ${pt}\nTotal: Rp ${total.toLocaleString('id-ID')}\nTanggal: ${tgl}`;
+            const qrText = `DOKUMEN RESMI PT KSE\nNo: ${no}\nTujuan: ${pt}\nTotal: Rp ${total.toLocaleString('id-ID')}`;
             qrSm.clear(); 
             qrSm.makeCode(qrText);
         }
@@ -271,13 +264,24 @@
             const noFile = document.getElementById('inNomor').value.replace(/\//g, '-');
             const ptFile = document.getElementById('inPT').value;
             
+            // Konfigurasi khusus agar fit satu halaman A4
             const opt = {
                 margin: 0,
                 filename: `${noFile}_${ptFile}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    letterRendering: true
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
             };
+
             html2pdf().set(opt).from(element).save();
         }
         
