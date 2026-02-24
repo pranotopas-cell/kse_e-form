@@ -56,8 +56,8 @@
             padding-top: 8px;
         }
         .footer-left { display: flex; align-items: center; gap: 15px; }
-        #qrcode { width: 50px; height: 50px; background: #fff; }
-        #qrcode img { display: block; width: 50px !important; height: 50px !important; } 
+        #qrcode { width: 55px; height: 55px; background: #fff; display: block; }
+        #qrcode canvas, #qrcode img { width: 55px !important; height: 55px !important; }
         .qr-text { font-size: 9px; line-height: 1.3; }
         .footer-right { text-align: right; font-size: 10px; line-height: 1.3; }
         .footer-right strong { font-size: 14px; color: #000; display: block; }
@@ -161,7 +161,7 @@
                 <td>NOMOR SO/DO <br> <span class="label-en">ORDER NO.</span></td><td><span id="p_sodo">-</span></td>
             </tr>
             <tr>
-                <td>TRANSPORTIR <br> <span class="label-en">CARRIER</span></td><td><span id="p_transportir">PT. KHATULISTIWA SINAR ENERGI</span></td>
+                <td>TRANSPORTIR <br> <span class="label-en">CARRIER</span></td><td><span id="p_transportir_tabel">PT. KHATULISTIWA SINAR ENERGI</span></td>
                 <td>JUMLAH <br> <span class="label-en">QUANTITY</span></td><td><strong style="font-size: 16px;" id="p_qty">5.000 liter</strong></td>
             </tr>
             <tr>
@@ -213,13 +213,12 @@
     let qrcode;
 
     window.onload = function() {
-        // Inisialisasi QR dengan pengaturan optimal untuk scan jarak dekat
         qrcode = new QRCode(document.getElementById("qrcode"), {
-            width: 100,
-            height: 100,
+            width: 128,
+            height: 128,
             colorDark : "#000000",
             colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.L // Level L membuat pola lebih renggang/mudah discan
+            correctLevel : QRCode.CorrectLevel.M
         });
         
         loadSavedData();
@@ -248,6 +247,9 @@
         const ptName = document.getElementById('in_pt').value;
         const qty = document.getElementById('in_qty').value;
         const nopol = document.getElementById('in_nopol').value;
+        const transportir = document.getElementById('in_transportir').value;
+        const tinggi = document.getElementById('in_tinggi').value;
+        const segel = document.getElementById('in_segel').value;
         
         document.getElementById('p_nosj').innerText = nosj;
         document.getElementById('p_pt').innerText = ptName;
@@ -259,13 +261,13 @@
         document.getElementById('p_nopol').innerText = nopol;
         document.getElementById('p_jns_bbm').innerText = document.getElementById('in_jns_bbm').value;
         document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_sopir').value;
-        document.getElementById('p_segel').innerText = document.getElementById('in_segel').value;
+        document.getElementById('p_segel').innerText = segel;
         document.getElementById('p_supply').innerText = document.getElementById('in_supply').value;
         document.getElementById('p_bj').innerText = document.getElementById('in_bj').value;
         document.getElementById('p_km_awal').innerText = document.getElementById('in_km_awal').value;
         document.getElementById('p_km_akhir').innerText = document.getElementById('in_km_akhir').value;
         document.getElementById('p_qty').innerText = qty;
-        document.getElementById('p_transportir').innerText = document.getElementById('in_transportir').value;
+        document.getElementById('p_transportir_tabel').innerText = transportir;
         document.getElementById('p_note').innerText = document.getElementById('in_note').value;
         
         document.getElementById('f_penerima').innerText = document.getElementById('in_penerima').value || "................";
@@ -273,8 +275,9 @@
         document.getElementById('f_helper').innerText = document.getElementById('in_helper').value || "................";
         document.getElementById('f_admin').innerText = document.getElementById('in_admin').value || "................";
         
-        // Update QR Code Content (Data Ringkas agar pola QR tetap besar dan mudah discan)
-        const qrData = `KSE-SJ:${nosj}|PT:${ptName}|UNIT:${nopol}|QTY:${qty}`;
+        // QR CONTENT: No SJ, Tujuan, Qty, Tinggi Cairan, Transportir, Nomor Segel
+        const qrData = `NO SJ: ${nosj}\nTUJUAN: ${ptName}\nQTY: ${qty}\nTINGGI: ${tinggi}\nTRANS: ${transportir}\nSEGEL: ${segel}`;
+        
         qrcode.clear();
         qrcode.makeCode(qrData);
     }
