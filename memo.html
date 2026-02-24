@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root { --kse-primary: #485320; }
+        :root { --kse-primary: #06402B; } /* Hijau Tua KSE */
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; }
         
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
@@ -19,25 +19,28 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1); color: #000;
         }
 
-        .header-section { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; margin-bottom: 30px; }
-        .logo-img { height: 55px; width: auto; margin-top: 10px; }
-        .invoice-title { font-size: 32px; font-weight: 900; color: var(--kse-primary); font-style: italic; }
-
-        .meta-table td { padding: 4px 0; vertical-align: top; }
-        .content-body { margin-top: 25px; line-height: 1.6; }
+        .header-section { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+        .logo-img { height: 65px; width: auto; }
+        .invoice-title { font-size: 32px; font-weight: 900; color: var(--kse-primary); font-style: italic; text-align: right; }
+        
+        .meta-table td { padding: 2px 0; vertical-align: top; line-height: 1.2; }
+        .sub-text { font-size: 9px; color: #666; font-style: italic; display: block; }
+        
+        .content-body { margin-top: 15px; line-height: 1.5; }
         
         .table-main { width: 100%; border: 1.5px solid #000; border-collapse: collapse; margin: 15px 0; }
         .table-main th { background-color: var(--kse-primary) !important; color: white !important; border: 1px solid #000; padding: 8px 4px; text-align: center; font-size: 11px; }
         .table-main td { border: 1px solid #000; padding: 6px; vertical-align: middle; text-align: center; font-size: 11px; }
 
-        .signature-area { margin-top: 40px; }
+        .signature-area { margin-top: 30px; }
+        .ttd-img { height: 90px; width: auto; margin: 5px 0; }
         .footer-kse { position: absolute; bottom: 10mm; width: calc(100% - 40mm); border-top: 1px solid #000; padding-top: 10px; }
 
         @media print {
             @page { size: A4; margin: 0; }
             .control-nav, .input-sidebar { display: none !important; }
             body { background: white; padding: 0; }
-            .document-canvas { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 3mm 8mm 5mm 8mm !important; }
+            .document-canvas { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 5mm 8mm 5mm 8mm !important; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -93,63 +96,73 @@
         <div class="col-lg-9 p-0" id="pdf-area">
             <div class="document-canvas">
                 <div class="header-section">
-                    <img src="header1.png" class="logo-img" onerror="this.src='https://via.placeholder.com/180x60/ffffff/062006?text=LOGO+KSE'">
-                    <div class="invoice-title">MEMO</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <table class="meta-table">
-                            <tr><td width="100">Nomor</td><td>: <span id="out_no_memo"></span></td></tr>
-                            <tr><td>Lampiran</td><td>: -</td></tr>
-                            <tr><td>Perihal</td><td>: <b id="out_hal"></b></td></tr>
-                        </table>
+                    <img src="header1.png" class="logo-img" onerror="this.src='https://via.placeholder.com/180x60/ffffff/06402B?text=LOGO+KSE'">
+                    <div>
+                        <div class="invoice-title">MEMO</div>
+                        <div class="mt-1">
+                            <table class="meta-table" style="margin-left: auto;">
+                                <tr>
+                                    <td class="text-end" width="80">Nomor<br><span class="sub-text">Number</span></td>
+                                    <td width="15" class="text-center">:</td>
+                                    <td width="160"><span id="out_no_memo"></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">Tanggal<br><span class="sub-text">Date</span></td>
+                                    <td class="text-center">:</td>
+                                    <td><span id="out_tgl_header"></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">Perihal<br><span class="sub-text">Subject</span></td>
+                                    <td class="text-center">:</td>
+                                    <td><b id="out_hal"></b></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    Kepada yang kami hormati,,<br>
+                <div class="mt-3">
+                    Kepada yang kami hormati,</i>,<br>
                     <b id="out_kepada" style="font-size: 13px;"></b><br>
-                    Di - Tempat
+                    Di - Tempat / <i>At - Place</i>
                 </div>
 
                 <div class="content-body">
-                    <p>Dengan hormat,</p>
-                    <p>Bersama ini kami sampaikan Memo Pengambilan BBM Bio Solar, mohon bantuan prosesnya dengan rincian sebagai berikut:</p>
+                    <p>Dengan hormat</i>,</p>
+                    <p>Bersama ini kami sampaikan Memo Pengambilan BBM Bio Solar, mohon bantuan prosesnya dengan rincian sebagai berikut:</i></p>
                     
-                    <div class="ms-3 my-3">
+                    <div class="ms-3 my-2">
                         <table class="meta-table">
-                            <tr><td width="120">Nomor PO</td><td>: <span id="out_po" class="fw-bold"></span></td></tr>
-                            <tr><td>Tanggal Muat</td><td>: <span id="out_tgl_muat"></span></td></tr>
-                            <tr><td>Lokasi Muat</td><td>: <span id="out_lokasi"></span></td></tr>
+                            <tr><td width="130">Nomor PO<br><span class="sub-text">PO Number</span></td><td>: <span id="out_po" class="fw-bold"></span></td></tr>
+                            <tr><td>Tanggal Muat<br><span class="sub-text">Loading Date</span></td><td>: <span id="out_tgl_muat"></span></td></tr>
+                            <tr><td>Lokasi Muat<br><span class="sub-text">Loading Location</span></td><td>: <span id="out_lokasi"></span></td></tr>
                         </table>
                     </div>
 
-                    <p class="mb-2">Adapun data armada/unit adalah sebagai berikut:</p>
+                    <p class="mb-2">Adapun data armada / unit adalah sebagai berikut:</i></p>
                     <table class="table-main">
                         <thead>
                             <tr>
                                 <th width="5%">NO</th>
-                                <th width="25%">TRANSPORTIR</th>
-                                <th width="20%">NOMOR POLISI</th>
-                                <th width="20%">DRIVER</th>
-                                <th width="15%">QTY (LTR)</th>
-                                <th width="15%">TERA UNIT</th>
+                                <th width="25%">TRANSPORTIR<br><span style="font-size:9px; font-weight:normal; font-style:italic">Transporter</span></th>
+                                <th width="20%">NOMOR POLISI<br><span style="font-size:9px; font-weight:normal; font-style:italic">License Plate</span></th>
+                                <th width="20%">DRIVER<br><span style="font-size:9px; font-weight:normal; font-style:italic">Driver Name</span></th>
+                                <th width="15%">QTY (LTR)<br><span style="font-size:9px; font-weight:normal; font-style:italic">Quantity</span></th>
+                                <th width="15%">TERA UNIT<br><span style="font-size:9px; font-weight:normal; font-style:italic">Calibration</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
                     </table>
 
-                    <p>Demikian memo ini kami sampaikan untuk dipergunakan sebagaimana mestinya. Atas kerjasamanya kami ucapkan terima kasih.</p>
+                    <p>Demikian memo ini kami sampaikan untuk dipergunakan sebagaimana mestinya. Atas kerjasamanya kami ucapkan terima kasih.</i></p>
                 </div>
 
                 <div class="signature-area">
                     <div style="width: 300px;">
                         <p class="mb-1">Pangkalan Bun, <span id="out_tgl_footer"></span></p>
-                        <p class="mb-2"><b>PT. Khatulistiwa Sinar Energi</b><br>Operasional,</p>
-                        
-                        <div class="mt-2">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-KSE-OFFICIAL" width="85" height="85">
+                        <p class="mb-2"><b>PT. Khatulistiwa Sinar Energi</b><br>
+                        <div class="mt-1">
+                            <img src="ttd.png" class="ttd-img" onerror="this.src='https://via.placeholder.com/150x80/ffffff/000000?text=TTD+STAMP'">
                         </div>
                     </div>
                 </div>
@@ -161,7 +174,7 @@
                              <div style="font-size: 8px; color: #555; line-height: 1.2;">
                                 <b>Digital E-Form KSE System</b><br>
                                 Dokumen ini sah & Divalidasi System<br>
-                                Scan QR untuk Vaddasi no Memo<span id="doc-id"></span>
+                                Scan QR untuk Validasi no Memo <span id="doc-id"></span>
                             </div>
                         </div>
                         <div class="text-end">
@@ -179,6 +192,7 @@
 <script>
     function updateView() {
         const tgl = document.getElementById('in_tgl_surat').value;
+        document.getElementById('out_tgl_header').innerText = tgl;
         document.getElementById('out_tgl_footer').innerText = tgl;
         
         document.getElementById('out_no_memo').innerText = document.getElementById('in_no_memo').value;
@@ -187,7 +201,7 @@
         document.getElementById('out_po').innerText = document.getElementById('in_po').value;
         document.getElementById('out_tgl_muat').innerText = document.getElementById('in_tgl_muat').value;
         document.getElementById('out_lokasi').innerText = document.getElementById('in_lokasi').value;
-        saveToStorage(); // Simpan setiap kali ada perubahan text
+        saveToStorage();
     }
 
     function updateTable() {
@@ -209,19 +223,16 @@
             </tr>`;
         }
         document.getElementById('table-body').innerHTML = html;
-        saveToStorage(); // Simpan setiap kali ada perubahan tabel
+        saveToStorage();
     }
 
-    // Fungsi menyimpan data ke LocalStorage
     function saveToStorage() {
         const formData = {};
-        // Simpan inputan meta
         const inputs = document.querySelectorAll('.auto-save');
         inputs.forEach(input => {
-            formData[input.id || input.className + Array.from(inputs).indexOf(input)] = input.value;
+            if(input.id) formData[input.id] = input.value;
         });
 
-        // Simpan data tabel secara spesifik
         const tableData = {
             trans: Array.from(document.querySelectorAll('.in-trans')).map(i => i.value),
             nopol: Array.from(document.querySelectorAll('.in-nopol')).map(i => i.value),
@@ -229,26 +240,16 @@
             qty: Array.from(document.querySelectorAll('.in-qty')).map(i => i.value),
             tera: Array.from(document.querySelectorAll('.in-tera')).map(i => i.value)
         };
-
         localStorage.setItem('kse_memo_data', JSON.stringify({meta: formData, table: tableData}));
     }
 
-    // Fungsi memuat data dari LocalStorage
     function loadFromStorage() {
         const saved = localStorage.getItem('kse_memo_data');
         if (saved) {
             const data = JSON.parse(saved);
-            
-            // Load meta data
-            document.getElementById('in_tgl_surat').value = data.meta.in_tgl_surat || "";
-            document.getElementById('in_no_memo').value = data.meta.in_no_memo || "";
-            document.getElementById('in_hal').value = data.meta.in_hal || "";
-            document.getElementById('in_kepada').value = data.meta.in_kepada || "";
-            document.getElementById('in_po').value = data.meta.in_po || "";
-            document.getElementById('in_tgl_muat').value = data.meta.in_tgl_muat || "";
-            document.getElementById('in_lokasi').value = data.meta.in_lokasi || "";
-
-            // Load table data
+            for (let key in data.meta) {
+                if(document.getElementById(key)) document.getElementById(key).value = data.meta[key];
+            }
             const trans = document.querySelectorAll('.in-trans');
             const nopol = document.querySelectorAll('.in-nopol');
             const driver = document.querySelectorAll('.in-driver');
@@ -256,11 +257,11 @@
             const tera = document.querySelectorAll('.in-tera');
 
             for(let i=0; i<5; i++) {
-                trans[i].value = data.table.trans[i] || "";
-                nopol[i].value = data.table.nopol[i] || "";
-                driver[i].value = data.table.driver[i] || "";
-                qty[i].value = data.table.qty[i] || "";
-                tera[i].value = data.table.tera[i] || "";
+                if(data.table.trans[i]) trans[i].value = data.table.trans[i];
+                if(data.table.nopol[i]) nopol[i].value = data.table.nopol[i];
+                if(data.table.driver[i]) driver[i].value = data.table.driver[i];
+                if(data.table.qty[i]) qty[i].value = data.table.qty[i];
+                if(data.table.tera[i]) tera[i].value = data.table.tera[i];
             }
         }
     }
@@ -273,8 +274,8 @@
         const opt = {
             margin: 0,
             filename: `${noMemo} - ${namaPT}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3, useCORS: true },
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 3, useCORS: true, letterRendering: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save();
@@ -283,7 +284,6 @@
     window.onload = function() {
         const saved = localStorage.getItem('kse_memo_data');
         if(!saved) {
-            // Default value jika belum ada data tersimpan
             document.getElementById('in_tgl_surat').value = "21 Januari 2026";
             document.getElementById('in_no_memo').value = "001/KSE-MEMO/I/2026";
             document.getElementById('in_hal').value = "Memo Pengambilan BBM";
@@ -294,7 +294,6 @@
         } else {
             loadFromStorage();
         }
-        
         document.getElementById('doc-id').innerText = Math.floor(1000 + Math.random() * 9000);
         updateView();
         updateTable();
@@ -302,4 +301,3 @@
 </script>
 </body>
 </html>
-
