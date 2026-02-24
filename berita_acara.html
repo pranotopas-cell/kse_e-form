@@ -19,7 +19,8 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1); color: #000;
         }
 
-        .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+        /* Garis bawah header dihilangkan sesuai permintaan */
+        .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding-bottom: 10px; }
         .logo-img { height: 45px; width: auto; }
         .ba-title { text-align: center; margin-bottom: 25px; }
         .ba-title h5 { font-weight: 900; text-decoration: underline; margin-bottom: 5px; font-size: 14px; }
@@ -135,8 +136,7 @@
                     <div class="sig-box">
                         <span>Pangkalan Bun, 23 Januari 2026<br><b>Mengetahui</b></span>
                         <div class="mt-auto">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=VALID_OPER_MUATAN_KSE" width="45" class="mb-1">
-                            <br><b>SUPRANOTO</b><br><small>Operasional</small>
+                            <br><br><b>....................................</b><br><small>Operasional</small>
                         </div>
                     </div>
                 </div>
@@ -147,9 +147,12 @@
 
                 <div class="footer-kse">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div style="font-size: 7px; color: #777;">
-                            <b>KSE Logistics System</b> | BA-OM Digital Validated<br>
-                            Dokumen ini adalah bukti serah terima muatan antar unit armada.
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=VALID_OPER_MUATAN_KSE" width="40">
+                            <div style="font-size: 7px; color: #777;">
+                                <b>KSE Logistics System</b> | BA-OM Digital Validated<br>
+                                Dokumen ini adalah bukti serah terima muatan antar unit armada.
+                            </div>
                         </div>
                         <div class="text-end">
                             <b style="font-size: 10px; color: var(--kse-primary);">PT. KHATULISTIWA SINAR ENERGI</b><br>
@@ -177,11 +180,9 @@
             if(el && out) out.innerText = el.value;
         }
         
-        // Update tanda tangan secara spesifik agar tidak tertimpa
         document.getElementById('os_sopir_sig').innerText = document.getElementById('s_sopir').value || "......................";
         document.getElementById('ot_sopir_sig').innerText = document.getElementById('t_sopir').value || "......................";
 
-        // Handle Qty formatting
         const sqty = document.getElementById('s_qty').value;
         document.getElementById('os_qty').innerText = sqty ? parseFloat(sqty).toLocaleString('id-ID') + " Liter" : "-";
         
@@ -202,11 +203,13 @@
     }
 
     window.onload = function() {
-        // Proteksi jika user belum login (Opsional, sesuai sistem index.html Anda)
+        // Jika butuh login check, nyalakan bagian ini
+        /*
         if (localStorage.getItem('kse_session') !== 'active') {
             window.location.href = 'index.html';
             return;
         }
+        */
 
         document.getElementById('in_no').value = "012 / BA-OM / KSE / I / 2026";
         document.getElementById('in_hari').value = "Jumat";
