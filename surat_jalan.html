@@ -73,7 +73,7 @@
 
 <div class="container my-3 no-print">
     <div class="card border-success shadow">
-        <div class="card-header bg-success text-white"><b>DATA ENTRY SURAT JALAN</b></div>
+        <div class="card-header bg-success text-white"><b>DATA ENTRY SURAT JALAN KSE</b></div>
         <div class="card-body p-3">
             <div class="row g-2" id="mainForm">
                 <div class="col-md-4"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm kse-input" id="in_pt" value="PT. "></div>
@@ -212,15 +212,20 @@
     let qrcode;
 
     window.onload = function() {
+        // Optimasi QR Code: Menaikkan resolusi render agar teks panjang tetap terbaca
         qrcode = new QRCode(document.getElementById("qrcode"), {
             text: "KSE-INITIALIZING",
-            width: 45,
-            height: 45,
+            width: 128,  // Render lebih besar secara internal
+            height: 128,
             colorDark : "#000000",
             colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+            correctLevel : QRCode.CorrectLevel.M // Level Medium agar QR tidak terlalu rapat
         });
         
+        // Atur tampilan CSS agar QR tetap berukuran kecil di dokumen (48px)
+        const qrImg = document.querySelector("#qrcode img");
+        if(qrImg) { qrImg.style.width = "48px"; qrImg.style.height = "48px"; }
+
         loadSavedData();
 
         if(!document.getElementById('in_tgl').value) {
@@ -247,6 +252,7 @@
         const ptName = document.getElementById('in_pt').value;
         const qty = document.getElementById('in_qty').value;
         const nopol = document.getElementById('in_nopol').value;
+        const tgl = document.getElementById('in_tgl').value;
         
         document.getElementById('p_nosj').innerText = nosj;
         document.getElementById('p_pt').innerText = ptName;
@@ -254,7 +260,7 @@
         document.getElementById('p_cp').innerText = document.getElementById('in_cp').value;
         document.getElementById('p_po').innerText = document.getElementById('in_po').value;
         document.getElementById('p_sodo').innerText = document.getElementById('in_sodo').value;
-        document.getElementById('p_tgl').innerText = document.getElementById('in_tgl').value;
+        document.getElementById('p_tgl').innerText = tgl;
         document.getElementById('p_nopol').innerText = nopol;
         document.getElementById('p_jns_bbm').innerText = document.getElementById('in_jns_bbm').value;
         document.getElementById('p_sopir_tabel').innerText = document.getElementById('in_sopir').value;
@@ -272,10 +278,18 @@
         document.getElementById('f_helper').innerText = document.getElementById('in_helper').value || "................";
         document.getElementById('f_admin').innerText = document.getElementById('in_admin').value || "................";
         
-        // QR Code Content
-        const qrContent = `KSE-VERIFIED\nNo: ${nosj}\nPT: ${ptName}\nUnit: ${nopol}\nQty: ${qty}`;
+        // QR Code Content: Informasi lengkap Surat Jalan
+        const qrContent = `VERIFIED BY KSE SYSTEM\nNo SJ: ${nosj}\nTanggal: ${tgl}\nCustomer: ${ptName}\nUnit: ${nopol}\nQty: ${qty}`;
         qrcode.clear();
         qrcode.makeCode(qrContent);
+        
+        // Memastikan ukuran display tetap kecil meski render internal besar
+        setTimeout(() => {
+            const qrImg = document.querySelector("#qrcode img");
+            const qrCanv = document.querySelector("#qrcode canvas");
+            if(qrImg) { qrImg.style.width = "48px"; qrImg.style.height = "48px"; }
+            if(qrCanv) { qrCanv.style.width = "48px"; qrCanv.style.height = "48px"; }
+        }, 50);
     }
 
     function saveData() {
