@@ -13,34 +13,29 @@
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
-        /* Canvas */
+        /* Canvas Document */
         .document-canvas { 
             background: white; width: 210mm; min-height: 297mm; 
             margin: 20px auto; padding: 15mm; position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
         }
 
-        /* Header Update: Removed Border */
         .header-section { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 10px; margin-bottom: 35px; }
         .logo-img { height: 45px; width: auto; object-fit: contain; }
         .doc-identity { text-align: right; line-height: 1; }
         .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: #000; letter-spacing: 1px; }
 
-        /* Table Structure */
         .table-po { width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #000; }
         .table-po th { background-color: var(--kse-primary) !important; color: white !important; padding: 10px 5px; border: 1px solid #000; text-align: center; font-size: 10px; }
         .table-po td { border: 1px solid #000; padding: 10px 8px; vertical-align: middle; font-size: 11px; }
 
-        /* Spacing & Typography */
-        .info-spacing { margin-bottom: 60px; } /* Increased spacing */
+        .info-spacing { margin-bottom: 60px; }
         .lang-en { font-style: italic; font-size: 9px; color: #666; display: block; margin-top: -2px; }
 
-        /* Footer */
         .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-tagline { font-size: 10px; color: #444; display: block; letter-spacing: 0.5px; margin-top: 2px; }
 
-        /* Table No-Border for Date/No PO */
         .table-clean td { border: none !important; padding: 2px 0; }
 
         @media print {
@@ -198,7 +193,7 @@
                     <div class="col-6">
                         <p class="mb-0 italic">regard,</p>
                         <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
-                        <img id="qr_signature" src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data=VERIFIED_KSE_PO" class="my-3 shadow-sm">
+                        <img id="qr_signature" src="" width="75" height="75" class="my-3 shadow-sm" style="display:block;">
                         <p class="fw-bold text-decoration-underline mb-0" style="font-size: 13px;">SUPRANOTO</p>
                         <p class="small">Direktur</p>
                     </div>
@@ -207,7 +202,7 @@
                 <div class="footer-kse">
                     <div class="footer-content">
                         <div class="d-flex align-items-center gap-2">
-                            <img id="qr_footer" src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=KSE_EFORM_SYSTEM" width="45">
+                            <img id="qr_footer" src="" width="45" height="45">
                             <div style="font-size: 9px; color: #666;">
                                 <b>Digital E-Form KSE System</b><br>
                                 Dokumen ini sah & divalidasi sistem.<br>
@@ -233,21 +228,19 @@
 
     function downloadPDF() {
         const element = document.getElementById('pdf-area');
-        
-        // Mengambil input untuk penamaan file
         const rawNoPo = document.getElementById('in_no').value || '000';
         const rawCust = document.getElementById('in_cust').value || 'CUSTOMER';
         
-        // Membersihkan karakter ilegal untuk nama file
+        // Membersihkan karakter agar nama file aman
         const safeNoPo = rawNoPo.replace(/[\/\\?%*:|"<>]/g, '-');
         const safeCust = rawCust.replace(/[^a-z0-9]/gi, '_').toUpperCase();
         
         const opt = {
-            margin:       0,
-            filename:      `KSE_PO_${safeNoPo}_${safeCust}.pdf`,
-            image:           { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:           { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin: 0,
+            filename: `KSE_PO_${safeNoPo}_${safeCust}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save();
     }
@@ -272,13 +265,12 @@
         const noPo = document.getElementById('in_no').value;
         const customer = document.getElementById('in_cust').value;
         const total = document.getElementById('out_grandtotal').innerText;
-        const date = document.getElementById('in_tgl').value;
-
-        // Data yang dimasukkan ke dalam QR Code
-        const qrContent = `VALID PO - PT KSE\nNo: ${noPo}\nDate: ${date}\nCust: ${customer}\nTotal: Rp ${total}`;
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(qrContent)}`;
         
-        // Update kedua QR Code di dokumen
+        // Membuat string data QR
+        const qrInfo = `PO_VERIFIED|${noPo}|${customer}|Rp${total}|KSE_SYSTEM`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrInfo)}`;
+        
+        // Update gambar QR
         document.getElementById('qr_signature').src = qrUrl;
         document.getElementById('qr_footer').src = qrUrl;
     }
@@ -328,38 +320,36 @@
     }
 
     function updateView() {
-        document.getElementById('out_no').innerText = document.getElementById('in_no').value;
-        document.getElementById('out_tgl').innerText = document.getElementById('in_tgl').value;
-        document.getElementById('out_cust').innerText = document.getElementById('in_cust').value;
-        document.getElementById('out_addr').innerText = document.getElementById('in_addr').value;
-        document.getElementById('out_barang').innerText = document.getElementById('in_barang').value;
-        document.getElementById('out_pay').innerText = document.getElementById('in_pay').value;
+        document.getElementById('out_no').innerText = document.getElementById('in_no').value || "-";
+        document.getElementById('out_tgl').innerText = document.getElementById('in_tgl').value || "-";
+        document.getElementById('out_cust').innerText = document.getElementById('in_cust').value || "-";
+        document.getElementById('out_addr').innerText = document.getElementById('in_addr').value || "-";
+        document.getElementById('out_barang').innerText = document.getElementById('in_barang').value || "-";
+        document.getElementById('out_pay').innerText = document.getElementById('in_pay').value || "-";
     }
 
     function initSystem() {
         const savedData = localStorage.getItem(STORAGE_KEY);
-        
         if (savedData) {
             const data = JSON.parse(savedData);
-            document.getElementById('in_no').value = data.no;
-            document.getElementById('in_tgl').value = data.tgl;
-            document.getElementById('in_cust').value = data.cust;
-            document.getElementById('in_addr').value = data.addr;
-            document.getElementById('in_barang').value = data.barang;
-            document.getElementById('in_qty').value = data.qty;
-            document.getElementById('in_harga').value = data.harga;
-            document.getElementById('in_pbbkb_pct').value = data.pbbkb_pct;
-            document.getElementById('in_pph_pct').value = data.pph_pct;
-            document.getElementById('in_pay').value = data.pay;
+            document.getElementById('in_no').value = data.no || "";
+            document.getElementById('in_tgl').value = data.tgl || "";
+            document.getElementById('in_cust').value = data.cust || "";
+            document.getElementById('in_addr').value = data.addr || "";
+            document.getElementById('in_barang').value = data.barang || "";
+            document.getElementById('in_qty').value = data.qty || "";
+            document.getElementById('in_harga').value = data.harga || "";
+            document.getElementById('in_pbbkb_pct').value = data.pbbkb_pct || "";
+            document.getElementById('in_pph_pct').value = data.pph_pct || "";
+            document.getElementById('in_pay').value = data.pay || "";
         } else {
+            // Default Values
             const now = new Date();
             const year = now.getFullYear();
             const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-            
             document.getElementById('in_no').value = `001/KSE-PO/${monthRomawi[now.getMonth()]}/${year}`;
             const options = { day: '2-digit', month: 'LONG', year: 'numeric' };
             document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options).toUpperCase();
-            
             document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
             document.getElementById('in_addr').value = "JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL";
             document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI (B35)";
@@ -369,13 +359,11 @@
             document.getElementById('in_pph_pct').value = 0.3;
             document.getElementById('in_pay').value = "Cash / CBD";
         }
-        
         calculate();
         updateQRCode();
     }
 
     window.onload = initSystem;
 </script>
-
 </body>
 </html>
