@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - Penawaran Harga Resmi</title>
+    <title>KSE - Penawaran Harga</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -31,7 +31,7 @@
             width: 210mm; 
             height: 297mm; /* Standard A4 Height */
             background: white; 
-            padding: 15mm 20mm; 
+            padding: 3mm 8mm 5mm 8mm; 
             position: relative; 
             box-shadow: 0 0 20px rgba(0,0,0,0.5); 
             color: #000; 
@@ -110,7 +110,7 @@
         <div class="input-group"><label>Kontak Person</label><input type="text" id="inContact" value="08158841410" oninput="draw()"></div>
 
         <div class="actions">
-            <a href="index.html" class="btn btn-home">Home (index.html)</a>
+            <a href="index.html" class="btn btn-home">Home</a>
             <button onclick="window.print()" class="btn btn-print">Print Preview</button>
             <button onclick="saveA4()" class="btn btn-save">Save Download A4</button>
         </div>
@@ -292,3 +292,4 @@
     </script>
 </body>
 </html>
+
