@@ -29,7 +29,7 @@
         .preview-area { margin-left: 380px; padding: 40px; width: 100%; display: flex; justify-content: center; }
         .a4-sheet { 
             width: 210mm; 
-            height: 297mm; /* Standard A4 Height */
+            height: 297mm; 
             background: white; 
             padding: 20mm 10mm 5mm 10mm; 
             position: relative; 
@@ -38,7 +38,6 @@
             box-sizing:border-box;
         }
 
-        /* Header Sejajar */
         .header { 
             display: flex; 
             justify-content: space-between; 
@@ -51,7 +50,6 @@
         .title-text h1 { margin: 0; font-size: 22px; font-weight: bold; color: #000; line-height: 1.1; }
         .sub-eng { font-size: 11px; color: #666; font-style: italic; display: block; }
 
-        /* Row Alamat & Meta Sejajar */
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -88,39 +86,13 @@
         #qrcode-small canvas, #qrcode-small img { width: 50px !important; height: 50px !important; }
         .footer-right { text-align: right; font-size: 9px; color: #000; line-height: 1.3; }
 
-       @media print {
-
-  @page {
-    size: A4;
-    margin: 0;
-  }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: white;
-  }
-
-  .sidebar {
-    display: none;
-  }
-
-  .preview-area {
-    margin: 0;
-    padding: 0;
-  }
-
-  .a4-sheet {
-    width: 210mm;
-    min-height: 297mm;   /* WAJIB min-height */
-    margin: 0;
-    border: none;
-    box-shadow: none;
-    box-sizing: border-box;
-    overflow: hidden;
-  }
-
-}
+        @media print {
+            @page { size: A4; margin: 0; }
+            html, body { margin: 0; padding: 0; background: white; }
+            .sidebar { display: none; }
+            .preview-area { margin: 0; padding: 0; }
+            .a4-sheet { width: 210mm; min-height: 297mm; margin: 0; border: none; box-shadow: none; box-sizing: border-box; overflow: hidden; }
+        }
     </style>
 </head>
 <body>
@@ -132,7 +104,11 @@
         <div class="input-group"><label>Periode Harga</label><input type="text" id="inPrd" value="FEBRUARI 2026" oninput="draw()"></div>
         <div class="input-group"><label>Nama PT Tujuan</label><input type="text" id="inPT" value="PIMPINAN PERUSAHAAN" oninput="draw()"></div>
         <div class="input-group"><label>Alamat / Kota</label><input type="text" id="inAlm" value="Di Tempat" oninput="draw()"></div>
-        <div class="input-group"><label>Harga Dasar (Rp)</label><input type="number" id="inHrg" value="15586" oninput="draw()"></div>
+        
+        <div class="input-group"><label>Nama Produk (Tabel)</label><input type="text" id="inProdName" value="Bbm Solar B40" oninput="draw()"></div>
+        <div class="input-group"><label>Tujuan Lokasi (Tabel)</label><input type="text" id="inDest" value="site Tarjun" oninput="draw()"></div>
+        
+        <div class="input-group"><label>Harga Dasar (Rp)</label><input type="number" id="inHrg" value="15586" step="0.01" oninput="draw()"></div>
         <div class="input-group"><label>Sistem Pembayaran</label><input type="text" id="inPay" value="TOP 7 hari setelah Invoice diterima" oninput="draw()"></div>
         <div class="input-group"><label>Kontak Person</label><input type="text" id="inContact" value="08158841410" oninput="draw()"></div>
 
@@ -184,8 +160,8 @@
                     <tbody>
                         <tr>
                             <td align="center">1</td>
-                            <td align="center"><strong>Bbm Solar B40</strong></td>
-                            <td align="center">site Tarjun</td>
+                            <td align="center"><strong id="outProdName">Bbm Solar B40</strong></td>
+                            <td align="center" id="outDest">site Tarjun</td>
                             <td class="price-box">
                                 <div><span>Harga Dasar</span> <span>Rp <span id="outHrg">0</span></span></div>
                                 <div><span>PPN (11%)</span> <span>Rp <span id="outPpn">0</span></span></div>
@@ -247,10 +223,16 @@
                 document.getElementById('inPrd').value = data.prd || "";
                 document.getElementById('inPT').value = data.pt || "";
                 document.getElementById('inAlm').value = data.alm || "";
+                document.getElementById('inProdName').value = data.prodName || "Bbm Solar B40";
+                document.getElementById('inDest').value = data.dest || "site Tarjun";
                 document.getElementById('inHrg').value = data.hrg || "";
                 document.getElementById('inPay').value = data.pay || "";
                 document.getElementById('inContact').value = data.contact || "";
             }
+        }
+
+        function formatNumber(num) {
+            return num.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function draw() {
@@ -259,29 +241,38 @@
             const prd = document.getElementById('inPrd').value;
             const pt = document.getElementById('inPT').value;
             const alm = document.getElementById('inAlm').value;
+            const prodName = document.getElementById('inProdName').value;
+            const dest = document.getElementById('inDest').value;
             const hrgValue = document.getElementById('inHrg').value;
             const pay = document.getElementById('inPay').value;
             const contact = document.getElementById('inContact').value;
 
             const hrg = parseFloat(hrgValue) || 0;
-            const ppn = Math.round(hrg * 0.11);
-            const total = hrg + ppn;
+            // Logika PPN 11% dengan 2 angka di belakang koma
+            const ppn = parseFloat((hrg * 0.11).toFixed(2));
+            const total = parseFloat((hrg + ppn).toFixed(2));
 
             document.getElementById('outNomor').innerText = no;
             document.getElementById('outTgl').innerText = tgl;
             document.getElementById('outPrd').innerText = prd;
             document.getElementById('outPT').innerText = pt;
             document.getElementById('outAlm').innerText = alm;
-            document.getElementById('outHrg').innerText = hrg.toLocaleString('id-ID');
-            document.getElementById('outPpn').innerText = ppn.toLocaleString('id-ID');
-            document.getElementById('outTotal').innerText = total.toLocaleString('id-ID');
+            document.getElementById('outProdName').innerText = prodName;
+            document.getElementById('outDest').innerText = dest;
+            
+            document.getElementById('outHrg').innerText = formatNumber(hrg);
+            document.getElementById('outPpn').innerText = formatNumber(ppn);
+            document.getElementById('outTotal').innerText = formatNumber(total);
+            
             document.getElementById('outPay').innerText = pay;
             document.getElementById('outContact').innerText = contact;
             document.getElementById('outID').innerText = no;
 
-            localStorage.setItem('kse_last_input', JSON.stringify({ no, tgl, prd, pt, alm, hrg: hrgValue, pay, contact }));
+            localStorage.setItem('kse_last_input', JSON.stringify({ 
+                no, tgl, prd, pt, alm, prodName, dest, hrg: hrgValue, pay, contact 
+            }));
 
-            const qrText = `DOKUMEN RESMI PT KSE\nNo: ${no}\nTujuan: ${pt}\nTotal: Rp ${total.toLocaleString('id-ID')}`;
+            const qrText = `DOKUMEN RESMI PT KSE\nNo: ${no}\nTujuan: ${pt}\nTotal: Rp ${formatNumber(total)}`;
             qrSm.clear(); 
             qrSm.makeCode(qrText);
         }
@@ -291,24 +282,13 @@
             const noFile = document.getElementById('inNomor').value.replace(/\//g, '-');
             const ptFile = document.getElementById('inPT').value;
             
-            // Konfigurasi khusus agar fit satu halaman A4
             const opt = {
                 margin: 0,
                 filename: `${noFile}_${ptFile}.pdf`,
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
-                    scale: 2, 
-                    useCORS: true, 
-                    logging: false,
-                    letterRendering: true
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: 'a4', 
-                    orientation: 'portrait' 
-                }
+                html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-
             html2pdf().set(opt).from(element).save();
         }
         
@@ -319,8 +299,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
