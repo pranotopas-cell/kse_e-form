@@ -37,15 +37,24 @@
         
         .fit-text { display: block; max-height: 32px; overflow: hidden; font-size: 11px; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
-        /* Tanda Tangan - Kotak Penerima dilebarkan ke bawah */
         .footer-sig { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .footer-sig th { background: var(--kse-green) !important; color: white; border: 1.5px solid var(--kse-border); padding: 4px; text-align: center; font-size: 11px; }
-        .footer-sig td { border: 1.5px solid var(--kse-border); height: 100px; /* Tinggi ditambah sesuai request */ vertical-align: bottom; text-align: center; padding-bottom: 8px; font-weight: bold; position: relative; font-size: 11px; }
-        .stempel { position: absolute; width: 85px; bottom: 20px; left: 50%; transform: translateX(-50%); opacity: 0.7; pointer-events: none; }
+        .footer-sig td { border: 1.5px solid var(--kse-border); height: 100px; vertical-align: bottom; text-align: center; padding-bottom: 8px; font-weight: bold; position: relative; font-size: 11px; }
+        
+        /* Pengaturan Stempel */
+        .stempel { 
+            position: absolute; 
+            width: 85px; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            opacity: 0.7; 
+            pointer-events: none; 
+            z-index: 1;
+        }
 
         .note-box { border: 1.5px solid var(--kse-border); padding: 8px; min-height: 45px; font-size: 11px; margin-top: 8px; }
         
-        /* Footer QR Alignment */
         .page-footer { position: absolute; bottom: 8mm; left: 15mm; right: 15mm; display: flex; justify-content: space-between; align-items: center; border-top: 1.5px solid var(--kse-border); padding-top: 10px; }
         .footer-left-group { display: flex; align-items: center; gap: 12px; }
         #qrcode { width: 70px; height: 70px; }
@@ -104,9 +113,9 @@
     <table class="info-grid">
         <tr>
             <td width="58%" style="vertical-align: top;">
-                <span style="font-size: 11px;">Tujuan Pengiriman: <span class="label-en">Shipping Distination</span></span>
+                <span style="font-size: 11px;">Tujuan Pengiriman: <span class="label-en">Shipping Destination</span></span>
                 <strong id="p_pt" class="fit-text" style="font-size: 16px; color: var(--kse-green); margin: 3px 0;">-</strong>
-                <div style="margin-top: 5px;"><span class="label-en">Addres / Location:</span><span id="p_lokasi" class="fw-bold fit-text">-</span></div>
+                <div style="margin-top: 5px;"><span class="label-en">Address / Location:</span><span id="p_lokasi" class="fw-bold fit-text">-</span></div>
                 <div style="margin-top: 5px;"><span class="label-en">Contact Person:</span><span id="p_cp" class="fw-bold">-</span></div>
             </td>
             <td width="42%" style="vertical-align: top; border-left: 1px solid #ccc; padding-left: 15px;">
@@ -125,11 +134,11 @@
         <thead><tr><th colspan="4">DESCRIPTION - RINCIAN BARANG</th></tr></thead>
         <tbody>
             <tr>
-                <td width="25%">NOMOR POLISI<br><span class="label-en">Police N0.</span></td><td width="25%"><b id="p_nopol">-</b></td>
+                <td width="25%">NOMOR POLISI<br><span class="label-en">Police NO.</span></td><td width="25%"><b id="p_nopol">-</b></td>
                 <td width="25%">JENIS BBM<br><span class="label-en">Fuel Type</span></td><td width="25%"><span id="p_jns_bbm">-</span></td>
             </tr>
             <tr>
-                <td>NAMA SOPIR<br><span class="label-en">Driver Nane</span></td><td><span id="p_sopir">-</span></td>
+                <td>NAMA SOPIR<br><span class="label-en">Driver Name</span></td><td><span id="p_sopir">-</span></td>
                 <td>NOMOR SO/DO<br><span class="label-en">Order No</span></td><td><span id="p_sodo">-</span></td>
             </tr>
             <tr>
@@ -146,7 +155,7 @@
             </tr>
             <tr>
                 <td>BERAT JENIS (BJ)<br><span class="label-en">Specific Gravity</span></td><td><span id="p_bj">-</span></td>
-                <td>TINGGI CAIRAN<br><span class="label-en">Liquied Height</span></td><td><span id="p_tinggi">-</span></td>
+                <td>TINGGI CAIRAN<br><span class="label-en">Liquid Height</span></td><td><span id="p_tinggi">-</span></td>
             </tr>
         </tbody>
     </table>
@@ -167,7 +176,10 @@
                 <td><span id="f_penerima">................</span></td>
                 <td><span id="f_sopir">................</span></td>
                 <td><span id="f_helper">................</span></td>
-                <td><img src="stempel.png" class="stempel" onerror="this.style.display='none'"><span id="f_admin">................</span></td>
+                <td>
+                    <img src="stempel.png" class="stempel" onerror="this.style.display='none'">
+                    <span id="f_admin">................</span>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -248,11 +260,13 @@
     function downloadPDF() {
         const element = document.getElementById('surat-jalan-render');
         const nosj = document.getElementById('p_nosj').innerText.replace(/\//g,'-');
+        const namaPT = document.getElementById('in_pt').value.trim().replace(/[/\\?%*:|"<>]/g, '-');
+
         html2pdf().set({
             margin: 0,
-            filename: `SJ_KSE_${nosj}.pdf`,
+            filename: `SJ_KSE_${nosj}_${namaPT}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3, useCORS: true },
+            html2canvas: { scale: 3, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: [210, 279], orientation: 'portrait' }
         }).from(element).save();
     }
@@ -261,4 +275,3 @@
 </script>
 </body>
 </html>
-
