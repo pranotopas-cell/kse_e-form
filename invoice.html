@@ -10,11 +10,9 @@
         :root { --kse-primary: #1e4d1e; --kse-header-table: #2d5a27; }
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 11px; }
         
-        /* Navigation & Sidebar UI */
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
-        /* Document Canvas (A4) */
         .document-canvas { 
             background: white; 
             width: 210mm; 
@@ -25,31 +23,26 @@
             color: #000;
             box-sizing: border-box; 
             display: flex;
-            flex-direction: column; /* Mengaktifkan distribusi vertikal */
+            flex-direction: column;
         }
 
-        /* Header Section */
         .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .logo-img { height: 40px; width: auto; }
         .invoice-title { font-size: 36px; font-weight: 900; font-style: italic; color: var(--kse-primary); letter-spacing: -1px; }
         
-        /* Info Grid */
         .info-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px; margin-bottom: 15px; }
         .meta-table td { padding: 2px; line-height: 1.2; font-size: 10.5px; }
         .eng-sub { font-size: 8px; color: #666; font-style: italic; display: block; margin-top: -2px; }
         
-        /* Tables */
         .table-main { width: 100%; border: 1.5px solid #000; border-collapse: collapse; }
         .table-main th { background-color: var(--kse-header-table) !important; color: white !important; border: 1px solid #000; padding: 8px 4px; text-align: center; font-size: 11px; }
         .table-main td { border: 1px solid #000; padding: 8px; vertical-align: middle; font-size: 11px; }
         .calc-inner td { border: 1px solid #000 !important; padding: 4px 8px !important; font-size: 10.5px; }
         
-        /* Terbilang Box */
         .terbilang-box { border: 1.5px solid #000; border-top: none; padding: 8px 10px; font-style: italic; background: #fdfdfd; margin-bottom: 20px; font-size: 11px; }
         
-        /* Footer Positioning */
         .footer-kse { 
-            margin-top: auto; /* Mendorong footer ke bagian paling bawah */
+            margin-top: auto; 
             width: 100%; 
             border-top: 1px solid #ccc; 
             padding-top: 10px;
@@ -115,7 +108,7 @@
                     <div>
                         <p class="mb-1" style="font-size: 11px;">Kepada yth,</p>
                         <h6 class="fw-bold mb-0" id="out_cust" style="font-size: 13px; color: var(--kse-primary); text-transform: uppercase;"></h6>
-                        <p id="out_addr" class="mb-1" style="font-size: 11px;"></p>
+                        <div id="out_addr" style="font-size: 11px; white-space: pre-line; line-height: 1.2;"></div>
                         <p class="mb-0" style="font-size: 11px;">di - <span id="out_city" class="fw-bold"></span></p>
                     </div>
                     <div class="d-flex justify-content-end">
@@ -163,7 +156,7 @@
                                 <table class="calc-inner" style="width: 100%;">
                                     <tr><td width="55%">Sub Total</td><td width="10%">Rp</td><td class="text-end" id="out_subtotal_display"></td></tr>
                                     <tr><td><i>DPP Nilai Lain</i></td><td>Rp</td><td class="text-end" id="out_dpp_val"></td></tr>
-                                    <tr><td><i>PPn (11%)</i></td><td>Rp</td><td class="text-end" id="out_ppn_val"></td></tr>
+                                    <tr><td><i>PPn</i></td><td>Rp</td><td class="text-end" id="out_ppn_val"></td></tr>
                                     <tr><td><i>Penyesuaian</i></td><td>Rp</td><td class="text-end" id="out_adjust_val">0</td></tr>
                                 </table>
                             </td>
@@ -220,7 +213,7 @@
 </div>
 
 <script>
-    const fields = ['cust', 'addr', 'no', 'tgl', 'po', 'term', 'due', 'produk', 'qty_text', 'h_nett_text', 'h_tax_text', 'subtotal', 'adjust'];
+    const fields = ['cust', 'addr', 'no', 'tgl', 'po', 'term', 'produk', 'qty_text', 'h_nett_text', 'h_tax_text', 'subtotal', 'adjust'];
 
     function saveToLocal() {
         let data = {};
@@ -260,12 +253,15 @@
         const subTotal = parseFloat(document.getElementById('in_subtotal').value) || 0;
         const adjustment = parseFloat(document.getElementById('in_adjust').value) || 0;
         
-        const ppn = Math.round(subTotal * 0.11);
+        // Logika: DPP Nilai Lain (11/12 dari Subtotal)
+        const dppNilaiLain = Math.round(subTotal * 11 / 12);
+        // Logika: PPn 11% dari DPP Nilai Lain
+        const ppn = Math.round(dppNilaiLain * 0.11);
         const grandTotal = subTotal + ppn + adjustment;
 
         document.getElementById('out_total_dpp').innerText = subTotal.toLocaleString('id-ID');
         document.getElementById('out_subtotal_display').innerText = subTotal.toLocaleString('id-ID');
-        document.getElementById('out_dpp_val').innerText = subTotal.toLocaleString('id-ID');
+        document.getElementById('out_dpp_val').innerText = dppNilaiLain.toLocaleString('id-ID');
         document.getElementById('out_ppn_val').innerText = ppn.toLocaleString('id-ID');
         document.getElementById('out_adjust_val').innerText = adjustment.toLocaleString('id-ID');
         document.getElementById('out_grand_val').innerText = grandTotal.toLocaleString('id-ID');
@@ -275,15 +271,20 @@
     }
 
     function updateView() {
-        const textFields = ['cust', 'no', 'tgl', 'po', 'term', 'due', 'produk'];
+        const textFields = ['cust', 'no', 'tgl', 'po', 'term', 'produk'];
         textFields.forEach(f => {
-            document.getElementById('out_' + f).innerText = document.getElementById('in_' + f).value;
+            const el = document.getElementById('out_' + f);
+            if(el) el.innerText = document.getElementById('in_' + f).value;
         });
 
+        // Perbaikan penampilan Alamat
         const addrText = document.getElementById('in_addr').value;
         document.getElementById('out_addr').innerText = addrText;
-        const addrParts = addrText.split('\n');
-        document.getElementById('out_city').innerText = addrParts[addrParts.length - 1].toUpperCase();
+        
+        const addrLines = addrText.trim().split('\n');
+        if(addrLines.length > 0) {
+            document.getElementById('out_city').innerText = addrLines[addrLines.length - 1].toUpperCase();
+        }
 
         document.getElementById('out_qty_val').innerText = document.getElementById('in_qty_text').value;
         document.getElementById('out_h_tax_val').innerText = document.getElementById('in_h_tax_text').value;
@@ -333,4 +334,3 @@
 </script>
 </body>
 </html>
-
