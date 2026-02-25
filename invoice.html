@@ -28,8 +28,8 @@
         .table-main td { border: 1px solid #000; padding: 8px; vertical-align: middle; font-size: 11px; }
         .calc-inner td { border: 1px solid #000 !important; padding: 4px 8px !important; font-size: 10.5px; }
         .terbilang-box { border: 1.5px solid #000; border-top: none; padding: 8px 10px; font-style: italic; background: #fdfdfd; margin-bottom: 20px; font-size: 11px; }
-        .footer-kse { position: absolute; bottom: 8mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 8px; }
-        .signature-section { margin-top: 25px; text-align: left; width: fit-content; }
+        .footer-kse { position: relative; margin-top; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 8px; }
+        .signature-section { margin-top: 20px; text-align: left; width: fit-content; }
         .payment-info { font-size: 10.5px; line-height: 1.4; }
 
         @media print {
@@ -45,9 +45,10 @@
 
         .a4-sheet {
             width: 210mm;
-            height: 297mm
+            min-height: 297mm
+            height: auto;
             page-break-after: avoid;
-            overflow: hidden;
+            overflow: visible;
         }    
       }
     </style>
@@ -325,6 +326,7 @@
 </script>
 </body>
 </html>
+
 
 
 
