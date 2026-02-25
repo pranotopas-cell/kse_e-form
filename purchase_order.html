@@ -98,11 +98,15 @@
                     <label class="fw-bold">Harga Dasar</label>
                     <input type="number" id="in_harga" class="form-control form-control-sm" oninput="saveAndCalculate()">
                 </div>
-                <div class="col-6 mb-2">
+                <div class="col-4 mb-2">
+                    <label class="fw-bold">PPN (%)</label>
+                    <input type="number" id="in_ppn_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
+                </div>
+                <div class="col-4 mb-2">
                     <label class="fw-bold">PBBKB (%)</label>
                     <input type="number" id="in_pbbkb_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
                 </div>
-                <div class="col-6 mb-2">
+                <div class="col-4 mb-2">
                     <label class="fw-bold">PPh (%)</label>
                     <input type="number" id="in_pph_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
                 </div>
@@ -157,7 +161,7 @@
                             <th width="28%">NAMA BARANG <br><span class="lang-en">Description of Goods</span></th>
                             <th>QUANTITY (Ltr) <br><span class="lang-en">Volume</span></th>
                             <th>HARGA DASAR <br><span class="lang-en">Basic Price</span></th>
-                            <th>PPN 11% <br><span class="lang-en">VAT</span></th>
+                            <th id="th_ppn_label">PPN <br><span class="lang-en">VAT</span></th>
                             <th id="th_pbbkb_label">PBBKB <br><span class="lang-en">Fuel Tax</span></th>
                             <th id="th_pph_label">PPH <br><span class="lang-en">Income Tax</span></th>
                             <th>PER LTR <br><span class="lang-en">Unit Price</span></th>
@@ -231,7 +235,6 @@
         const rawNoPo = document.getElementById('in_no').value || '000';
         const rawCust = document.getElementById('in_cust').value || 'CUSTOMER';
         
-        // Membersihkan karakter agar nama file aman
         const safeNoPo = rawNoPo.replace(/[\/\\?%*:|"<>]/g, '-');
         const safeCust = rawCust.replace(/[^a-z0-9]/gi, '_').toUpperCase();
         
@@ -254,6 +257,7 @@
             barang: document.getElementById('in_barang').value,
             qty: document.getElementById('in_qty').value,
             harga: document.getElementById('in_harga').value,
+            ppn_pct: document.getElementById('in_ppn_pct').value,
             pbbkb_pct: document.getElementById('in_pbbkb_pct').value,
             pph_pct: document.getElementById('in_pph_pct').value,
             pay: document.getElementById('in_pay').value,
@@ -265,12 +269,8 @@
         const noPo = document.getElementById('in_no').value;
         const customer = document.getElementById('in_cust').value;
         const total = document.getElementById('out_grandtotal').innerText;
-        
-        // Membuat string data QR
         const qrInfo = `PO_VERIFIED|${noPo}|${customer}|Rp${total}|KSE_SYSTEM`;
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrInfo)}`;
-        
-        // Update gambar QR
         document.getElementById('qr_signature').src = qrUrl;
         document.getElementById('qr_footer').src = qrUrl;
     }
@@ -290,10 +290,11 @@
     function calculate() {
         const qty = parseFloat(document.getElementById('in_qty').value) || 0;
         const hargaDasar = parseFloat(document.getElementById('in_harga').value) || 0;
+        const ppnPct = parseFloat(document.getElementById('in_ppn_pct').value) || 0;
         const pbbkbPct = parseFloat(document.getElementById('in_pbbkb_pct').value) || 0;
         const pphPct = parseFloat(document.getElementById('in_pph_pct').value) || 0;
 
-        const ppn = Math.round((hargaDasar * 0.11) * 10) / 10;
+        const ppn = Math.round((hargaDasar * (ppnPct / 100)) * 10) / 10;
         const pbbkb = Math.round((hargaDasar * (pbbkbPct / 100)) * 10) / 10;
         const pph = Math.round((hargaDasar * (pphPct / 100)) * 10) / 10;
         
@@ -302,6 +303,7 @@
 
         const localeOpts = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
         
+        document.getElementById('th_ppn_label').innerHTML = `PPN ${ppnPct}% <br><span class="lang-en">VAT</span>`;
         document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Fuel Tax</span>`;
         document.getElementById('th_pph_label').innerHTML = `PPH ${pphPct}% <br><span class="lang-en">Income Tax</span>`;
 
@@ -339,11 +341,11 @@
             document.getElementById('in_barang').value = data.barang || "";
             document.getElementById('in_qty').value = data.qty || "";
             document.getElementById('in_harga').value = data.harga || "";
+            document.getElementById('in_ppn_pct').value = data.ppn_pct || "11";
             document.getElementById('in_pbbkb_pct').value = data.pbbkb_pct || "";
             document.getElementById('in_pph_pct').value = data.pph_pct || "";
             document.getElementById('in_pay').value = data.pay || "";
         } else {
-            // Default Values
             const now = new Date();
             const year = now.getFullYear();
             const monthRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
@@ -355,6 +357,7 @@
             document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI (B35)";
             document.getElementById('in_qty').value = 150000;
             document.getElementById('in_harga').value = 13063.1;
+            document.getElementById('in_ppn_pct').value = 11;
             document.getElementById('in_pbbkb_pct').value = 7.5;
             document.getElementById('in_pph_pct').value = 0.3;
             document.getElementById('in_pay').value = "Cash / CBD";
@@ -367,5 +370,3 @@
 </script>
 </body>
 </html>
-
-
