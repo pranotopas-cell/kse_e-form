@@ -21,27 +21,46 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            /* Memaksa warna muncul di PDF/Print */
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
         .header-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
         .logo-img { height: 50px; width: auto; }
-        .title-text { text-align: right; font-size: 38px; font-weight: 900; color: var(--kse-green); line-height: 0.9; }
+        .title-text { text-align: right; font-size: 38px; font-weight: 900; color: var(--kse-green) !important; line-height: 0.9; }
         .subtitle-text { text-align: right; font-size: 11px; font-style: italic; color: #555; }
 
         .info-grid { width: 100%; margin-bottom: 15px; font-size: 13px; border-collapse: collapse; }
         .label-en { font-size: 9px; font-style: italic; color: #666; display: block; line-height: 1; }
         
         .table-main { width: 100%; border-collapse: collapse; margin-bottom: 8px; table-layout: fixed; }
-        .table-main th { background-color: var(--kse-green) !important; color: white !important; border: 1.5px solid var(--kse-border); padding: 6px; text-align: center; font-size: 13px; text-transform: uppercase; }
+        .table-main th { 
+            background-color: var(--kse-green) !important; 
+            color: white !important; 
+            border: 1.5px solid var(--kse-border); 
+            padding: 6px; 
+            text-align: center; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            -webkit-print-color-adjust: exact !important;
+        }
         .table-main td { border: 1.5px solid var(--kse-border); padding: 5px 8px; vertical-align: middle; font-size: 11px; height: 38px; word-wrap: break-word; }
         
         .fit-text { display: block; max-height: 32px; overflow: hidden; font-size: 11px; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
         .footer-sig { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .footer-sig th { background: var(--kse-green) !important; color: white; border: 1.5px solid var(--kse-border); padding: 4px; text-align: center; font-size: 11px; }
+        .footer-sig th { 
+            background: var(--kse-green) !important; 
+            color: white !important; 
+            border: 1.5px solid var(--kse-border); 
+            padding: 4px; 
+            text-align: center; 
+            font-size: 11px; 
+            -webkit-print-color-adjust: exact !important;
+        }
         .footer-sig td { border: 1.5px solid var(--kse-border); height: 100px; vertical-align: bottom; text-align: center; padding-bottom: 8px; font-weight: bold; position: relative; font-size: 11px; }
         
-        /* Pengaturan Stempel */
         .stempel { 
             position: absolute; 
             width: 95px; 
@@ -60,7 +79,11 @@
         #qrcode { width: 70px; height: 70px; }
         #qrcode img { width: 70px !important; height: 70px !important; }
 
-        @media print { .no-print { display: none !important; } body { background: white; } #surat-jalan-render { margin: 0; box-shadow: none; } }
+        @media print { 
+            .no-print { display: none !important; } 
+            body { background: white; padding: 0; margin: 0; } 
+            #surat-jalan-render { margin: 0; box-shadow: none; border: none; } 
+        }
     </style>
 </head>
 <body>
@@ -232,7 +255,9 @@
         
         const mapping = { 'in_pt': 'p_pt', 'in_lokasi': 'p_lokasi', 'in_cp': 'p_cp', 'in_po': 'p_po', 'in_sodo': 'p_sodo', 'in_tgl': 'p_tgl', 'in_nopol': 'p_nopol', 'in_jns_bbm': 'p_jns_bbm', 'in_sopir': 'p_sopir', 'in_segel': 'p_segel', 'in_supply': 'p_supply', 'in_bj': 'p_bj', 'in_tinggi': 'p_tinggi', 'in_km_awal': 'p_km_awal', 'in_km_akhir': 'p_km_akhir', 'in_qty': 'p_qty', 'in_transportir': 'p_transportir', 'in_note': 'p_note' };
 
-        for (let id in mapping) { document.getElementById(mapping[id]).innerText = document.getElementById(id).value; }
+        for (let id in mapping) { 
+            if(document.getElementById(id)) document.getElementById(mapping[id]).innerText = document.getElementById(id).value; 
+        }
 
         document.getElementById('f_penerima').innerText = document.getElementById('in_penerima').value || "................";
         document.getElementById('f_sopir').innerText = document.getElementById('in_sopir').value || "................";
@@ -259,22 +284,32 @@
 
     function downloadPDF() {
         const element = document.getElementById('surat-jalan-render');
+        
+        // Membersihkan karakter ilegal untuk nama file
         const nosj = document.getElementById('p_nosj').innerText.replace(/\//g,'-');
         const namaPT = document.getElementById('in_pt').value.trim().replace(/[/\\?%*:|"<>]/g, '-');
+        const finalFileName = `SJ_${nosj}_${namaPT}.pdf`;
 
-        html2pdf().set({
-            margin: [0, 0, 0, 0]
-            filename: `SJ_KSE_${nosj}_${namaPT}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, scolly: 0,windowWidth: element.client.clientWidth },
-            jsPDF: { unit: 'mm', format: "a4", orientation: 'portrait' }
-            pagebreak: { mode: "avoid-all"}
-        }).from(element).save();
+        const opt = {
+            margin: 0,
+            filename: finalFileName,
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                logging: false,
+                letterRendering: true,
+                scrollX: 0,
+                scrollY: 0
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: 'avoid-all' }
+        };
+
+        html2pdf().set(opt).from(element).save();
     }
 
     function resetForm() { if(confirm("Hapus semua data entry?")) { localStorage.removeItem('kse_v2_data'); location.reload(); } }
 </script>
 </body>
 </html>
-
-
