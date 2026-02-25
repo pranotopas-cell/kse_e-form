@@ -80,10 +80,11 @@
             
             <h6 class="fw-bold mb-3 text-primary border-bottom pb-2 mt-3">META INVOICE</h6>
             <div class="row g-2">
-                <div class="col-12"><label class="small fw-bold">No. Invoice</label><input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()"></div>
                 <div class="col-12"><label class="small fw-bold">Tanggal</label><input type="text" id="in_tgl" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-12"><label class="small fw-bold">Tnggal PO</label><input type="text" id="in_po" class="form-control form-control-sm" oninput="updateView()"></div>
-                <div class="col-6"><label class="small fw-bold">NPWP</label><input type="text" id="in_term" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">No. Invoice</label><input type="text" id="in_no" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">NPWP</label><input type="text" id="in_npwp" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Tanggal PO</label><input type="text" id="in_po_tgl" class="form-control form-control-sm" oninput="updateView()"></div>
+                <div class="col-12"><label class="small fw-bold">Nomor PO</label><input type="text" id="in_po_no" class="form-control form-control-sm" oninput="updateView()"></div>
             </div>
 
             <h6 class="fw-bold mb-3 text-danger border-bottom pb-2 mt-3">RINCIAN TABEL (MANUAL)</h6>
@@ -113,10 +114,11 @@
                     </div>
                     <div class="d-flex justify-content-end">
                         <table class="meta-table">
-                            <tr><td width="95">Tanggal<span class="eng-sub">Date</span></td><td>: <span id="out_tgl"></span></td></tr>
+                            <tr><td width="110">Tanggal<span class="eng-sub">Date</span></td><td>: <span id="out_tgl"></span></td></tr>
                             <tr><td>Nomor Invoice<span class="eng-sub">Invoice Number</span></td><td>: <span id="out_no"></span></td></tr>
-                            <tr><td>Tanggal PO<span class="eng-sub">PO Date</span></td><td>: <span id="out_po"></span></td></tr>
-                            <tr><td>NPWP<span class="eng-sub">NPWP</span></td><td>: <span id="out_term"></span></td></tr>
+                            <tr><td>NPWP<span class="eng-sub">Tax ID Number</span></td><td>: <span id="out_npwp"></span></td></tr>
+                            <tr><td>Tanggal PO<span class="eng-sub">PO Date</span></td><td>: <span id="out_po_tgl"></span></td></tr>
+                            <tr><td>Nomor PO<span class="eng-sub">PO Number</span></td><td>: <span id="out_po_no"></span></td></tr>
                         </table>
                     </div>
                 </div>
@@ -213,7 +215,7 @@
 </div>
 
 <script>
-    const fields = ['cust', 'addr', 'no', 'tgl', 'po', 'term', 'produk', 'qty_text', 'h_nett_text', 'h_tax_text', 'subtotal', 'adjust'];
+    const fields = ['cust', 'addr', 'tgl', 'no', 'npwp', 'po_tgl', 'po_no', 'produk', 'qty_text', 'h_nett_text', 'h_tax_text', 'subtotal', 'adjust'];
 
     function saveToLocal() {
         let data = {};
@@ -255,8 +257,8 @@
         
         // Logika: DPP Nilai Lain (11/12 dari Subtotal)
         const dppNilaiLain = Math.round(subTotal * 11 / 12);
-        // Logika: PPn 11% dari DPP Nilai Lain
-        const ppn = Math.round(dppNilaiLain * 0.11);
+        // REVISI: PPN 12% dari DPP Nilai Lain
+        const ppn = Math.round(dppNilaiLain * 0.12);
         const grandTotal = subTotal + ppn + adjustment;
 
         document.getElementById('out_total_dpp').innerText = subTotal.toLocaleString('id-ID');
@@ -271,13 +273,12 @@
     }
 
     function updateView() {
-        const textFields = ['cust', 'no', 'tgl', 'po', 'term', 'produk'];
+        const textFields = ['cust', 'tgl', 'no', 'npwp', 'po_tgl', 'po_no', 'produk'];
         textFields.forEach(f => {
             const el = document.getElementById('out_' + f);
             if(el) el.innerText = document.getElementById('in_' + f).value;
         });
 
-        // Perbaikan penampilan Alamat
         const addrText = document.getElementById('in_addr').value;
         document.getElementById('out_addr').innerText = addrText;
         
@@ -318,8 +319,11 @@
         if (saved) {
             loadFromLocal();
         } else {
-            document.getElementById('in_no').value = "001 / KSE-INVOICE / I / 2026";
             document.getElementById('in_tgl').value = "12 Januari 2026";
+            document.getElementById('in_no').value = "001 / KSE-INVOICE / I / 2026";
+            document.getElementById('in_npwp').value = "00.000.000.0-000.000";
+            document.getElementById('in_po_tgl').value = "10 Januari 2026";
+            document.getElementById('in_po_no').value = "PO/KMU/001/2026";
             document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
             document.getElementById('in_addr').value = "Jln. Karya Bahtera nusa NO. 236\nBanjarmasin";
             document.getElementById('in_produk').value = "BBM Solar Industri";
