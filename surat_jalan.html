@@ -263,11 +263,12 @@
         const namaPT = document.getElementById('in_pt').value.trim().replace(/[/\\?%*:|"<>]/g, '-');
 
         html2pdf().set({
-            margin: 0,
+            margin: [0, 0, 0, 0]
             filename: `SJ_KSE_${nosj}_${namaPT}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3, useCORS: true, logging: false },
-            jsPDF: { unit: 'mm', format: [210, 279], orientation: 'portrait' }
+            html2canvas: { scale: 2, useCORS: true, scolly: 0,windowWidth: element.client.clientWidth },
+            jsPDF: { unit: 'mm', format: "a4", orientation: 'portrait' }
+            pagebreak: { mode: "avoid-all"}
         }).from(element).save();
     }
 
@@ -275,4 +276,5 @@
 </script>
 </body>
 </html>
+
 
