@@ -12,9 +12,10 @@
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         .document-canvas { 
-            background: white; width: 210mm; min-height: 296mm; 
+            background: white; width: 210mm; min-height: 297mm; 
             margin: 10px auto; padding: 10mm 15mm; position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); color: #000;
+            box-sizing: border-box;
         }
         .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .logo-img { height: 40px; width: auto; }
@@ -32,10 +33,38 @@
         .payment-info { font-size: 10.5px; line-height: 1.4; }
 
         @media print {
-            @page { size: A4; margin: 0; }
-            .control-nav, .input-sidebar { display: none !important; }
-            body { background: white; padding: 0; }
-            .document-canvas { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 3mm 8mm 5mm 8mm !important; }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .preview-area {
+    margin: 0;
+    padding: 0;
+  }
+
+  .a4-sheet {
+    width: 210mm;
+    min-height: 297mm;      /* GANTI dari height */
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+}
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -312,3 +341,4 @@
 </script>
 </body>
 </html>
+
