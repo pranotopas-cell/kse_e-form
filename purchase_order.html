@@ -13,7 +13,6 @@
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
         .input-sidebar { background: #fff; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; border-right: 1px solid #ddd; }
         
-        /* Canvas Document */
         .document-canvas { 
             background: white; width: 210mm; min-height: 297mm; 
             margin: 20px auto; padding: 15mm; position: relative;
@@ -91,24 +90,24 @@
                     <input type="text" id="in_barang" class="form-control form-control-sm" oninput="saveAndUpdate()">
                 </div>
                 <div class="col-6 mb-2">
+                    <label class="fw-bold text-primary">Harga Per Liter</label>
+                    <input type="number" id="in_perltr" class="form-control form-control-sm border-primary" oninput="saveAndCalculate()">
+                </div>
+                <div class="col-6 mb-2">
                     <label class="fw-bold">Quantity (Ltr)</label>
                     <input type="number" id="in_qty" class="form-control form-control-sm" oninput="saveAndCalculate()">
                 </div>
-                <div class="col-6 mb-2">
-                    <label class="fw-bold">Harga Dasar</label>
-                    <input type="number" id="in_harga" class="form-control form-control-sm" oninput="saveAndCalculate()">
-                </div>
                 <div class="col-4 mb-2">
                     <label class="fw-bold">PPN (%)</label>
-                    <input type="number" id="in_ppn_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
+                    <input type="number" id="in_ppn_pct" class="form-control form-control-sm" value="11" step="0.1" oninput="saveAndCalculate()">
                 </div>
                 <div class="col-4 mb-2">
                     <label class="fw-bold">PBBKB (%)</label>
-                    <input type="number" id="in_pbbkb_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
+                    <input type="number" id="in_pbbkb_pct" class="form-control form-control-sm" value="7.5" step="0.1" oninput="saveAndCalculate()">
                 </div>
                 <div class="col-4 mb-2">
                     <label class="fw-bold">PPh (%)</label>
-                    <input type="number" id="in_pph_pct" class="form-control form-control-sm" step="0.1" oninput="saveAndCalculate()">
+                    <input type="number" id="in_pph_pct" class="form-control form-control-sm" value="0.3" step="0.1" oninput="saveAndCalculate()">
                 </div>
                 <div class="col-12 mb-3">
                     <label class="fw-bold">Sistem Pembayaran</label>
@@ -234,7 +233,6 @@
         const element = document.getElementById('pdf-area');
         const rawNoPo = document.getElementById('in_no').value || '000';
         const rawCust = document.getElementById('in_cust').value || 'CUSTOMER';
-        
         const safeNoPo = rawNoPo.replace(/[\/\\?%*:|"<>]/g, '-');
         const safeCust = rawCust.replace(/[^a-z0-9]/gi, '_').toUpperCase();
         
@@ -256,7 +254,7 @@
             addr: document.getElementById('in_addr').value,
             barang: document.getElementById('in_barang').value,
             qty: document.getElementById('in_qty').value,
-            harga: document.getElementById('in_harga').value,
+            perltr_in: document.getElementById('in_perltr').value,
             ppn_pct: document.getElementById('in_ppn_pct').value,
             pbbkb_pct: document.getElementById('in_pbbkb_pct').value,
             pph_pct: document.getElementById('in_pph_pct').value,
@@ -289,19 +287,24 @@
 
     function calculate() {
         const qty = parseFloat(document.getElementById('in_qty').value) || 0;
-        const hargaDasar = parseFloat(document.getElementById('in_harga').value) || 0;
+        const hargaPerLtrInput = parseFloat(document.getElementById('in_perltr').value) || 0;
         const ppnPct = parseFloat(document.getElementById('in_ppn_pct').value) || 0;
         const pbbkbPct = parseFloat(document.getElementById('in_pbbkb_pct').value) || 0;
         const pphPct = parseFloat(document.getElementById('in_pph_pct').value) || 0;
 
-        const ppn = Math.round((hargaDasar * (ppnPct / 100)) * 10) / 10;
-        const pbbkb = Math.round((hargaDasar * (pbbkbPct / 100)) * 10) / 10;
-        const pph = Math.round((hargaDasar * (pphPct / 100)) * 10) / 10;
-        
-        const perLtr = hargaDasar + ppn + pbbkb + pph;
-        const total = qty * perLtr;
+        // LOGIKA BARU:
+        // Harga Dasar = Harga Per Liter / (1 + total % pajak)
+        const totalPajakPct = (ppnPct + pbbkbPct + pphPct) / 100;
+        const hargaDasar = hargaPerLtrInput / (1 + totalPajakPct);
 
-        const localeOpts = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
+        const ppn = hargaDasar * (ppnPct / 100);
+        const pbbkb = hargaDasar * (pbbkbPct / 100);
+        const pph = hargaDasar * (pphPct / 100);
+        
+        // Grand total tetap Qty * Harga Per Liter
+        const total = qty * hargaPerLtrInput;
+
+        const localeOpts = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
         
         document.getElementById('th_ppn_label').innerHTML = `PPN ${ppnPct}% <br><span class="lang-en">VAT</span>`;
         document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Fuel Tax</span>`;
@@ -312,7 +315,7 @@
         document.getElementById('out_ppn').innerText = ppn.toLocaleString('id-ID', localeOpts);
         document.getElementById('out_pbbkb').innerText = pbbkb.toLocaleString('id-ID', localeOpts);
         document.getElementById('out_pph').innerText = pph.toLocaleString('id-ID', localeOpts);
-        document.getElementById('out_perltr').innerText = perLtr.toLocaleString('id-ID', localeOpts);
+        document.getElementById('out_perltr').innerText = hargaPerLtrInput.toLocaleString('id-ID', localeOpts);
         
         const formattedTotal = Math.round(total).toLocaleString('id-ID');
         document.getElementById('out_total').innerText = formattedTotal;
@@ -340,10 +343,10 @@
             document.getElementById('in_addr').value = data.addr || "";
             document.getElementById('in_barang').value = data.barang || "";
             document.getElementById('in_qty').value = data.qty || "";
-            document.getElementById('in_harga').value = data.harga || "";
+            document.getElementById('in_perltr').value = data.perltr_in || "";
             document.getElementById('in_ppn_pct').value = data.ppn_pct || "11";
-            document.getElementById('in_pbbkb_pct').value = data.pbbkb_pct || "";
-            document.getElementById('in_pph_pct').value = data.pph_pct || "";
+            document.getElementById('in_pbbkb_pct').value = data.pbbkb_pct || "7.5";
+            document.getElementById('in_pph_pct').value = data.pph_pct || "0.3";
             document.getElementById('in_pay').value = data.pay || "";
         } else {
             const now = new Date();
@@ -354,9 +357,9 @@
             document.getElementById('in_tgl').value = now.toLocaleDateString('id-ID', options).toUpperCase();
             document.getElementById('in_cust').value = "PT. KARYA MANDIRI UTAMA";
             document.getElementById('in_addr').value = "JLN. AHMAD YANI NO. 378 BANJARMASIN KAL - SEL";
-            document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI (B35)";
+            document.getElementById('in_barang').value = "BBM SOLAR INDUSTRI";
             document.getElementById('in_qty').value = 150000;
-            document.getElementById('in_harga').value = 13063.1;
+            document.getElementById('in_perltr').value = 15519.0; // Contoh Harga Per Liter
             document.getElementById('in_ppn_pct').value = 11;
             document.getElementById('in_pbbkb_pct').value = 7.5;
             document.getElementById('in_pph_pct').value = 0.3;
