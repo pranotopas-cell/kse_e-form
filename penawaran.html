@@ -31,7 +31,7 @@
             width: 210mm; 
             height: 297mm; 
             background: white; 
-            padding: 20mm 10mm 5mm 10mm; 
+            padding: 20mm 15mm 5mm 15mm; 
             position: relative; 
             box-shadow: 0 0 20px rgba(0,0,0,0.5); 
             color: #000; 
@@ -42,7 +42,7 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 25px; 
+            margin-bottom: 50px; /* Jarak diperlebar sesuai permintaan */
             margin-top: -5mm; 
         }
         .logo-img { height: 45px; width: auto; object-fit: contain; }
@@ -79,7 +79,7 @@
         .regards { margin-top: 20px; line-height: 1.3; }
         .img-signature { height: 100px; width: auto; margin: 5px 0; display: block; }
 
-        .footer { position: absolute; bottom: 20mm; left: 20mm; right: 20mm; }
+        .footer { position: absolute; bottom: 20mm; left: 15mm; right: 15mm; }
         .footer-line { border-top: 1.5px solid #000; margin-bottom: 8px; }
         .footer-grid { display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-left { display: flex; align-items: center; gap: 10px; }
@@ -108,7 +108,8 @@
         <div class="input-group"><label>Nama Produk (Tabel)</label><input type="text" id="inProdName" value="Bbm Solar B40" oninput="draw()"></div>
         <div class="input-group"><label>Tujuan Lokasi (Tabel)</label><input type="text" id="inDest" value="site Tarjun" oninput="draw()"></div>
         
-        <div class="input-group"><label>Harga Dasar (Rp)</label><input type="number" id="inHrg" value="15586" step="0.01" oninput="draw()"></div>
+        <div class="input-group"><label>Grand Total (Rp) - [Input Utama]</label><input type="number" id="inTotalInput" value="17300.46" step="0.01" oninput="draw()"></div>
+        
         <div class="input-group"><label>Sistem Pembayaran</label><input type="text" id="inPay" value="TOP 7 hari setelah Invoice diterima" oninput="draw()"></div>
         <div class="input-group"><label>Kontak Person</label><input type="text" id="inContact" value="08158841410" oninput="draw()"></div>
 
@@ -132,9 +133,9 @@
             <div class="doc-content">
                 <div class="info-row">
                     <div class="recipient">
-                        Kepada Yth,<br>
+                        Kepada yang kami hormati,,<br>
                         <strong id="outPT">...</strong><br>
-                        <span id="outAlm">...</span>
+                        <span id="outAlm">di Tempat</span>
                     </div>
                     <div class="meta-box">
                         <table class="meta-table">
@@ -225,7 +226,7 @@
                 document.getElementById('inAlm').value = data.alm || "";
                 document.getElementById('inProdName').value = data.prodName || "Bbm Solar B40";
                 document.getElementById('inDest').value = data.dest || "site Tarjun";
-                document.getElementById('inHrg').value = data.hrg || "";
+                document.getElementById('inTotalInput').value = data.totalInput || "";
                 document.getElementById('inPay').value = data.pay || "";
                 document.getElementById('inContact').value = data.contact || "";
             }
@@ -243,14 +244,21 @@
             const alm = document.getElementById('inAlm').value;
             const prodName = document.getElementById('inProdName').value;
             const dest = document.getElementById('inDest').value;
-            const hrgValue = document.getElementById('inHrg').value;
+            const totalInputValue = document.getElementById('inTotalInput').value;
             const pay = document.getElementById('inPay').value;
             const contact = document.getElementById('inContact').value;
 
-            const hrg = parseFloat(hrgValue) || 0;
-            // Logika PPN 11% dengan 2 angka di belakang koma
-            const ppn = parseFloat((hrg * 0.11).toFixed(2));
-            const total = parseFloat((hrg + ppn).toFixed(2));
+            // LOGIKA BARU: Input adalah Grand Total
+            const grandTotal = parseFloat(totalInputValue) || 0;
+            
+            // Harga Dasar = Grand Total / 1.11
+            const hrgDasar = parseFloat((grandTotal / 1.11).toFixed(2));
+            
+            // PPN = Harga Dasar * 11%
+            const ppn = parseFloat((hrgDasar * 0.11).toFixed(2));
+            
+            // Kalkulasi ulang total untuk memastikan sinkronisasi pembulatan
+            const finalTotal = hrgDasar + ppn;
 
             document.getElementById('outNomor').innerText = no;
             document.getElementById('outTgl').innerText = tgl;
@@ -260,19 +268,19 @@
             document.getElementById('outProdName').innerText = prodName;
             document.getElementById('outDest').innerText = dest;
             
-            document.getElementById('outHrg').innerText = formatNumber(hrg);
+            document.getElementById('outHrg').innerText = formatNumber(hrgDasar);
             document.getElementById('outPpn').innerText = formatNumber(ppn);
-            document.getElementById('outTotal').innerText = formatNumber(total);
+            document.getElementById('outTotal').innerText = formatNumber(grandTotal); // Menampilkan sesuai input
             
             document.getElementById('outPay').innerText = pay;
             document.getElementById('outContact').innerText = contact;
             document.getElementById('outID').innerText = no;
 
             localStorage.setItem('kse_last_input', JSON.stringify({ 
-                no, tgl, prd, pt, alm, prodName, dest, hrg: hrgValue, pay, contact 
+                no, tgl, prd, pt, alm, prodName, dest, totalInput: totalInputValue, pay, contact 
             }));
 
-            const qrText = `DOKUMEN RESMI PT KSE\nNo: ${no}\nTujuan: ${pt}\nTotal: Rp ${formatNumber(total)}`;
+            const qrText = `DOKUMEN RESMI PT KSE\nNo: ${no}\nTujuan: ${pt}\nTotal: Rp ${formatNumber(grandTotal)}`;
             qrSm.clear(); 
             qrSm.makeCode(qrText);
         }
