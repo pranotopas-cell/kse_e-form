@@ -23,13 +23,13 @@
         .document-canvas { 
             background: white; 
             width: 210mm; 
-            height: 297mm; /* Fixed Height to prevent 2nd page */
+            height: 297mm; 
             margin: 0 auto; 
             padding: 3mm 15mm 10mm 15mm; 
             position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); 
             box-sizing: border-box;
-            overflow: hidden; /* Mencegah konten meluber ke halaman 2 */
+            overflow: hidden; 
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -77,7 +77,7 @@
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
-        <a href="#" class="btn btn-outline-secondary btn-sm">RELOAD</a>
+        <a href="#" class="btn btn-outline-secondary btn-sm" onclick="location.reload()">RELOAD</a>
         <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT PREVIEW</button>
     </div>
     <div class="d-flex gap-2 align-items-center">
@@ -218,8 +218,10 @@
                 <div class="row mt-5">
                     <div class="col-6">
                         <p class="mb-0 italic">regard,</p>
-                        <p class="fw-bold mb-4">PT. KHATULISTIWA SINAR ENERGI</p>
-                        <img id="qr_signature" src="" width="75" height="75" class="my-3 shadow-sm" style="display:block;">
+                        <p class="fw-bold mb-2">PT. KHATULISTIWA SINAR ENERGI</p>
+                        <div style="height: 90px; display: flex; align-items: center;">
+                            <img src="ttd.png" alt="Signature" style="height: 80px; width: auto; object-fit: contain;" onerror="this.src='https://via.placeholder.com/150x80?text=TTD+IMAGE'">
+                        </div>
                         <p class="fw-bold text-decoration-underline mb-0" style="font-size: 13px;">SUPRANOTO</p>
                         <p class="small">Direktur</p>
                     </div>
@@ -272,7 +274,6 @@
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         
-        // Memaksa scroll ke atas sebelum download agar posisi koordinat canvas pas
         window.scrollTo(0,0);
         html2pdf().set(opt).from(element).save();
     }
@@ -300,8 +301,11 @@
         const total = document.getElementById('out_grandtotal').innerText;
         const qrInfo = `PO_VERIFIED|${noPo}|${customer}|Rp${total}|KSE_SYSTEM`;
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrInfo)}`;
-        document.getElementById('qr_signature').src = qrUrl;
-        document.getElementById('qr_footer').src = qrUrl;
+        
+        // Hanya update QR di footer
+        if(document.getElementById('qr_footer')) {
+            document.getElementById('qr_footer').src = qrUrl;
+        }
     }
 
     function saveAndCalculate() {
@@ -396,4 +400,3 @@
 </script>
 </body>
 </html>
-
