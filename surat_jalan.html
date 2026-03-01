@@ -18,7 +18,7 @@
         #surat-jalan-render {
             width: 210mm;
             height: 279mm;
-            padding: 5mm 15mm;
+            padding: 3mm 10mm 5mm 10mm;
             margin: 0 auto;
             background: white;
             color: #000000; /* Teks Hitam */
@@ -33,7 +33,7 @@
         .header-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
         .logo-img { height: 50px; width: auto; }
         .title-text { text-align: right; font-size: 38px; font-weight: 900; color: #000000 !important; line-height: 0.9; }
-        .subtitle-text { text-align: right; font-size: 11px; font-style: italic; color: #000; }
+        .subtitle-text { text-align: right; font-size: 20px; font-style: italic; color: #000; }
 
         .info-grid { width: 100%; margin-bottom: 15px; font-size: 13px; border-collapse: collapse; }
         .label-en { font-size: 9px; font-style: italic; color: #000; display: block; line-height: 1; font-weight: bold; }
@@ -92,11 +92,11 @@
             <div class="card-body p-3" style="max-height: 85vh; overflow-y: auto;">
                 <div class="row g-2" id="mainForm">
                     <div class="col-12"><label class="small fw-bold">PT Penerima</label><input type="text" class="form-control form-control-sm kse-input fw-bold" id="in_pt" value="PT. "></div>
-                    <div class="col-12"><label class="small fw-bold">CP / Phone</label><input type="text" class="form-control form-control-sm kse-input" id="in_cp" value="-"></div>
+                    <div class="col-12"><label class="small fw-bold">CP / Phone</label><input type="text" class="form-control form-control-sm kse-input" id="in_cp" value="none"></div>
                     <div class="col-12"><label class="small fw-bold">Lokasi Kirim</label><input type="text" class="form-control form-control-sm kse-input" id="in_lokasi" value="-"></div>
                     <div class="col-6"><label class="small fw-bold">No. Urut SJ</label><input type="number" class="form-control form-control-sm kse-input" id="in_no_urut" value="1"></div>
                     <div class="col-6"><label class="small fw-bold">Tanggal</label><input type="text" class="form-control form-control-sm kse-input" id="in_tgl"></div>
-                    <div class="col-12"><label class="small fw-bold">Nomor PO</label><input type="text" class="form-control form-control-sm kse-input" id="in_po" value="-"></div>
+                    <div class="col-12"><label class="small fw-bold">Nomor PO</label><input type="text" class="form-control form-control-sm kse-input" id="in_po" value="none"></div>
                     <div class="col-12"><label class="small fw-bold">Nomor SO / DO</label><input type="text" class="form-control form-control-sm kse-input" id="in_sodo" value="-"></div>
                     <div class="col-12"><label class="small fw-bold">Jenis BBM</label><input type="text" class="form-control form-control-sm kse-input" id="in_jns_bbm" value="BBM SOLAR INDUSTRI"></div>
                     <div class="col-6"><label class="small fw-bold">No. Polisi</label><input type="text" class="form-control form-control-sm kse-input" id="in_nopol" value="KH "></div>
@@ -105,9 +105,9 @@
                     <div class="col-12"><label class="small fw-bold">Transportir</label><input type="text" class="form-control form-control-sm kse-input" id="in_transportir" value="PT. KHATULISTIWA SINAR ENERGI"></div>
                     <div class="col-6"><label class="small fw-bold">BJ</label><input type="text" class="form-control form-control-sm kse-input" id="in_bj" value="-"></div>
                     <div class="col-6"><label class="small fw-bold">Tinggi Cairan</label><input type="text" class="form-control form-control-sm kse-input" id="in_tinggi" value="-"></div>
-                    <div class="col-6"><label class="small fw-bold">KM Awal</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_awal" value="-"></div>
-                    <div class="col-6"><label class="small fw-bold">KM Akhir</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_akhir" value="-"></div>
-                    <div class="col-12"><label class="small text-danger fw-bold">Quantity</label><input type="text" class="form-control form-control-sm border-danger kse-input" id="in_qty" value="- liter"></div>
+                    <div class="col-6"><label class="small fw-bold">KM Awal</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_awal" value="none"></div>
+                    <div class="col-6"><label class="small fw-bold">KM Akhir</label><input type="text" class="form-control form-control-sm kse-input" id="in_km_akhir" value="none"></div>
+                    <div class="col-12"><label class="small text-danger fw-bold">Quantity</label><input type="text" class="form-control form-control-sm border-danger kse-input" id="in_qty" value="5.000 liter"></div>
                     <div class="col-12"><label class="small fw-bold">Note Box</label><input type="text" class="form-control form-control-sm kse-input" id="in_note" value="-"></div>
                     <hr class="my-2">
                     <div class="col-12"><label class="small text-primary fw-bold">Sopir</label><input type="text" class="form-control form-control-sm border-primary kse-input" id="in_sopir" value="-"></div>
@@ -299,4 +299,5 @@
     function resetForm() { if(confirm("Hapus semua data entry?")) { localStorage.removeItem('kse_v3_data'); location.reload(); } }
 </script>
 </body>
+
 </html>
