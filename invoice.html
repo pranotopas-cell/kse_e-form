@@ -13,7 +13,6 @@
             -webkit-print-color-adjust: exact; 
             print-color-adjust: exact;
         }
-        /* Font diperbesar sedikit menjadi 12px sesuai permintaan */
         body { background-color: #f4f7f6; font-family: 'Arial', sans-serif; font-size: 12px; }
         
         .control-nav { background: #fff; border-bottom: 2px solid #ddd; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
@@ -63,7 +62,6 @@
             padding-bottom: 5px;
         }
         
-        /* Jarak tanda tangan diperlebar */
         .signature-section { margin-top: 20px; text-align: left; width: fit-content; }
         .signature-space { height: 100px; } 
         
@@ -82,9 +80,9 @@
 
 <div class="control-nav shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex gap-2">
-        <button class="btn btn-outline-dark btn-sm" onclick="location.reload()"><i class="bi bi-arrow-clockwise"></i> RESET</button>
+        <button class="btn btn-outline-dark btn-sm" onclick="if(confirm('Reset semua data?')){localStorage.removeItem('kse_invoice_last_data'); location.reload();}"><i class="bi bi-arrow-clockwise"></i> RESET</button>
         <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT</button>
-        <button class="btn btn-primary btn-sm" onclick="saveToLocal()"><i class="bi bi-floppy"></i> SIMPAN DATA</button>
+        <button class="btn btn-primary btn-sm" onclick="saveToLocal(); alert('Data Berhasil Disimpan!')"><i class="bi bi-floppy"></i> SIMPAN DATA</button>
     </div>
     <button class="btn btn-success btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-file-pdf"></i> SIMPAN PDF</button>
 </div>
@@ -238,10 +236,10 @@
     function saveToLocal() {
         let data = {};
         fields.forEach(f => {
-            data[f] = document.getElementById('in_' + f).value;
+            const el = document.getElementById('in_' + f);
+            if(el) data[f] = el.value;
         });
         localStorage.setItem('kse_invoice_last_data', JSON.stringify(data));
-        alert("Data Berhasil Disimpan di Browser Ini!");
     }
 
     function loadFromLocal() {
@@ -285,7 +283,9 @@
         document.getElementById('out_grand_val').innerText = grandTotal.toLocaleString('id-ID');
         
         document.getElementById('out_terbilang').innerText = grandTotal !== 0 ? terbilang(grandTotal) + " Rupiah" : "-";
+        
         updateView();
+        saveToLocal(); // Otomatis simpan saat angka berubah
     }
 
     function updateView() {
@@ -312,6 +312,8 @@
         const tglInv = document.getElementById('in_tgl').value;
         const qrData = encodeURIComponent(`VALID INVOICE KSE\nNo: ${invNo}\nCustomer: ${custName}\nTanggal: ${tglInv}`);
         document.getElementById('qr_code').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}`;
+        
+        saveToLocal(); // Otomatis simpan saat teks diketik
     }
 
     function downloadPDF() {
@@ -334,7 +336,9 @@
         const saved = localStorage.getItem('kse_invoice_last_data');
         if (saved) {
             loadFromLocal();
+            calculate();
         } else {
+            // Data default jika memori kosong
             document.getElementById('in_tgl').value = "12 Maret 2026";
             document.getElementById('in_no').value = "001/INV-KSE/III/2026";
             document.getElementById('in_npwp').value = "1000 0000 0773 4310";
@@ -348,15 +352,9 @@
             document.getElementById('in_h_nett_text').value = "8.950";
             document.getElementById('in_subtotal').value = 80630631; 
             document.getElementById('in_adjust').value = 0;
+            calculate();
         }
-        calculate();
     };
 </script>
 </body>
 </html>
-
-
-
-
-
-
