@@ -25,37 +25,39 @@
             width: 210mm; 
             height: 297mm; 
             margin: 0 auto; 
-            padding: 3mm 15mm 10mm 15mm; 
+            padding: 10mm 15mm; 
             position: relative;
             box-shadow: 0 0 15px rgba(0,0,0,0.1); 
             box-sizing: border-box;
             overflow: hidden; 
             page-break-inside: avoid;
             break-inside: avoid;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Header & Identity */
-        .header-section { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 10px; margin-bottom: 70px; }
+        .header-section { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 10px; margin-bottom: 40px; }
         .logo-img { height: 45px; width: auto; object-fit: contain; }
         .doc-identity { text-align: right; line-height: 1; }
         .doc-identity h2 { font-weight: 800; margin: 0; font-size: 22px; color: #000; letter-spacing: 1px; }
 
         /* Tables */
-        .table-po { width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #000; }
+        .table-po { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #000; }
         .table-po th { background-color: var(--kse-primary) !important; color: white !important; padding: 10px 5px; border: 1px solid #000; text-align: center; font-size: 10px; }
         .table-po td { border: 1px solid #000; padding: 10px 8px; vertical-align: middle; font-size: 11px; }
         .table-clean td { border: none !important; padding: 2px 0; }
 
         /* Typography */
-        .info-spacing { margin-bottom: 60px; }
+        .info-spacing { margin-bottom: 30px; }
         .lang-en { font-style: italic; font-size: 9px; color: #666; display: block; margin-top: -2px; }
 
         /* Footer Fixed Position */
-        .footer-kse { position: absolute; bottom: 15mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
+        .footer-kse { position: absolute; bottom: 10mm; width: calc(100% - 30mm); border-top: 1px solid #ccc; padding-top: 10px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-tagline { font-size: 10px; color: #444; display: block; letter-spacing: 0.5px; margin-top: 2px; }
 
-        /* Print Override */
+        /* Print & PDF Force One Page */
         @media print {
             @page { size: A4; margin: 0; }
             body { background: white; margin: 0; padding: 0; }
@@ -67,7 +69,7 @@
                 box-shadow: none !important; 
                 width: 210mm !important; 
                 height: 297mm !important;
-                padding: 15mm !important;
+                padding: 10mm 15mm !important;
             }
         }
     </style>
@@ -81,7 +83,7 @@
         <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="bi bi-printer"></i> PRINT PREVIEW</button>
     </div>
     <div class="d-flex gap-2 align-items-center">
-        <span class="badge bg-info text-dark">A4 Format Only</span>
+        <span class="badge bg-success text-white">One Page PDF Forced</span>
         <button class="btn btn-primary btn-sm fw-bold px-4" onclick="downloadPDF()"><i class="bi bi-download"></i> DOWNLOAD PDF</button>
     </div>
 </div>
@@ -171,7 +173,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4">
+                <div class="mt-2">
                     <p class="mb-0 fw-bold">Dengan hormat,</p>
                     <p class="mb-3">Bersama ini kami kirimkan purchase order dengan rincian sebagai berikut :<br>
                     <span class="lang-en">Sincerely, herewith we send the purchase order with the following details:</span></p>
@@ -180,12 +182,12 @@
                 <table class="table-po">
                     <thead>
                         <tr>
-                            <th width="28%">NAMA BARANG <br><span class="lang-en">Description of Goods</span></th>
-                            <th>QUANTITY (Ltr) <br><span class="lang-en">Volume</span></th>
-                            <th>HARGA DASAR <br><span class="lang-en">Basic Price</span></th>
+                            <th width="25%">NAMA BARANG <br><span class="lang-en">Description</span></th>
+                            <th>QTY (Ltr) <br><span class="lang-en">Volume</span></th>
+                            <th>HARGA DASAR <br><span class="lang-en">Basic</span></th>
                             <th id="th_ppn_label">PPN <br><span class="lang-en">VAT</span></th>
-                            <th id="th_pbbkb_label">PBBKB <br><span class="lang-en">Fuel Tax</span></th>
-                            <th id="th_pph_label">PPH <br><span class="lang-en">Income Tax</span></th>
+                            <th id="th_pbbkb_label">PBBKB <br><span class="lang-en">Tax</span></th>
+                            <th id="th_pph_label">PPH <br><span class="lang-en">Inc</span></th>
                             <th>PER LTR <br><span class="lang-en">Unit Price</span></th>
                             <th width="18%">JUMLAH <br><span class="lang-en">Amount (IDR)</span></th>
                         </tr>
@@ -208,19 +210,19 @@
                     </tbody>
                 </table>
 
-                <div class="mt-4">
+                <div class="mt-3">
                     <p class="mb-1">Sistem pembayaran : <b id="out_pay"></b><br>
                     <span class="lang-en">Payment terms</span></p>
                     <p class="mt-2">Mohon di bantu untuk prosesnya, demikian terima kasih.<br>
                     <span class="lang-en">Please kindly process this order, thank you.</span></p>
                 </div>
 
-                <div class="row mt-5">
+                <div class="row mt-4">
                     <div class="col-6">
                         <p class="mb-0 italic">regard,</p>
-                        <p class="fw-bold mb-2">PT. KHATULISTIWA SINAR ENERGI</p>
-                        <div style="height: 90px; display: flex; align-items: center;">
-                            <img src="ttd.png" alt="Signature" style="height: 80px; width: auto; object-fit: contain;" onerror="this.src='https://via.placeholder.com/150x80?text=TTD+IMAGE'">
+                        <p class="fw-bold mb-1">PT. KHATULISTIWA SINAR ENERGI</p>
+                        <div style="height: 80px; display: flex; align-items: center;">
+                            <img src="ttd.png" alt="Signature" style="height: 70px; width: auto; object-fit: contain;" onerror="this.src='https://via.placeholder.com/150x80?text=TTD+IMAGE'">
                         </div>
                         <p class="fw-bold text-decoration-underline mb-0" style="font-size: 13px;">SUPRANOTO</p>
                         <p class="small">Direktur</p>
@@ -261,6 +263,8 @@
         const safeNoPo = rawNoPo.replace(/[\/\\?%*:|"<>]/g, '-');
         const safeCust = rawCust.replace(/[^a-z0-9]/gi, '_').toUpperCase();
         
+        window.scrollTo(0,0);
+        
         const opt = {
             margin: 0,
             filename: `KSE_PO_${safeNoPo}_${safeCust}.pdf`,
@@ -268,13 +272,13 @@
             html2canvas: { 
                 scale: 2, 
                 useCORS: true,
-                y: 0,
-                scrollY: 0
+                letterRendering: true,
+                windowWidth: 794 // Kunci lebar canvas agar tidak meluber
             },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // Hindari pembuatan halaman baru
         };
         
-        window.scrollTo(0,0);
         html2pdf().set(opt).from(element).save();
     }
 
@@ -301,11 +305,7 @@
         const total = document.getElementById('out_grandtotal').innerText;
         const qrInfo = `PO_VERIFIED|${noPo}|${customer}|Rp${total}|KSE_SYSTEM`;
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrInfo)}`;
-        
-        // Hanya update QR di footer
-        if(document.getElementById('qr_footer')) {
-            document.getElementById('qr_footer').src = qrUrl;
-        }
+        if(document.getElementById('qr_footer')) { document.getElementById('qr_footer').src = qrUrl; }
     }
 
     function saveAndCalculate() {
@@ -338,8 +338,8 @@
         const localeOpts = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
         
         document.getElementById('th_ppn_label').innerHTML = `PPN ${ppnPct}% <br><span class="lang-en">VAT</span>`;
-        document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Fuel Tax</span>`;
-        document.getElementById('th_pph_label').innerHTML = `PPH ${pphPct}% <br><span class="lang-en">Income Tax</span>`;
+        document.getElementById('th_pbbkb_label').innerHTML = `PBBKB ${pbbkbPct}% <br><span class="lang-en">Tax</span>`;
+        document.getElementById('th_pph_label').innerHTML = `PPH ${pphPct}% <br><span class="lang-en">Inc</span>`;
 
         document.getElementById('out_qty').innerText = qty.toLocaleString('id-ID');
         document.getElementById('out_harga').innerText = hargaDasar.toLocaleString('id-ID', localeOpts);
