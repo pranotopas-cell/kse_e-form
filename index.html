@@ -65,14 +65,21 @@
             padding: 3px 8px; border-radius: 4px; font-size: 0.65rem; display: inline-block; margin-bottom: 2px;
         }
         .date-text { color: #666; font-size: 0.78rem; display: block; }
-        .doc-number { font-weight: 700; color: #2c3e50; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+        .doc-number { font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
 
         /* Color Badges for Jenis */
         .jenis-badge { padding: 6px 10px; border-radius: 4px; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; display: inline-block; width: 100%; text-align: center; }
-        .bg-sj { background-color: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; } /* Blue for Surat Jalan */
-        .bg-memo { background-color: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; } /* Orange for Memo */
-        .bg-ba { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; } /* Green for BA */
+        
+        /* Variasi Warna Berdasarkan Tipe Dokumen */
+        .bg-sj { background-color: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; } 
+        .bg-memo { background-color: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; } 
+        .bg-ba { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; } 
         .bg-default { background-color: #f5f5f5; color: #616161; }
+
+        /* Variasi Warna Text Nomor Dokumen */
+        .text-sj { color: #1976d2 !important; }
+        .text-memo { color: #e65100 !important; }
+        .text-ba { color: #2e7d32 !important; }
 
         .btn-view { 
             border: 1px solid #3498db; color: #3498db; background: white; 
@@ -185,7 +192,6 @@
     async function loadMonthlyHistory() {
         const table = document.getElementById('history-data');
         try {
-            // Penarikan dari data_logistik
             const { data, error } = await supabaseClient
                 .from('data_logistik')
                 .select('*')
@@ -199,12 +205,21 @@
             }
 
             table.innerHTML = data.map(doc => {
-                // Logika Penentuan Warna Badge Berdasarkan Jenis
-                const jenisStr = (doc.jenis || "").toUpperCase();
+                // Logika Penentuan Warna Berdasarkan jenis_dokumen
+                const jenisStr = (doc.jenis_dokumen || "").toUpperCase();
                 let badgeClass = "bg-default";
-                if(jenisStr.includes("SURAT JALAN") || jenisStr.includes("SJ")) badgeClass = "bg-sj";
-                else if(jenisStr.includes("MEMO")) badgeClass = "bg-memo";
-                else if(jenisStr.includes("BA") || jenisStr.includes("BERITA")) badgeClass = "bg-ba";
+                let textClass = "";
+
+                if(jenisStr.includes("SURAT JALAN") || jenisStr.includes("SJ")) {
+                    badgeClass = "bg-sj";
+                    textClass = "text-sj";
+                } else if(jenisStr.includes("MEMO")) {
+                    badgeClass = "bg-memo";
+                    textClass = "text-memo";
+                } else if(jenisStr.includes("BA") || jenisStr.includes("BERITA")) {
+                    badgeClass = "bg-ba";
+                    textClass = "text-ba";
+                }
 
                 return `
                 <tr>
@@ -212,11 +227,11 @@
                         <span class="badge-identitas">PT. KHATULISTIWA SINAR ENERGI</span>
                         <span class="date-text">${doc.created_at ? doc.created_at.split('T')[0] : '-'}</span>
                     </td>
-                    <td class="doc-number text-uppercase">${doc.no_dokumen || doc.doc_number || '-'}</td>
-                    <td><span class="jenis-badge ${badgeClass}">${doc.jenis || 'N/A'}</span></td>
+                    <td class="doc-number text-uppercase ${textClass}">${doc.no_dokumen || '-'}</td>
+                    <td><span class="jenis-badge ${badgeClass}">${doc.jenis_dokumen || 'N/A'}</span></td>
                     <td style="font-size: 0.78rem; line-height: 1.2;">${doc.tujuan || '-'}</td>
-                    <td class="fw-bold">${doc.nama_sopir || doc.driver_name || '-'}</td>
-                    <td class="font-monospace fw-bold">${doc.no_polisi || doc.nopol || '-'}</td>
+                    <td class="fw-bold">${doc.sopir || '-'}</td>
+                    <td class="font-monospace fw-bold">${doc.no_polisi || '-'}</td>
                     <td class="fw-bold text-end">${Number(doc.qty || 0).toLocaleString('id-ID')}</td>
                     <td class="text-center">
                         <button class="btn-view" onclick="openPDF('${doc.pdf_url || doc.url_pdf}')">
