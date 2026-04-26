@@ -192,29 +192,29 @@
         <div class="tech-status-bar shadow-sm">
             <div><span class="text-muted">STATUS:</span> <span class="text-success fw-bold">ONLINE</span></div>
             <div><span class="text-muted">PERIODE:</span> <span id="display-month" class="fw-bold">-</span></div>
-            <div class="d-none d-lg-block"><span class="text-muted">DB:</span> <span class="fw-bold text-primary">SUPABASE CONNECTED</span></div>
+            <div class="d-none d-lg-block"><span class="text-muted">TABLE:</span> <span class="fw-bold text-primary">data_logistik</span></div>
         </div>
 
         <div class="history-card mb-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold m-0">Histori Transaksi Bulan Ini</h5>
+                <h5 class="fw-bold m-0">Histori Transaksi Logistik</h5>
                 <button class="btn btn-sm btn-outline-success" onclick="loadMonthlyHistory()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
             </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle" style="font-size: 0.9rem;">
+                <table class="table table-hover align-middle" style="font-size: 0.85rem;">
                     <thead class="table-light">
                         <tr>
-                            <th>Identitas & Tanggal</th>
+                            <th>ID & Tanggal</th>
                             <th>No. Dokumen</th>
                             <th>Jenis</th>
                             <th>Tujuan</th>
                             <th>Nama Sopir</th>
                             <th>Qty</th>
-                            <th class="text-center">Aksi</th>
+                            <th class="text-center">PDF</th>
                         </tr>
                     </thead>
                     <tbody id="history-data">
-                        <tr><td colspan="7" class="text-center py-4">Memuat histori dari database...</td></tr>
+                        <tr><td colspan="7" class="text-center py-4">Menghubungkan ke tabel data_logistik...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -257,10 +257,7 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     window.onload = function() {
-        // Init QR Code
         new QRCode(document.getElementById("qrcode"), { text: "KSE-SYSTEM-AUTH", width: 45, height: 45 });
-        
-        // Cek Sesi
         if (localStorage.getItem('kse_session') === 'active') {
             showDashboard();
             loadMonthlyHistory();
@@ -298,18 +295,21 @@
         document.getElementById('dashboard-page').style.display = 'block';
     }
 
-    // --- LOAD DATA HISTORI ---
+    // --- LOAD DATA DARI TABEL: data_logistik ---
     async function loadMonthlyHistory() {
         const table = document.getElementById('history-data');
         const now = new Date();
+        
+        // Filter awal & akhir bulan berjalan
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
 
         try {
-            // Mengambil data dari tabel 'documents'
+            // Penarikan data dari tabel 'data_logistik'
+            // Sesuaikan nama kolom jika ada perbedaan di Supabase Dashboard Anda
             const { data, error } = await supabaseClient
-                .from('documents')
-                .select('id, created_at, doc_number, type, destination, driver_name, quantity, pdf_url')
+                .from('data_logistik') 
+                .select('*')
                 .gte('created_at', firstDay)
                 .lte('created_at', lastDay)
                 .order('created_at', { ascending: false });
@@ -317,32 +317,32 @@
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                table.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Tidak ada data transaksi untuk bulan ini.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Belum ada data logistik di bulan ${now.toLocaleDateString('id-ID', {month:'long'})}.</td></tr>`;
                 return;
             }
 
             table.innerHTML = data.map(doc => `
                 <tr>
                     <td>
-                        <div class="fw-bold text-dark">${new Date(doc.created_at).toLocaleDateString('id-ID')}</div>
-                        <div class="font-id">REF: ${doc.id.split('-')[0].toUpperCase()}</div>
+                        <div class="fw-bold text-dark">${doc.created_at ? new Date(doc.created_at).toLocaleDateString('id-ID') : '-'}</div>
+                        <div class="font-id">REF: ${doc.id ? String(doc.id).split('-')[0].toUpperCase() : 'AUTO'}</div>
                     </td>
-                    <td class="font-monospace fw-bold text-primary">${doc.doc_number || '-'}</td>
-                    <td><span class="badge bg-light text-dark border">${doc.type || 'N/A'}</span></td>
-                    <td class="small text-muted">${doc.destination || '-'}</td>
-                    <td class="small">${doc.driver_name || '-'}</td>
-                    <td class="fw-bold">${doc.quantity || '0'}</td>
+                    <td class="font-monospace fw-bold text-primary">${doc.no_dokumen || doc.doc_number || '-'}</td>
+                    <td><span class="badge bg-light text-dark border">${doc.jenis || doc.type || 'LOG'}</span></td>
+                    <td class="small text-muted">${doc.tujuan || doc.destination || '-'}</td>
+                    <td class="small">${doc.nama_sopir || doc.driver_name || '-'}</td>
+                    <td class="fw-bold text-success">${doc.qty || doc.quantity || '0'}</td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-dark px-3" onclick="window.open('${doc.pdf_url || '#'}', '_blank')">
-                            <i class="bi bi-file-earmark-pdf me-1"></i> View PDF
+                        <button class="btn btn-sm btn-dark" onclick="window.open('${doc.pdf_url || doc.url_pdf || '#'}', '_blank')">
+                            <i class="bi bi-file-earmark-pdf"></i>
                         </button>
                     </td>
                 </tr>
             `).join('');
 
         } catch (err) {
-            console.error(err);
-            table.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Gagal memuat data. Periksa struktur tabel di Supabase.</td></tr>`;
+            console.error("Fetch Error:", err);
+            table.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Tabel 'data_logistik' tidak ditemukan atau akses ditolak.</td></tr>`;
         }
     }
 </script>
