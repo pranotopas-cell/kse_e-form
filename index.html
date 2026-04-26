@@ -112,7 +112,7 @@
 <div id="dashboard-page">
     <aside class="sidebar">
         <div class="mb-4 px-3">
-            <h4 class="fw-bold"><i class="bi bi-cpu-fill text-success"></i> KSE-SYSTEM E-FORM</h4>
+            <h4 class="fw-bold"><i class="bi bi-cpu-fill text-success"></i> KSE-SYSTEM</h4>
         </div>
         <nav class="d-flex flex-column h-100">
             <a href="#" class="nav-link active"><i class="bi bi-grid-fill me-2"></i> Dashboard</a>
@@ -134,8 +134,8 @@
     <main class="main-content">
         <div class="welcome-banner">
             <div style="position: relative; z-index: 2;">
-                <h1 class="fw-bold">Welcome....</h1>
-                <p class="lead opacity-75 mb-3">Sistem E-Form Delivery Dan Administrasi PT. Khatulistiwa Sinar Energi</p>
+                <h1 class="fw-bold">Welcome Admin</h1>
+                <p class="lead opacity-75 mb-3">Sistem Administrasi PT. Khatulistiwa Sinar Energi</p>
                 <div id="daily-quote-container">
                     <p id="daily-quote" class="mb-1">"Memuat kata bijak hari ini..."</p>
                     <span id="quote-author"></span>
@@ -220,16 +220,25 @@
 
     async function loadMonthlyHistory() {
         const table = document.getElementById('history-data');
+        
+        // Logika Filter Bulan Berjalan
+        const now = new Date();
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+
         try {
             const { data, error } = await supabaseClient
                 .from('data_logistik')
                 .select('*')
+                .eq('identitas', 'PT. KHATULISTIWA SINAR ENERGI') // Filter entitas
+                .gte('created_at', firstDayOfMonth) // Mulai dari tanggal 1 bulan ini
+                .lte('created_at', lastDayOfMonth)  // Sampai akhir bulan ini
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                table.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Belum ada data di tabel data_logistik</td></tr>`;
+                table.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Tidak ada data untuk bulan ${now.toLocaleString('id-ID', { month: 'long' })}</td></tr>`;
                 return;
             }
 
