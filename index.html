@@ -102,7 +102,6 @@
             overflow: hidden;
         }
 
-        /* --- TECH DISPLAY --- */
         .tech-status-bar {
             background: #e9ecef;
             border-radius: 1rem;
@@ -136,6 +135,9 @@
             padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
+
+        .table thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .font-id { font-size: 0.85rem; color: #666; }
     </style>
 </head>
 <body>
@@ -194,20 +196,25 @@
         </div>
 
         <div class="history-card mb-5">
-            <h5 class="fw-bold mb-4">Histori Transaksi Bulan Ini</h5>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold m-0">Histori Transaksi Bulan Ini</h5>
+                <button class="btn btn-sm btn-outline-success" onclick="loadMonthlyHistory()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+            </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>Tanggal</th>
-                            <th>Tipe Dokumen</th>
+                            <th>Identitas & Tanggal</th>
                             <th>No. Dokumen</th>
-                            <th>Operator</th>
-                            <th>Status</th>
+                            <th>Jenis</th>
+                            <th>Tujuan</th>
+                            <th>Nama Sopir</th>
+                            <th>Qty</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="history-data">
-                        <tr><td colspan="5" class="text-center py-4">Memuat data...</td></tr>
+                        <tr><td colspan="7" class="text-center py-4">Memuat data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -250,15 +257,11 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     window.onload = function() {
-        // QR Code init
         new QRCode(document.getElementById("qrcode"), { text: "KSE-SYSTEM-AUTH", width: 45, height: 45 });
-        
-        // Session Check
         if (localStorage.getItem('kse_session') === 'active') {
             showDashboard();
             loadMonthlyHistory();
         }
-        
         updateMonthDisplay();
     };
 
@@ -271,7 +274,6 @@
     function handleLogin() {
         const u = document.getElementById('user').value;
         const p = document.getElementById('pass').value;
-        
         if(u === "admin" && p === "kse123") {
             localStorage.setItem('kse_session', 'active');
             showDashboard();
@@ -296,14 +298,12 @@
     async function loadMonthlyHistory() {
         const table = document.getElementById('history-data');
         const now = new Date();
-        
-        // Buat range tanggal bulan berjalan (YYYY-MM-01 s/d Last Day)
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
 
         try {
             const { data, error } = await supabaseClient
-                .from('documents') // Pastikan tabel 'documents' ada di supabase anda
+                .from('documents')
                 .select('*')
                 .gte('created_at', firstDay)
                 .lte('created_at', lastDay)
@@ -312,23 +312,32 @@
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">Data kosong untuk periode ini.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Data kosong untuk periode ini.</td></tr>`;
                 return;
             }
 
             table.innerHTML = data.map(doc => `
                 <tr>
-                    <td>${new Date(doc.created_at).toLocaleDateString('id-ID')}</td>
+                    <td>
+                        <div class="fw-bold">${new Date(doc.created_at).toLocaleDateString('id-ID')}</div>
+                        <div class="font-id text-muted small">ID: ${doc.id.split('-')[0]}</div>
+                    </td>
+                    <td class="font-monospace fw-bold text-primary">${doc.doc_number || '-'}</td>
                     <td><span class="badge bg-light text-dark border">${doc.type || 'DOC'}</span></td>
-                    <td class="font-monospace fw-bold">${doc.doc_number || '-'}</td>
-                    <td>${doc.operator || 'Admin'}</td>
-                    <td><span class="text-success"><i class="bi bi-shield-check"></i> Verified</span></td>
+                    <td class="small">${doc.destination || '-'}</td>
+                    <td class="small">${doc.driver_name || '-'}</td>
+                    <td class="fw-bold">${doc.quantity || '0'}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-dark" onclick="window.open('${doc.pdf_url || '#'}', '_blank')">
+                            <i class="bi bi-file-earmark-pdf"></i> View
+                        </button>
+                    </td>
                 </tr>
             `).join('');
 
         } catch (err) {
             console.error(err);
-            table.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Gagal memuat database (Tabel 'documents' tidak ditemukan).</td></tr>`;
+            table.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Gagal memuat database. Pastikan tabel 'documents' memiliki kolom: created_at, doc_number, type, destination, driver_name, quantity, pdf_url.</td></tr>`;
         }
     }
 </script>
