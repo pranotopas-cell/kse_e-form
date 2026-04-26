@@ -220,25 +220,16 @@
 
     async function loadMonthlyHistory() {
         const table = document.getElementById('history-data');
-        
-        // Logika Filter Bulan Berjalan (Format YYYY-MM-DD agar lebih stabil)
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const firstDay = `${year}-${month}-01T00:00:00Z`;
-
         try {
             const { data, error } = await supabaseClient
                 .from('data_logistik')
                 .select('*')
-                .eq('identitas', 'PT. KHATULISTIWA SINAR ENERGI')
-                .gte('created_at', firstDay)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                table.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Tidak ada data untuk bulan ini (${now.toLocaleString('id-ID', { month: 'long' })})</td></tr>`;
+                table.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Belum ada data di tabel data_logistik</td></tr>`;
                 return;
             }
 
@@ -280,8 +271,7 @@
             }).join('');
 
         } catch (err) {
-            console.error(err);
-            table.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">Gagal tarik data: ${err.message}. Pastikan nama kolom 'identitas' dan 'created_at' sudah benar.</td></tr>`;
+            table.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">Gagal tarik data: ${err.message}</td></tr>`;
         }
     }
 
