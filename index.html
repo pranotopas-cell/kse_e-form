@@ -17,127 +17,65 @@
             --kse-dark: #0a1f08; 
             --kse-primary: #143610; 
             --kse-accent: #27ae60; 
+            --kse-orange: #f39c12;
             --sidebar-width: 280px;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; margin: 0; }
 
         /* --- LOGIN PAGE --- */
         #login-page { 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: linear-gradient(rgba(10, 31, 8, 0.8), rgba(10, 31, 8, 0.8)), 
-                        url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80'); 
-            background-size: cover;
-            background-position: center;
+            height: 100vh; display: flex; align-items: center; justify-content: center; 
+            background: linear-gradient(rgba(10, 31, 8, 0.8), rgba(10, 31, 8, 0.8)), url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80'); 
+            background-size: cover; background-position: center;
         }
-
         .login-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 3.5rem; 
-            border-radius: 1.5rem; 
-            width: 100%; 
-            max-width: 450px; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95); padding: 3.5rem; border-radius: 1.5rem; 
+            width: 100%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px);
         }
 
         /* --- DASHBOARD PAGE --- */
         #dashboard-page { display: none; } 
-        
         .sidebar { 
-            background: var(--kse-dark); 
-            height: 100vh; 
-            color: white; 
-            padding: 2rem 1.2rem;
-            position: fixed;
-            width: var(--sidebar-width);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            background: var(--kse-dark); height: 100vh; color: white; padding: 2rem 1.2rem;
+            position: fixed; width: var(--sidebar-width); z-index: 1000; display: flex; flex-direction: column;
         }
-
         .main-content { margin-left: var(--sidebar-width); padding: 2.5rem; min-height: 100vh; }
         
         .nav-link { 
-            color: rgba(255,255,255,0.7); 
-            margin-bottom: 0.2rem; 
-            border-radius: 0.75rem; 
-            padding: 0.8rem 1.2rem; 
-            transition: all 0.3s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
+            color: rgba(255,255,255,0.7); margin-bottom: 0.2rem; border-radius: 0.75rem; 
+            padding: 0.8rem 1.2rem; transition: all 0.3s; text-decoration: none; display: flex; align-items: center;
         }
-
-        .nav-link:hover, .nav-link.active { 
-            background: rgba(255,255,255,0.1); 
-            color: var(--kse-accent); 
-        }
-
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: var(--kse-accent); }
         .submenu { padding-left: 1.5rem; margin-bottom: 0.5rem; }
-        .submenu .nav-link { font-size: 0.9rem; padding: 0.5rem 1rem; }
-
-        .btn-logout {
-            margin-top: auto;
-            color: #ff7675 !important;
-            border: 1px solid rgba(255, 118, 117, 0.2);
-            background: rgba(255, 118, 117, 0.05);
-        }
 
         .welcome-banner {
             background: linear-gradient(135deg, var(--kse-dark) 0%, var(--kse-primary) 100%);
-            color: white;
-            padding: 3.5rem;
-            border-radius: 1.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            overflow: hidden;
+            color: white; padding: 3.5rem; border-radius: 1.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden;
         }
 
-        .tech-status-bar {
-            background: #e9ecef;
-            border-radius: 1rem;
-            padding: 1rem 1.5rem;
-            margin-bottom: 2.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            border-left: 4px solid var(--kse-accent);
+        /* --- TABLE STYLE PER SCREENSHOT --- */
+        .history-card { background: white; border-radius: 1rem; padding: 0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        .table thead { background-color: #1a3a5a; color: #7cb5ec; }
+        .table thead th { border: none; padding: 15px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; }
+        
+        .table tbody td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #eee; font-size: 0.85rem; }
+        
+        .badge-identitas { 
+            background-color: var(--kse-orange); color: black; font-weight: 800; 
+            padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; display: inline-block; margin-bottom: 4px;
         }
-
-        .card-stat {
-            border: none;
-            border-radius: 1.2rem;
-            transition: all 0.3s;
-            background: white;
-            padding: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            height: 100%;
+        .date-text { color: #888; font-size: 0.8rem; display: block; }
+        .doc-number { font-weight: 700; color: #333; }
+        .btn-view { 
+            border: 1px solid #3498db; color: #3498db; background: white; 
+            padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; transition: 0.3s;
         }
+        .btn-view:hover { background: #3498db; color: white; }
 
-        .card-stat:hover { transform: translateY(-5px); box-shadow: 0 15px 20px rgba(0,0,0,0.1); }
-
+        .bg-gray-row { background-color: #d1d5db !important; width: 100px; }
         .btn-kse { background: var(--kse-dark); color: white; padding: 0.8rem; border-radius: 0.75rem; border: none; font-weight: 600; width: 100%; }
-
-        .history-card {
-            background: white;
-            border-radius: 1.2rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .table thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .font-id { font-size: 0.75rem; color: #888; font-family: 'JetBrains Mono', monospace; }
     </style>
 </head>
 <body>
@@ -153,7 +91,7 @@
             <input type="password" id="pass" class="form-control form-control-lg" placeholder="Password">
         </div>
         <button class="btn-kse" onclick="handleLogin()">Login</button>
-        <p id="error-msg" class="text-danger mt-3 small fw-bold" style="display:none;">Akses Ditolak! Periksa kembali kredensial Anda.</p>
+        <p id="error-msg" class="text-danger mt-3 small fw-bold" style="display:none;">Akses Ditolak!</p>
     </div>
 </div>
 
@@ -162,19 +100,14 @@
         <div class="mb-4 px-3">
             <h4 class="fw-bold"><i class="bi bi-cpu-fill text-success"></i> KSE-SYSTEM</h4>
         </div>
-        
         <nav class="d-flex flex-column h-100">
             <a href="#" class="nav-link active"><i class="bi bi-grid-fill me-2"></i> Dashboard</a>
-            
             <p class="text-uppercase small fw-bold opacity-50 px-3 mt-4 mb-2">E-Documents</p>
             <div class="submenu">
                 <a href="surat_jalan.html" class="nav-link"><i class="bi bi-truck me-2"></i> Surat Jalan</a>
                 <a href="memo_pengaliran.html" class="nav-link"><i class="bi bi-sticky me-2"></i> Memo Pengaliran</a>
-                <a href="ba_oper_muatan.html" class="nav-link"><i class="bi bi-arrow-left-right me-2"></i> BA Oper Muatan</a>
-                <a href="ba_serah_terima.html" class="nav-link"><i class="bi bi-check2-square me-2"></i> BA Serah Terima</a>
             </div>
-
-            <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link btn-logout mt-auto">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link text-danger mt-auto">
                 <i class="bi bi-box-arrow-left me-2"></i> Sign Out
             </a>
         </nav>
@@ -182,167 +115,104 @@
 
     <main class="main-content">
         <div class="welcome-banner">
-            <div style="position: relative; z-index: 2;">
-                <h1 class="fw-bold display-5">Welcome</h1>
-                <p class="lead opacity-75">Integrated Documentation Solution</p>
-            </div>
-            <i class="bi bi-cpu" style="position: absolute; right: -20px; bottom: -30px; font-size: 12rem; opacity: 0.1;"></i>
-        </div>
-
-        <div class="tech-status-bar shadow-sm">
-            <div><span class="text-muted">STATUS:</span> <span class="text-success fw-bold">ONLINE</span></div>
-            <div><span class="text-muted">PERIODE:</span> <span id="display-month" class="fw-bold">-</span></div>
-            <div class="d-none d-lg-block"><span class="text-muted">TABLE:</span> <span class="fw-bold text-primary">data_logistik</span></div>
+            <h1 class="fw-bold">Welcome Admin</h1>
+            <p class="lead opacity-75">Integrated Documentation History</p>
         </div>
 
         <div class="history-card mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold m-0">Histori Transaksi Logistik</h5>
-                <button class="btn btn-sm btn-outline-success" onclick="loadMonthlyHistory()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-            </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle" style="font-size: 0.85rem;">
-                    <thead class="table-light">
+                <table class="table align-middle m-0">
+                    <thead>
                         <tr>
-                            <th>ID & Tanggal</th>
-                            <th>No. Dokumen</th>
-                            <th>Jenis</th>
-                            <th>Tujuan</th>
-                            <th>Nama Sopir</th>
-                            <th>Qty</th>
-                            <th class="text-center">PDF</th>
+                            <th>IDENTITAS & TANGGAL</th>
+                            <th>NOMOR DOKUMEN</th>
+                            <th>JENIS</th>
+                            <th>TUJUAN</th>
+                            <th>NAMA SOPIR</th>
+                            <th>NO. POLISI</th>
+                            <th>QTY (L)</th>
+                            <th class="text-center">AKSI</th>
                         </tr>
                     </thead>
                     <tbody id="history-data">
-                        <tr><td colspan="7" class="text-center py-4">Menghubungkan ke tabel data_logistik...</td></tr>
+                        <tr><td colspan="8" class="text-center py-5">Menghubungkan ke data_logistik...</td></tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <h5 class="fw-bold mb-4">Quick Access</h5>
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="card card-stat text-center" onclick="window.location.href='surat_jalan.html'">
-                    <i class="bi bi-truck fs-1 text-primary mb-2"></i>
-                    <h6 class="fw-bold m-0">Surat Jalan</h6>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-stat text-center" onclick="window.location.href='memo_pengaliran.html'">
-                    <i class="bi bi-sticky fs-1 text-success mb-2"></i>
-                    <h6 class="fw-bold m-0">Memo</h6>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-stat text-center" onclick="window.location.href='ba_oper_muatan.html'">
-                    <i class="bi bi-arrow-left-right fs-1 text-warning mb-2"></i>
-                    <h6 class="fw-bold m-0">BA Oper</h6>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-stat text-center" onclick="window.location.href='ba_serah_terima.html'">
-                    <i class="bi bi-check2-square fs-1 text-info mb-2"></i>
-                    <h6 class="fw-bold m-0">BA Serah Terima</h6>
-                </div>
             </div>
         </div>
     </main>
 </div>
 
 <script>
-    // --- SUPABASE CONFIG ---
     const SUPABASE_URL = 'https://ntaectphgoelmhzrkatp.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50YWVjdHBoZ29lbG1oenJrYXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NzExNDYsImV4cCI6MjA4ODE0NzE0Nn0.-8E98wpkzHBARRhW6PKhBtf2XKhWFjq7idAzw9jlcKg';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     window.onload = function() {
-        new QRCode(document.getElementById("qrcode"), { text: "KSE-SYSTEM-AUTH", width: 45, height: 45 });
-        if (localStorage.getItem('kse_session') === 'active') {
-            showDashboard();
-            loadMonthlyHistory();
-        }
-        updateMonthDisplay();
+        new QRCode(document.getElementById("qrcode"), { text: "KSE-AUTH", width: 45, height: 45 });
+        if (localStorage.getItem('kse_session') === 'active') { showDashboard(); loadMonthlyHistory(); }
     };
 
-    function updateMonthDisplay() {
-        const now = new Date();
-        const str = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-        document.getElementById('display-month').innerText = str;
-    }
-
     function handleLogin() {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
-        if(u === "admin" && p === "kse123") {
+        if(document.getElementById('user').value === "admin" && document.getElementById('pass').value === "kse123") {
             localStorage.setItem('kse_session', 'active');
-            showDashboard();
-            loadMonthlyHistory();
-        } else {
-            document.getElementById('error-msg').style.display = 'block';
-        }
+            showDashboard(); loadMonthlyHistory();
+        } else { document.getElementById('error-msg').style.display = 'block'; }
     }
 
-    function handleLogout() {
-        if(confirm('Keluar dari sistem?')) {
-            localStorage.removeItem('kse_session');
-            location.reload();
-        }
+    function handleLogout() { localStorage.removeItem('kse_session'); location.reload(); }
+    function showDashboard() { 
+        document.getElementById('login-page').style.display = 'none'; 
+        document.getElementById('dashboard-page').style.display = 'block'; 
     }
 
-    function showDashboard() {
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('dashboard-page').style.display = 'block';
-    }
-
-    // --- LOAD DATA DARI TABEL: data_logistik ---
     async function loadMonthlyHistory() {
         const table = document.getElementById('history-data');
-        const now = new Date();
-        
-        // Filter awal & akhir bulan berjalan
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
-
         try {
-            // Penarikan data dari tabel 'data_logistik'
-            // Sesuaikan nama kolom jika ada perbedaan di Supabase Dashboard Anda
+            // Mengambil data dari tabel data_logistik
             const { data, error } = await supabaseClient
-                .from('data_logistik') 
+                .from('data_logistik')
                 .select('*')
-                .gte('created_at', firstDay)
-                .lte('created_at', lastDay)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                table.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Belum ada data logistik di bulan ${now.toLocaleDateString('id-ID', {month:'long'})}.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="8" class="text-center py-4">Data tidak ditemukan.</td></tr>`;
                 return;
             }
 
             table.innerHTML = data.map(doc => `
                 <tr>
                     <td>
-                        <div class="fw-bold text-dark">${doc.created_at ? new Date(doc.created_at).toLocaleDateString('id-ID') : '-'}</div>
-                        <div class="font-id">REF: ${doc.id ? String(doc.id).split('-')[0].toUpperCase() : 'AUTO'}</div>
+                        <span class="badge-identitas">PT. KHATULISTIWA SINAR ENERGI</span>
+                        <span class="date-text">${doc.created_at ? doc.created_at.split('T')[0] : '-'}</span>
                     </td>
-                    <td class="font-monospace fw-bold text-primary">${doc.no_dokumen || doc.doc_number || '-'}</td>
-                    <td><span class="badge bg-light text-dark border">${doc.jenis || doc.type || 'LOG'}</span></td>
-                    <td class="small text-muted">${doc.tujuan || doc.destination || '-'}</td>
-                    <td class="small">${doc.nama_sopir || doc.driver_name || '-'}</td>
-                    <td class="fw-bold text-success">${doc.qty || doc.quantity || '0'}</td>
+                    <td class="doc-number">${doc.no_dokumen || doc.doc_number || '-'}</td>
+                    <td class="bg-light text-uppercase" style="font-size: 0.75rem; font-weight: 600;">${doc.jenis || '-'}</td>
+                    <td style="max-width: 200px; font-size: 0.8rem;">${doc.tujuan || '-'}</td>
+                    <td class="fw-bold">${doc.nama_sopir || doc.driver_name || '-'}</td>
+                    <td class="font-monospace">${doc.no_polisi || doc.nopol || '-'}</td>
+                    <td class="fw-bold text-end">${Number(doc.qty || 0).toLocaleString('id-ID')}</td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-dark" onclick="window.open('${doc.pdf_url || doc.url_pdf || '#'}', '_blank')">
-                            <i class="bi bi-file-earmark-pdf"></i>
+                        <button class="btn-view" onclick="openPDF('${doc.pdf_url || doc.url_pdf}')">
+                            <i class="bi bi-file-earmark-pdf"></i> VIEW
                         </button>
                     </td>
                 </tr>
             `).join('');
 
         } catch (err) {
-            console.error("Fetch Error:", err);
-            table.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Tabel 'data_logistik' tidak ditemukan atau akses ditolak.</td></tr>`;
+            table.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">Error: ${err.message}</td></tr>`;
+        }
+    }
+
+    // Fungsi perbaikan buka PDF
+    function openPDF(url) {
+        if (!url || url === 'undefined' || url === '#') {
+            alert('File PDF tidak tersedia untuk dokumen ini.');
+        } else {
+            window.open(url, '_blank');
         }
     }
 </script>
