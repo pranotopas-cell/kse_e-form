@@ -45,14 +45,23 @@
         .status-tunggu { background-color: #f44336 !important; color: white !important; }
         .status-planning { background-color: #9c27b0 !important; color: white !important; }
         
-        .input-combo { width: 92%; font-size: 9px; padding: 3px 1px; border: 1px solid #a5d6a7; border-radius: 2px; text-align: center; color: #2e7d32; font-weight: bold; margin: 1px 0; }
+        .input-combo { width: 92%; font-size: 11px; padding: 3px 1px; border: 1px solid #a5d6a7; border-radius: 2px; text-align: center; color: #2e7d32; font-weight: bold; margin: 1px 0; }
         .action-cell { display: flex; gap: 3px; justify-content: center; align-items: center; height: 100%; }
         .btn-add, .btn-del { border: 1px solid #ccc; background: #fff; border-radius: 3px; width: 24px; height: 24px; cursor: pointer; font-size: 16px; font-weight: bold; color: #333; display: flex; align-items: center; justify-content: center; }
         
-        .bottom-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding-bottom: 20px; }
+        .bottom-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding-bottom: 50px; }
         .box { background: white; padding: 10px; border-radius: 4px; border-top: 3px solid #004d40; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
         .standby-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 5px; font-size: 10px; }
         .standby-item { padding: 6px; background: #f1f8e9; border-radius: 2px; border-left: 3px solid #81c784; text-align: center; font-weight: bold;}
+
+        /* MODAL WA EDITOR */
+        #waModal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fff; margin: 5% auto; padding: 15px; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .modal-header { font-weight: bold; font-size: 14px; margin-bottom: 10px; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        #waTextEditor { width: 100%; height: 250px; font-family: monospace; font-size: 16px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; resize: none; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn-cancel { background: #999; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-send-final { background: #25d366; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -68,6 +77,17 @@
         <option value="SUPRIYADI"> <option value="NUR KHOLIS"> <option value="TUPIN"> <option value="ADI SUCIPTO">
         <option value="AGUS EFENDI"> <option value="AGUS MULYANTO"> 
     </datalist>
+
+    <div id="waModal">
+        <div class="modal-content">
+            <div class="modal-header">EDIT PESAN WHATSAPP</div>
+            <textarea id="waTextEditor"></textarea>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeWaModal()">BATAL</button>
+                <button class="btn-send-final" onclick="sendToWhatsApp()">KIRIM KE WA</button>
+            </div>
+        </div>
+    </div>
 
     <div id="main-dashboard">
         <div class="header-container">
@@ -85,7 +105,7 @@
             </div>
             <div class="action-buttons">
                 <button class="btn-save" id="btnSave" onclick="saveData()">SAVE DATA CLOUD</button>
-                <button class="btn-wa" id="btnShare" onclick="shareDashboard()">BAGIKAN KE WA</button>
+                <button class="btn-wa" id="btnShare" onclick="openWaModal()">BAGIKAN KE WA</button>
             </div>
         </div>
 
@@ -179,33 +199,46 @@
         setInterval(updateClock, 1000);
 
         async function loadData() {
-            const now = getWIBDate();
-            const displayDates = [];
-            for(let i = -3; i <= 7; i++) {
-                const d = new Date(now);
-                d.setDate(now.getDate() + i);
-                displayDates.push(d.toISOString().split('T')[0]);
-            }
+    const now = getWIBDate();
+    
+    // Fungsi bantuan agar format YYYY-MM-DD tidak lari ke UTC
+    const toLocalISO = (date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    };
 
-            const { data } = await _supabase.from('data_pengiriman').select('*').in('tanggal', displayDates);
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            const todayStr = now.toISOString().split('T')[0];
+    const todayStr = toLocalISO(now); // Tanggal hari ini (Format lokal)
+    const displayDates = [];
 
-            displayDates.forEach(dateStr => {
-                const dayRows = data ? data.filter(r => r.tanggal === dateStr) : [];
-                const finalRows = dayRows.length > 0 ? dayRows : [{ supplier: '', jumlah_masuk: '', delivery_to: '', lokasi: '', nopol: '', sopir: '', jumlah_keluar: '', status: '' }];
-                
-                finalRows.forEach((item, i) => {
-                    const tr = createRow(dateStr, item, i, finalRows.length, todayStr);
-                    tbody.appendChild(tr);
-                });
-            });
+    // Buat daftar tanggal untuk tabel
+    for(let i = -3; i <= 7; i++) {
+        const d = new Date(now);
+        d.setDate(now.getDate() + i);
+        displayDates.push(toLocalISO(d));
+    }
 
-            if(!deliveryChart) initChart();
-            updateQuote();
-            processCalculations();
-        }
+    // Ambil data dari Supabase
+    const { data } = await _supabase.from('data_pengiriman').select('*').in('tanggal', displayDates);
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    displayDates.forEach(dateStr => {
+        const dayRows = data ? data.filter(r => r.tanggal === dateStr) : [];
+        const finalRows = dayRows.length > 0 ? dayRows : [{ supplier: '', jumlah_masuk: '', delivery_to: '', lokasi: '', nopol: '', sopir: '', jumlah_keluar: '', status: '' }];
+        
+        finalRows.forEach((item, i) => {
+            // todayStr sekarang sudah akurat mengikuti jam lokal
+            const tr = createRow(dateStr, item, i, finalRows.length, todayStr);
+            tbody.appendChild(tr);
+        });
+    });
+
+    if(!deliveryChart) initChart();
+    updateQuote();
+    processCalculations();
+}
 
         function createRow(tgl, item, idx, totalInDay, todayStr) {
             const tr = document.createElement('tr');
@@ -451,47 +484,82 @@
             document.querySelectorAll("#tableBody tr").forEach(r => r.style.display = r.innerText.toUpperCase().includes(val) ? "" : "none");
         }
 
-        function shareDashboard() {
+        // FUNGSI BARU: MODAL WA EDITOR
+        function openWaModal() {
             const besok = getWIBDate();
             besok.setDate(besok.getDate() + 1);
             const opsiTgl = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             const tglBesokStr = besok.toLocaleDateString('id-ID', opsiTgl).toUpperCase();
+            const tglBesokISO = besok.toISOString().split('T')[0];
 
-            let txt = "*LIST RENCANA PENGIRIMAN BESOK*\n";
+            let txt = "*JADWAL PENGIRIMAN BESOK*\n";
             txt += `*${tglBesokStr}*\n`;
-            txt += "----------------------------------\n\n";
+            txt += "==============================\n\n";
 
-            let found = false;
+            const groups = {};
+            let hasData = false;
+
+            // 1. Kumpulkan & Kelompokkan Data
             document.querySelectorAll('#tableBody tr').forEach(r => {
+                const tglRow = r.dataset.tgl;
                 const stRaw = r.querySelector('.cell-status').innerText.toUpperCase();
                 
-                if (stRaw.includes("TERJADWAL")) {
-                    const nopol = r.querySelector('.inp-nopol').value;
-                    const supplier = r.querySelector('.cell-supplier').innerText.trim();
-                    const customer = r.querySelector('.cell-to').innerText.trim();
-                    const lokasi = r.querySelector('.cell-lokasi').innerText.trim();
+                // Filter hanya untuk tanggal besok dan status TERJADWAL
+                if (tglRow === tglBesokISO && stRaw.includes("TERJADWAL")) {
+                    const supplier = r.querySelector('.cell-supplier').innerText.trim() || 'TANPA SUPPLIER';
+                    const nopol = r.querySelector('.inp-nopol').value.trim() || '-';
+                    const sopir = r.querySelector('.inp-sopir').value.trim() || '-';
+                    const customer = r.querySelector('.cell-to').innerText.trim() || '-';
+                    const lokasi = r.querySelector('.cell-lokasi').innerText.trim() || '-';
                     const qty = r.querySelector('.cell-out').innerText || '0';
 
-                    if (nopol || supplier || customer) {
-                        found = true;
-                        txt += `🚛 Nopol: ${nopol || '-'}\n`;
-                        txt += `🏭 Asal Depo: ${supplier || '-'}\n`;
-                        txt += `🏢 Nama customer: ${customer || '-'}\n`;
-                        txt += `📍 Tujuan pengiriman: ${lokasi || '-'}\n`;
-                        txt += `👤 Sopir: ${r.querySelector('.inp-sopir').value || '-'}\n`;
-                        txt += `📦 Qty: ${qty} KL\n`;
-                        txt += `----------------------------------\n`;
-                    }
+                    if (!groups[supplier]) groups[supplier] = {};
+                    if (!groups[supplier][nopol]) groups[supplier][nopol] = [];
+
+                    groups[supplier][nopol].push({ sopir, customer, lokasi, qty });
+                    hasData = true;
                 }
             });
 
-            if (!found) {
-                txt += "_Tidak ada data dengan status TERJADWAL saat ini._";
+            // 2. Susun Teks Berdasarkan Kelompok DARI (Supplier)
+            if (!hasData) {
+                txt += "TIDAK ADA JADWAL UNTUK BESOK\n";
             } else {
-                txt += "\n_Mohon unit standby sesuai jadwal._";
+                for (const supplier in groups) {
+                    txt += `*DARI : ${supplier.toUpperCase()}*\n`;
+                    txt += "------------------------------\n";
+
+                    for (const nopol in groups[supplier]) {
+                        const rits = groups[supplier][nopol];
+                        txt += `UNIT : ${nopol}\n`;
+                        
+                        rits.forEach((data, index) => {
+                            const ritLabel = rits.length > 1 ? ` (RIT ${index + 1})` : '';
+                            txt += `DRV  : ${data.sopir}${ritLabel}\n`;
+                            txt += `KE   : ${data.customer}\n`;
+                            txt += `LOK  : ${data.lokasi}\n`;
+                            txt += `QTY  : ${data.qty} KL\n`;
+                            if (index < rits.length - 1) txt += "- - -\n";
+                        });
+                        txt += "------------------------------\n";
+                    }
+                    txt += "\n";
+                }
+                txt += "_Mohon Driver dan Unit standby tepat waktu._\n";
             }
 
-            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(txt), "_blank");
+            document.getElementById('waTextEditor').value = txt;
+            document.getElementById('waModal').style.display = 'block';
+        }
+
+        function closeWaModal() {
+            document.getElementById('waModal').style.display = 'none';
+        }
+
+        function sendToWhatsApp() {
+            const finalTxt = document.getElementById('waTextEditor').value;
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(finalTxt), "_blank");
+            closeWaModal();
         }
 
         loadData();
