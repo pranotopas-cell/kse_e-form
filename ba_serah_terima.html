@@ -94,72 +94,62 @@
             </div>
             <input type="hidden" id="in_tgl_lengkap">
 
+            <!-- UPDATE: MENGGUNAKAN INPUT LIST AGAR BISA EDIT DAN DROPDOWN -->
             <label class="form-label-custom text-success">Pihak Pertama</label>
-            <select id="s_pt" class="form-select form-select-sm mb-1" onchange="updateView()">
-                <option value="PT. KHATULISTIWA SINAR ENERGI">PT. KHATULISTIWA SINAR ENERGI</option>
-                <option value="PT. BERKAH SARANA MAKMUR BENUA">PT. BERKAH SARANA MAKMUR BENUA</option>
-                <option value="PT. INDO DHARMA ENERGI">PT. INDO DHARMA ENERGI</option>
-                <option value="PT. TRANS GLOBAL ENERGI">PT. TRANS GLOBAL ENERGI</option>
-                <option value="PT. INVESTAMA KALIMANTAN ENERGI">PT. INVESTAMA KALIMANTAN ENERGI</option>
-            </select>
+            <input type="text" id="s_pt" list="list_pt" class="form-control form-control-sm mb-1" oninput="updateView()" placeholder="Pilih atau Ketik PT...">
+            <datalist id="list_pt">
+                <option value="PT. KHATULISTIWA SINAR ENERGI">
+                <option value="PT. BERKAH SARANA MAKMUR BENUA">
+                <option value="PT. INDO DHARMA ENERGI">
+                <option value="PT. TRANS GLOBAL ENERGI">
+                <option value="PT. INVESTAMA KALIMANTAN ENERGI">
+            </datalist>
 
             <label class="form-label-custom text-success">Transportir</label>
-            <select id="s_transportir" class="form-select form-select-sm mb-1" onchange="updateView()">
-                <option value="PT. KHATULISTIWA SINAR ENERGI">PT. KHATULISTIWA SINAR ENERGI</option>
-                <option value="PT. BERKAH SARANA MAKMUR BENUA">PT. BERKAH SARANA MAKMUR BENUA</option>
-                <option value="PT. INDO DHARMA ENERGI">PT. INDO DHARMA ENERGI</option>
-                <option value="PT. TRANS GLOBAL ENERGI">PT. TRANS GLOBAL ENERGI</option>
-                <option value="PT. INVESTAMA KALIMANTAN ENERGI">PT. INVESTAMA KALIMANTAN ENERGI</option>
-            </select>
+            <input type="text" id="s_transportir" list="list_pt" class="form-control form-control-sm mb-1" oninput="updateView()" placeholder="Pilih atau Ketik Transportir...">
             
             <label class="form-label-custom">Nama Sopir Penyerah</label>
-            <select id="s_sopir" class="form-select form-select-sm mb-1" onchange="updateView()">
-                <option value="">-- Pilih Sopir --</option>
-                <option value="AGUS WIYANTO">AGUS WIYANTO</option>
-                <option value="WAHID SUPRIYADI">WAHID SUPRIYADI</option>
-                <option value="AGUS WANTO">AGUS WANTO</option>
-                <option value="NUR KHOLIS">NUR KHOLIS</option>
-                <option value="FARID HABIBI">FARID HABIBI</option>
-                <option value="RONNY PRASTIANSYAH">RONNY PRASTIANSYAH</option>
-                <option value="ADI SUCIPTO">ADI SUCIPTO</option>
-                <option value="AGUS MULYANTO">AGUS MULYANTO</option>
-                <option value="AGUS INDRA">AGUS INDRA</option>
-            </select>
+            <input type="text" id="s_sopir" list="list_sopir" class="form-control form-control-sm mb-1" oninput="updateView()" placeholder="Pilih atau Ketik Sopir...">
+            <datalist id="list_sopir">
+                <option value="AGUS WIYANTO">
+                <option value="WAHID SUPRIYADI">
+                <option value="AGUS WANTO">
+                <option value="NUR KHOLIS">
+                <option value="FARID HABIBI">
+                <option value="RONNY PRASTIANSYAH">
+                <option value="ADI SUCIPTO">
+                <option value="AGUS MULYANTO">
+                <option value="AGUS INDRA">
+            </datalist>
 
             <label class="form-label-custom text-danger">Pihak Kedua (Penerima)</label>
-            <select id="t_pt" class="form-select form-select-sm mb-1" onchange="updateView()">
-                <option value="">-- Pilih Perusahaan Penerima --</option>
-                <option value="PT. KHATULISTIWA SINAR ENERGI">PT. KHATULISTIWA SINAR ENERGI</option>
-                <option value="PT. BERKAH SARANA MAKMUR BENUA">PT. BERKAH SARANA MAKMUR BENUA</option>
-                <option value="PT. INDO DHARMA ENERGI">PT. INDO DHARMA ENERGI</option>
-                <option value="PT. TRANS GLOBAL ENERGI">PT. TRANS GLOBAL ENERGI</option>
-                <option value="PT. INVESTAMA KALIMANTAN ENERGI">PT. INVESTAMA KALIMANTAN ENERGI</option>
-            </select>
+            <input type="text" id="t_pt" list="list_pt" class="form-control form-control-sm mb-1" oninput="updateView()" placeholder="Pilih atau Ketik Penerima...">
             
             <input type="text" id="t_lokasi" class="form-control form-control-sm mb-1" placeholder="Lokasi Penerimaan" oninput="updateView()">
             <input type="text" id="t_sopir" class="form-control form-control-sm" placeholder="Nama Personil Penerima" oninput="updateView()">
 
             <label class="form-label-custom text-primary">Rincian Barang</label>
-            <select id="in_jenis_bbm" class="form-select form-select-sm mb-1" onchange="updateView()">
-                <option value="BBM Solar Industri">BBM Solar Industri</option>
-                <option value="Bio Solar B40">Bio solar B40</option>
-                <option value="MFO">MFO</option>
-            </select>
+            <input type="text" id="in_jenis_bbm" list="list_bbm" class="form-control form-control-sm mb-1" oninput="updateView()" placeholder="Jenis BBM...">
+            <datalist id="list_bbm">
+                <option value="BBM Solar Industri">
+                <option value="Bio Solar B40">
+                <option value="MFO">
+            </datalist>
             <input type="number" id="s_qty" class="form-control form-control-sm mb-1" placeholder="Kuantitas (Liter)" oninput="updateView()">
             
             <label class="form-label-custom">No. Polisi Armada</label>
-            <select id="s_nopol" class="form-select form-select-sm mb-1" onchange="updateView()">
-                <option value="">-- Pilih Nopol --</option>
-                <option value="KH 8141 GH – TERA 100,5- 5.000">KH 8141 GH – TERA 100,5- 5.000</option>
-                <option value="KH 8139 GM -TERA 133,5 – 10.000">KH 8139 GM -TERA 133,5 – 10.000</option>
-                <option value="KH 8942 GN - TERA 115,4 – 5.000">KH 8942 GN - TERA 115,4 – 5.000</option>
-                <option value="KH 8943 GN – TERA 114,6 – 5.000">KH 8943 GN – TERA 114,6 – 5.000</option>
-                <option value="KH 8273 RM – TERA 109,5 – 5.000">KH 8273 RM – TERA 109,5 – 5.000</option>
-                <option value="KH 8256 RM – TERA 104,3 - 5.000">KH 8256 RM – TERA 104,3 - 5.000</option>
-                <option value="KH 8641 GN – TERA 113,8 – 5.000">KH 8641 GN – TERA 113,8 – 5.000</option>
-                <option value="KH 8206 GN - TERA 106,2 – 5.000">KH 8206 GN - TERA 106,2 – 5.000</option>
-                <option value="L 9761 UJ - TERA 124,0 – 8.000">L 9761 UJ - TERA 124,0 – 8.000</option>
-            </select>
+            <input type="text" id="s_nopol" list="list_nopol" class="form-control form-control-sm mb-1" oninput="updateView()" placeholder="Pilih atau Ketik Nopol...">
+            <datalist id="list_nopol">
+                <option value="KH 8141 GH – TERA 100,5- 5.000">
+                <option value="KH 8139 GM -TERA 133,5 – 10.000">
+                <option value="KH 8942 GN - TERA 115,4 – 5.000">
+                <option value="KH 8943 GN – TERA 114,6 – 5.000">
+                <option value="KH 8273 RM – TERA 109,5 – 5.000">
+                <option value="KH 8256 RM – TERA 104,3 - 5.000">
+                <option value="KH 8641 GN – TERA 113,8 – 5.000">
+                <option value="KH 8206 GN - TERA 106,2 – 5.000">
+                <option value="L 9761 UJ - TERA 124,0 – 8.000">
+            </datalist>
 
             <input type="text" id="in_keterangan" class="form-control form-control-sm mb-1" placeholder="Keterangan" oninput="updateView()">
 
@@ -365,7 +355,7 @@
 
     window.onload = function() {
         generateAutoNumber();
-        updateView(); // Initial sync
+        updateView();
     };
 </script>
 </body>
